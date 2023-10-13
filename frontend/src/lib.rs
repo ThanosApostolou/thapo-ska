@@ -1,3 +1,3 @@
 use leptos::*;
-mod app;
-pub use app::*;
+mod gui;
+pub use gui::*;

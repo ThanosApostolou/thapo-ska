@@ -178,3 +178,4 @@ dmypy.json
 ## Matlab/Octave
 *.asv
 *.m~
+frontend/tailwind.css
