@@ -55,7 +55,7 @@ ingress:
     # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  host: thapo-ska.freeddns.org
+  host: thapo-ska.thapo.org
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
