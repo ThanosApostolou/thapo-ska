@@ -1,0 +1,62 @@
+namespace: thapo-ska-local
+environment: local
+
+# FRONTEND
+frontend:
+  image:
+    registry: registry.thapo-dev.org:5000/thapo
+    tag: 0.1.1-local
+  port: 14081
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 1
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+# BACKEND
+backend:
+  image:
+    registry: registry.thapo-dev.org:5000/thapo
+    tag: 0.1.1-local
+  port: 14082
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 1
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+# INGRESS
+ingress:
+  className: "nginx"
+  annotations:
+    {}
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  host: thapo-ska-local.thapo-dev.org
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local

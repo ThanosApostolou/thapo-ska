@@ -1,0 +1,44 @@
+version: '3'
+name: "${name}"
+
+networks:
+  thapo_ska_network:
+
+services:
+  thapo-ska-gateway:
+    image: ${registry}/thapo_ska_gateway:${tag}
+    build:
+      context: ../..
+      dockerfile: devops/docker/images/Dockerfile.gateway
+      args:
+        ARG_THAPO_SKA_ENV_PROFILE: "${thapo_ska_env_profile}"
+    ports:
+      - "${gateway_port}:${gateway_port}"
+    networks:
+      - thapo_ska_network
+
+  thapo-ska-backend:
+    image: ${registry}/thapo_ska_backend:${tag}
+    build:
+      context: ../..
+      dockerfile: devops/docker/images/Dockerfile.backend
+      args:
+        ARG_THAPO_SKA_ENV_PROFILE: "${thapo_ska_env_profile}"
+    ports:
+      - "${backend_port}:${backend_port}"
+    environment:
+      THAPO_SKA_ENV_FILE: /app/.env.${thapo_ska_env_profile}
+    networks:
+      - thapo_ska_network
+
+  thapo-ska-frontend:
+    image: ${registry}/thapo_ska_frontend:${tag}
+    build:
+      context: ../..
+      dockerfile: devops/docker/images/Dockerfile.frontend
+      args:
+        ARG_THAPO_SKA_ENV_PROFILE: "${thapo_ska_env_profile}"
+    ports:
+      - "${frontend_port}:${frontend_port}"
+    networks:
+      - thapo_ska_network

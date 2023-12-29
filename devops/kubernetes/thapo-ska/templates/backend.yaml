@@ -1,0 +1,109 @@
+# DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: deployment-backend
+  labels:
+    app.kubernetes.io/name: deployment-backend
+    app.kubernetes.io/component: backend
+    app: backend
+    environment: {{ .Values.environment }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: deployment-backend
+  template:
+    metadata:
+      namespace: {{ .Values.namespace }}
+      name: deployment-backend
+      annotations:
+      labels:
+        app.kubernetes.io/name: deployment-backend
+        app.kubernetes.io/component: backend
+        app: backend
+        environment: {{ .Values.environment }}
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image.registry }}/thapo_ska_backend:{{ .Values.backend.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http-backend
+              containerPort: {{ .Values.backend.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http-backend
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http-backend
+          resources:
+            limits:
+              cpu: {{ .Values.backend.resources.limits.cpu }}
+              memory: {{ .Values.backend.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.backend.resources.requests.cpu }}
+              memory: {{ .Values.backend.resources.requests.memory }}
+          volumeMounts:
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-backend
+  labels:
+    app.kubernetes.io/name: service-backend
+    app.kubernetes.io/component: backend
+    app: backend
+    environment: {{ .Values.environment }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: deployment-backend
+  ports:
+    - port: {{ .Values.backend.port }}
+      targetPort: http-backend
+      protocol: TCP
+      name: http-backend
+
+---
+
+{{- if .Values.backend.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-backend
+  labels:
+    app.kubernetes.io/name: hpa-backend
+    app.kubernetes.io/component: backend
+    app: backend
+    environment: {{ .Values.environment }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: deployment-backend
+  minReplicas: {{ .Values.backend.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.backend.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.backend.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.backend.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.backend.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.backend.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

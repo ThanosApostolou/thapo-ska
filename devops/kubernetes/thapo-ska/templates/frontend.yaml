@@ -1,0 +1,109 @@
+# DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: deployment-frontend
+  labels:
+    app.kubernetes.io/name: deployment-frontend
+    app.kubernetes.io/component: frontend
+    app: frontend
+    environment: {{ .Values.environment }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: deployment-frontend
+  template:
+    metadata:
+      namespace: {{ .Values.namespace }}
+      name: deployment-frontend
+      annotations:
+      labels:
+        app.kubernetes.io/name: deployment-frontend
+        app.kubernetes.io/component: frontend
+        app: frontend
+        environment: {{ .Values.environment }}
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ .Values.frontend.image.registry }}/thapo_ska_frontend:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http-frontend
+              containerPort: {{ .Values.frontend.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /app
+              port: http-frontend
+          readinessProbe:
+            httpGet:
+              path: /app
+              port: http-frontend
+          resources:
+            limits:
+              cpu: {{ .Values.frontend.resources.limits.cpu }}
+              memory: {{ .Values.frontend.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.frontend.resources.requests.cpu }}
+              memory: {{ .Values.frontend.resources.requests.memory }}
+          volumeMounts:
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-frontend
+  labels:
+    app.kubernetes.io/name: service-frontend
+    app.kubernetes.io/component: frontend
+    app: frontend
+    environment: {{ .Values.environment }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: deployment-frontend
+  ports:
+    - port: {{ .Values.frontend.port }}
+      targetPort: http-frontend
+      protocol: TCP
+      name: http-frontend
+
+---
+
+{{- if .Values.frontend.autoscaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-frontend
+  labels:
+    app.kubernetes.io/name: hpa-frontend
+    app.kubernetes.io/component: frontend
+    app: frontend
+    environment: {{ .Values.environment }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: deployment-frontend
+  minReplicas: {{ .Values.frontend.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.frontend.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.frontend.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.frontend.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.frontend.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.frontend.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

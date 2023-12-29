@@ -1,5 +1,5 @@
-# aics-thesis
-aics-thesis
+# Specific Knowledge Assistant
+specific knowledge assistant
 
 ## FRONTEND
 

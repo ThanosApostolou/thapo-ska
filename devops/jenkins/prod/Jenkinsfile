@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    stages {
+        // stage('pre') {
+        //     steps {
+        //         cleanWs()
+        //         script {
+        //             git branch: 'main', credentialsId: 'github', url: 'git@github.com:ThanosApostolou/thapo-ska.git'
+        //         }
+        //     }
+        // }
+        stage('build') {
+            steps {
+                sh "pwd"
+                dir("devops/docker") {
+                    sh "pwd"
+                    sh "docker compose -f docker-compose.yaml --env-file .env.prod build"
+                }
+            }
+        }
+        stage('push') {
+            steps {
+                dir("devops/docker") {
+                    withCredentials([usernamePassword(credentialsId: 'registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh '''
+                            docker login -u "$USERNAME" -p "$PASSWORD" registry.thapo-dev.org:5000
+                            docker compose -f docker-compose.yaml --env-file .env.prod push
+                        '''
+                    }
+                }
+            }
+        }
+        stage('deploy') {
+            steps {
+                dir("devops/kubernetes/thapo-ska") {
+                    sh '''
+                        helm uninstall -n "thapo-ska-prod" "thapo-ska-prod" --ignore-not-found --wait
+                        helm install -f "values-prod.yaml" --create-namespace -n "thapo-ska-prod" "thapo-ska-prod" .
+                    '''
+                }
+            }
+        }
+    }
+}

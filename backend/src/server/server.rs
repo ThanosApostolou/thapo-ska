@@ -1,25 +1,42 @@
 use axum::{
+    extract::State,
     http::StatusCode,
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use std::net::SocketAddr;
+use std::{net::SocketAddr, str::FromStr, sync::Arc};
 
-pub fn create_server() -> Router {
+use crate::modules::global_state::GlobalState;
+
+pub fn create_server(global_state: Arc<GlobalState>) -> Router {
     // build our application with a routes
     let app = Router::new()
         // `GET /` goes to `root`
         .route("/", get(root))
         // `POST /users` goes to `create_user`
-        .route("/users", post(create_user));
+        .route("/users", post(create_user))
+        .with_state(global_state);
     return app;
 }
 
+#[derive(Clone, Serialize, Deserialize)]
+struct RootResponseDto {
+    msg: String,
+}
+
 // basic handler that responds with a static string
-async fn root() -> &'static str {
-    "Hello, World!"
+async fn root(State(global_state): State<Arc<GlobalState>>) -> (StatusCode, Json<RootResponseDto>) {
+    (
+        StatusCode::OK,
+        Json(RootResponseDto {
+            msg: String::from(format!(
+                "hello world {}",
+                &global_state.env_config.env_profile
+            )),
+        }),
+    )
 }
 
 async fn create_user(
