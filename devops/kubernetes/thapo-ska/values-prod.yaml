@@ -6,6 +6,7 @@ frontend:
   image:
     registry: registry.thapo-dev.org:5000/thapo
     tag: 0.1.1-prod
+    imagePullPolicy: Always
   port: 14281
 
   resources:
@@ -28,6 +29,7 @@ backend:
   image:
     registry: registry.thapo-dev.org:5000/thapo
     tag: 0.1.1-prod
+    imagePullPolicy: Always
   port: 14282
 
   resources:

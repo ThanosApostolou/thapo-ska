@@ -27,7 +27,7 @@ spec:
       containers:
         - name: frontend
           image: "{{ .Values.frontend.image.registry }}/thapo_ska_frontend:{{ .Values.frontend.image.tag }}"
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: {{ .Values.frontend.image.imagePullPolicy }}
           ports:
             - name: http-frontend
               containerPort: {{ .Values.frontend.port }}
