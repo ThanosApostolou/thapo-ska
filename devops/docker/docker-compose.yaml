@@ -16,6 +16,8 @@ services:
       - "${gateway_port}:${gateway_port}"
     networks:
       - thapo_ska_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   thapo-ska-backend:
     image: ${registry}/thapo_ska_backend:${tag}

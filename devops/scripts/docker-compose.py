@@ -10,7 +10,7 @@ def build(profile: str):
 
 def up(profile: str, service: str | None):
     service_str = "" if service is None else service
-    subprocess.run(f'sudo docker compose -f docker-compose.yaml --env-file .env.{profile} up {service_str} --remove-orphans --force-recreate --wait', shell=True)
+    subprocess.run(f'sudo docker compose -f docker-compose.yaml --env-file .env.{profile} up {service_str} --build --remove-orphans --force-recreate --wait', shell=True)
 
 def down(profile: str, service: str | None):
     service_str = "" if service is None else service
