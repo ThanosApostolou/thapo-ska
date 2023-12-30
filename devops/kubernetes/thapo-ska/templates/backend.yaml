@@ -34,11 +34,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /backend
               port: http-backend
           readinessProbe:
             httpGet:
-              path: /
+              path: /backend
               port: http-backend
           resources:
             limits:

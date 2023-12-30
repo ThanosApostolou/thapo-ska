@@ -23,9 +23,11 @@ function ctr_import() {
 
 cd "$SCRIPT_DIR/../../backend"
 backend_version="$(echo "$(cargo pkgid)" | rev | cut -d'#' -f1 | rev)"
-ctr_import "thanosapostolou/thapo_ska_backend:$backend_version-$profile"
+ctr_import "registry.thapo-dev.org:5000/thapo/thapo_ska_backend:$backend_version-$profile"
 
 
 cd "$SCRIPT_DIR/../../frontend"
 frontend_version="$(echo "$(cargo pkgid)" | rev | cut -d'#' -f1 | rev)"
-ctr_import "thanosapostolou/thapo_ska_frontend:$frontend_version-$profile"
+ctr_import "registry.thapo-dev.org:5000/thapo/thapo_ska_frontend:$frontend_version-$profile"
+
+ctr_import "registry.thapo-dev.org:5000/thapo/thapo_ska_gateway:$frontend_version-$profile"

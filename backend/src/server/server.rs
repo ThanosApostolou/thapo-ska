@@ -12,13 +12,17 @@ use crate::modules::global_state::GlobalState;
 
 pub fn create_server(global_state: Arc<GlobalState>) -> Router {
     // build our application with a routes
-    let app = Router::new()
+    let backend_router = Router::new()
         // `GET /` goes to `root`
         .route("/", get(root))
         // `POST /users` goes to `create_user`
-        .route("/users", post(create_user))
+        .route("/users", post(create_user));
+
+    let server_router = Router::new()
+        // `GET /` goes to `root`
+        .nest("/backend", backend_router)
         .with_state(global_state);
-    return app;
+    return server_router;
 }
 
 #[derive(Clone, Serialize, Deserialize)]

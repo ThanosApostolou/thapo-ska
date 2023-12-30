@@ -49,14 +49,5 @@ backend:
 ingress:
   className: "nginx"
   annotations:
-    {}
-    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/app-root: /app
   host: thapo-ska.thapo.org
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.prod
