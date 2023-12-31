@@ -12,6 +12,7 @@ services:
       dockerfile: devops/docker/images/Dockerfile.gateway
       args:
         ARG_THAPO_SKA_ENV_PROFILE: "${thapo_ska_env_profile}"
+    restart: "${restart}"
     ports:
       - "${gateway_port}:${gateway_port}"
     networks:
@@ -26,6 +27,7 @@ services:
       dockerfile: devops/docker/images/Dockerfile.backend
       args:
         ARG_THAPO_SKA_ENV_PROFILE: "${thapo_ska_env_profile}"
+    restart: "${restart}"
     ports:
       - "${backend_port}:${backend_port}"
     environment:
@@ -40,6 +42,7 @@ services:
       dockerfile: devops/docker/images/Dockerfile.frontend
       args:
         ARG_THAPO_SKA_ENV_PROFILE: "${thapo_ska_env_profile}"
+    restart: "${restart}"
     ports:
       - "${frontend_port}:${frontend_port}"
     networks:
