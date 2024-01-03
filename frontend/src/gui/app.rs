@@ -29,20 +29,21 @@ pub fn App(global_state: Arc<GlobalState>) -> impl IntoView {
         <HeaderComp/>
         profile: {global_state.clone().env_config.env_profile.clone()}
         <div class="mydiv">
-        <button
-            on:click=move |mouse_event| {
-                action1.dispatch((mouse_event.clone(),));
-                spawn_local(async move {
-                    on_click(count, set_count, &mouse_event).await.unwrap();
-                });
-            //    use_future()
-                //  on_click(count, set_count, mouse_event).unwrap();
-            }
-        >
-            "Click me2: "
-            {move || count.get()}
-        </button>
+            <button
+                on:click=move |mouse_event| {
+                    action1.dispatch((mouse_event.clone(),));
+                    spawn_local(async move {
+                        on_click(count, set_count, &mouse_event).await.unwrap();
+                    });
+                //    use_future()
+                    //  on_click(count, set_count, mouse_event).unwrap();
+                }
+            >
+                "Click me2: "
+                {move || count.get()}
+            </button>
         </div>
+        <button class="btn btn-primary">Button</button>
         <div class="p-6 bg-black">
         <button
             on:click=move |mouse_event| {
