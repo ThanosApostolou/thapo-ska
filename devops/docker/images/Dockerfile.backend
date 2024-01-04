@@ -11,12 +11,14 @@ COPY ./frontend/src/lib.rs /app/frontend/src/lib.rs
 RUN cargo build -p backend --release --features=feature-server --bin app-server
 RUN cargo build -p backend --release --features=feature-cli --bin app-cli
 
-FROM docker.io/debian:bookworm-20231120
+FROM docker.io/debian:bookworm-20231120 as runner
 ARG ARG_THAPO_SKA_ENV_PROFILE
 ENV THAPO_SKA_ENV_FILE=/app/.env.${ARG_THAPO_SKA_ENV_PROFILE}
-RUN apt-get update && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    useradd -m -u 14000 -U thaposka
 WORKDIR /app
 COPY --from=builder /app/target/release/app-server /app/app-server
 COPY --from=builder /app/target/release/app-cli /app/app-cli
 COPY --from=builder /app/backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/.env.${ARG_THAPO_SKA_ENV_PROFILE}
+USER thaposka
 CMD ./app-server

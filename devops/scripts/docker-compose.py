@@ -21,7 +21,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('action', type=str, choices=["up", "down", "build"])
-    parser.add_argument('profile', type=str, choices=["local", "dev"])
+    parser.add_argument('profile', type=str, choices=["local", "local_docker", "local_kube", "dev"])
     parser.add_argument('-s', '--service', type=str, dest='service', required=False, choices=["thapo-ska-gateway", "thapo-ska-backend", "thapo-ska-frontend"])
     args = parser.parse_args()
 
