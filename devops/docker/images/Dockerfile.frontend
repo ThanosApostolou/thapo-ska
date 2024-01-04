@@ -11,6 +11,7 @@ FROM builder1 as builder2
 ARG ARG_THAPO_SKA_ENV_PROFILE
 ENV THAPO_SKA_ENV_FILE=/app/frontend/.env.${ARG_THAPO_SKA_ENV_PROFILE}
 WORKDIR /app
+COPY ./rust-toolchain.toml /app/rust-toolchain.toml
 COPY ./Cargo.toml /app/Cargo.toml
 COPY ./Cargo.lock /app/Cargo.lock
 COPY ./backend/Cargo.toml /app/backend/Cargo.toml
