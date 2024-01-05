@@ -10,6 +10,7 @@ build = "build.rs"
 [dependencies]
 console_log = { workspace = true }
 leptos = { workspace = true, features = ["csr", "nightly"] }
+leptos_router = { workspace = true, features = ["csr", "nightly"] }
 log = { workspace = true }
 reqwest = { workspace = true, features = ["json"] }
 serde = { workspace = true }

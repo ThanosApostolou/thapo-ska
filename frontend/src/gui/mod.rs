@@ -1,4 +1,9 @@
-mod header_comp;
-pub use header_comp::*;
+mod comp_header;
+pub use comp_header::*;
+mod comp_drawer;
+pub use comp_drawer::*;
 mod app;
 pub use app::*;
+
+pub mod page_home;
+pub mod page_assistant;

@@ -1,10 +1,10 @@
-use std::{env, sync::Arc};
+use std::sync::Arc;
 
 use leptos::*;
 
 use log::Level;
 
-use frontend::{modules::global_state::GlobalState, gui::App};
+use frontend::{gui::App, modules::global_state::GlobalState};
 
 fn main() {
     let global_state = GlobalState::initialize_default();
