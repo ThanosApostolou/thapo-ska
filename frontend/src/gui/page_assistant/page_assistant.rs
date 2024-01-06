@@ -3,8 +3,8 @@ use leptos::*;
 #[component]
 pub fn PageAssistant() -> impl IntoView {
     view! {
-        <div>
-            "Home Assistant"
+        <div class="flex bg-error w-full h-full">
+            "Assistant Page"
         </div>
     }
 }

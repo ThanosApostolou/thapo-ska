@@ -1,9 +1,6 @@
 use std::sync::Arc;
 
-use crate::{
-    gui::{DrawerComp, HeaderComp},
-    modules::global_state::GlobalState,
-};
+use crate::{gui::DrawerComp, modules::global_state::GlobalState};
 use leptos::*;
 use leptos_router::Router;
 
@@ -18,8 +15,6 @@ pub fn App(global_state: Arc<GlobalState>) -> impl IntoView {
 
     view! {
         <Router>
-            <HeaderComp/>
-            profile: {move || global_state.clone().env_config.env_profile.clone()}
             <DrawerComp />
         </Router>
     }

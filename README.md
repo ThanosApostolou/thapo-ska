@@ -8,11 +8,16 @@ specific knowledge assistant
 rustup install nightly
 rustup default nightly
 rustup target add wasm32-unknown-unknown
-cargo install trunk cargo-watch
+cargo install trunk cargo-watch wasm-pack
 npm install -g tailwindcss@3.4.0 daisyui@4.4.24
 ```
 
 ### Run
 ```
 trunk serve --open
+```
+
+### Test
+```
+wasm-pack test --node
 ```
