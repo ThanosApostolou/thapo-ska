@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use leptos::*;
-use leptos_router::{Route, Routes};
+use leptos_router::{Redirect, Route, Routes};
 use log::info;
 
 use crate::{
@@ -20,18 +20,16 @@ pub fn DrawerComp() -> impl IntoView {
             <div class="drawer-side">
                 <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                 <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-                    <li>
-                        {checked}
-                    </li>
-                    <li><a href="/app/home" on:click=move |_| setChecked(false)>Sidebar Item 1</a></li>
-                    <li><a href="/app/assistant" on:click=move |_| {info!("test"); setChecked(false)}>Sidebar Item 2</a></li>
+                    <li><a href="home" on:click=move |_| setChecked(false)>Sidebar Item 1</a></li>
+                    <li><a href="assistant" on:click=move |_| {setChecked(false)}>Sidebar Item 2</a></li>
                 </ul>
             </div>
             <div class="drawer-content">
                 <Routes base={global_state.with(|global_state| global_state.env_config.base_href.clone())}>
-                    <div>test</div>
+                    // <AppRoute />
                     <Route path="/home" view=PageHome />
-                    <Route path="assistant" view=PageAssistant />
+                    <Route path="/assistant" view=PageAssistant />
+                    <Route path="" view=move || { view! { <Redirect path="home" /> }} />
                 </Routes>
 
             </div>
@@ -40,12 +38,10 @@ pub fn DrawerComp() -> impl IntoView {
 }
 
 // #[component(transparent)]
-// fn ContactInfoRoutes() -> impl IntoView {
-//   view! {
-//     <Route path=":id" view=ContactInfo>
-//       <Route path="" view=EmailAndPhone/>
-//       <Route path="address" view=Address/>
-//       <Route path="messages" view=Messages/>
-//     </Route>
-//   }
+// fn AppRoute() -> impl IntoView {
+//     view! {
+//         <Route path="/home" view=PageHome />
+//         <Route path="/assistant" view=PageAssistant />
+//         <Route path="" view=move || { view! { <Redirect path="home" /> }} />
+//     }
 // }

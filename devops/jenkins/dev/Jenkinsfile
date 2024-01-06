@@ -1,20 +1,11 @@
 pipeline {
     agent any
     stages {
-        // stage('pre') {
-        //     steps {
-        //         cleanWs()
-        //         script {
-        //             git branch: 'main', credentialsId: 'github', url: 'git@github.com:ThanosApostolou/thapo-ska.git'
-        //         }
-        //     }
-        // }
         stage('build') {
             steps {
                 sh "pwd"
                 dir("devops/docker") {
-                    sh "pwd"
-                    sh "docker compose -f docker-compose.yaml --env-file .env.dev build"
+                    sh "sudo docker compose -f docker-compose.yaml --env-file .env.dev build"
                 }
             }
         }
@@ -23,8 +14,8 @@ pipeline {
                 dir("devops/docker") {
                     withCredentials([usernamePassword(credentialsId: 'registry', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh '''
-                            docker login -u "$USERNAME" -p "$PASSWORD" registry.thapo-dev.org:5000
-                            docker compose -f docker-compose.yaml --env-file .env.dev push
+                            sudo docker login -u "$USERNAME" -p "$PASSWORD" registry.thapo-dev.org:5000
+                            sudo docker compose -f docker-compose.yaml --env-file .env.dev push
                         '''
                     }
                 }
@@ -33,7 +24,7 @@ pipeline {
         stage('deploy') {
             steps {
                 dir("devops/docker") {
-                    sh 'docker compose -f docker-compose.yaml --env-file .env.dev up -d --remove-orphans --force-recreate --wait'
+                    sh 'sudo docker compose -f docker-compose.yaml --env-file .env.dev up -d --remove-orphans --force-recreate --wait'
                 }
             }
         }
