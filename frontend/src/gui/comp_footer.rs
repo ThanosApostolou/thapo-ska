@@ -8,7 +8,7 @@ use crate::modules::global_state::GlobalState;
 pub fn CompFooter() -> impl IntoView {
     let global_state = expect_context::<RwSignal<Arc<GlobalState>>>();
     view! {
-        <footer class="footer p-10 bg-neutral text-neutral-content">
+        <footer class="footer p-2 bg-neutral text-neutral-content">
             profile: {move || global_state().env_config.env_profile.clone()}
         </footer>
     }
