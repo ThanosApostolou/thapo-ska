@@ -18,9 +18,11 @@ pub fn DrawerComp() -> impl IntoView {
     let global_state = expect_context::<RwSignal<Arc<GlobalState>>>();
     let (checked, setChecked) = create_signal(false);
     let location = use_location();
+
+    let base_href = Signal::derive(move || global_state.get().env_config.base_href.clone());
     let isLocationHome = Signal::derive(move || {
         location.pathname.get().starts_with(
-            RouteBuilder::new(global_state.get().env_config.base_href.clone())
+            RouteBuilder::new(base_href.get().clone())
                 .route_home()
                 .full_path()
                 .as_str(),
@@ -28,7 +30,7 @@ pub fn DrawerComp() -> impl IntoView {
     });
     let isAssistantHome = Signal::derive(move || {
         location.pathname.get().starts_with(
-            RouteBuilder::new(global_state.get().env_config.base_href.clone())
+            RouteBuilder::new(base_href.get().clone())
                 .route_assistant()
                 .full_path()
                 .as_str(),
@@ -41,8 +43,8 @@ pub fn DrawerComp() -> impl IntoView {
             <div class="drawer-side">
                 <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                 <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-                    <li><a href={PATH_HOME} on:click=move |_| setChecked(false) class=("active", move || isLocationHome())>Home</a></li>
-                    <li><a href={PATH_ASSISTANT} on:click=move |_| {setChecked(false)} class=("active", move || isAssistantHome())>Assistant</a></li>
+                    <li><a href={PATH_HOME} on:click=move |_| setChecked(false) class:active=move || isLocationHome()>Home</a></li>
+                    <li><a href={PATH_ASSISTANT} on:click=move |_| {setChecked(false)} class:active=move || isAssistantHome()>Assistant</a></li>
                 </ul>
             </div>
 
@@ -51,7 +53,7 @@ pub fn DrawerComp() -> impl IntoView {
                     <CompHeader />
                 </div>
 
-                <Routes base={global_state.with(|global_state| global_state.env_config.base_href.clone())}>
+                <Routes base=base_href.with_untracked(move |base_href| base_href.clone())>
                     // <AppRoute />
                     <Route path="/home" view=PageHome />
                     <Route path="/assistant" view=PageAssistant />
