@@ -14,9 +14,9 @@ impl GlobalState {
     pub fn initialize_default() -> GlobalState {
         let env_config = EnvConfig::from_env();
         let api_client = Arc::new(Client::builder().build().unwrap_or_default());
-        return GlobalState {
+        GlobalState {
             env_config,
             api_client,
-        };
+        }
     }
 }

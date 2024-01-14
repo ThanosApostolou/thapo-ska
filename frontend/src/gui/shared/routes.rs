@@ -1,10 +1,10 @@
 use std::rc::Rc;
 
-pub const PATH_HOME: &'static str = "home";
-pub const PATH_ASSISTANT: &'static str = "assistant";
-pub const PATH_TEST: &'static str = "test";
-pub const PATH_TEST_TEST1: &'static str = "test1";
-pub const PATH_TEST_TEST2: &'static str = "test2";
+pub const PATH_HOME: &str = "home";
+pub const PATH_ASSISTANT: &str = "assistant";
+pub const PATH_TEST: &str = "test";
+pub const PATH_TEST_TEST1: &str = "test1";
+pub const PATH_TEST_TEST2: &str = "test2";
 
 pub struct RouteBuilder {
     route: Rc<BaseRoute>,
@@ -13,14 +13,14 @@ pub struct RouteBuilder {
 impl RouteBuilder {
     pub fn new(base_href: String) -> RouteBuilder {
         let mut base_href = base_href;
-        if !base_href.is_empty() && base_href.chars().last().unwrap() == '/' {
+        if !base_href.is_empty() && base_href.ends_with('/') {
             base_href.pop();
         }
         let route = Rc::new(BaseRoute {
             parent: None,
             path: base_href,
         });
-        return RouteBuilder { route };
+        RouteBuilder { route }
     }
 
     pub fn route_home(&self) -> BaseRoute {
@@ -66,7 +66,7 @@ impl TestRoute {
     }
 
     pub fn full_path(&self) -> String {
-        return self.route.full_path();
+        self.route.full_path()
     }
 }
 
@@ -88,7 +88,7 @@ impl BaseRoute {
     pub fn full_path(&self) -> String {
         let mut paths = self.build_full_path_reversed(vec![]);
         paths.reverse();
-        return paths.join("/");
+        paths.join("/")
     }
 }
 

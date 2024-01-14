@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
-use reqwest::{Client, Error, Response};
+use reqwest::{Client};
 
 use super::dtos::{
     AskAssistantQuestionRequest, AskAssistantQuestionResponse, AskAssistantQuestionResponseError,
 };
 
-const PATH_API_ASSISTANT: &'static str = "/api/assistant";
+const PATH_API_ASSISTANT: &str = "/api/assistant";
 
 pub async fn ask_assistant_question(
     api_client: Arc<Client>,
@@ -22,9 +22,9 @@ pub async fn ask_assistant_question(
         .await
         .map_err(|error| {
             log::error!("{}", error.status().unwrap_or_default());
-            return AskAssistantQuestionResponseError {
+            AskAssistantQuestionResponseError {
                 message: "unexpected error".to_string(),
-            };
+            }
         })?;
 
     let response = http_response
@@ -32,10 +32,10 @@ pub async fn ask_assistant_question(
         .await
         .map_err(|error| {
             log::error!("{}", error);
-            return AskAssistantQuestionResponseError {
+            AskAssistantQuestionResponseError {
                 message: "unexpected error".to_string(),
-            };
+            }
         })?;
 
-    return Ok(response);
+    Ok(response)
 }

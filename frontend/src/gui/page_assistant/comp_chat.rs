@@ -7,7 +7,7 @@ use crate::{
     gui::page_assistant::{
         dtos::AskAssistantQuestionRequest, models::ChatPacketType, service_assistant,
     },
-    modules::global_state::{self, GlobalState},
+    modules::global_state::{GlobalState},
 };
 
 use super::models::ChatPacketSignals;
@@ -15,14 +15,14 @@ use super::models::ChatPacketSignals;
 #[component]
 pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView {
     let global_state = expect_context::<RwSignal<Arc<GlobalState>>>();
-    let (question, set_question) = create_signal("".to_string());
+    let (_question, _set_question) = create_signal("".to_string());
     let (question, set_question) = create_signal("".to_string());
 
     view! {
         <div class="flex flex-col flex-auto items-stretch">
             <div class="ska-page-column-flex bg-error">
                 <For each=chat_packets
-                    key=|chat_packet| chat_packet.timestamp.clone()
+                    key=|chat_packet| chat_packet.timestamp
                     let:chat_packet
                 >
                     <Show when=move || chat_packet.packet_type.with(|packet_type| matches!(packet_type, ChatPacketType::ANSWER))

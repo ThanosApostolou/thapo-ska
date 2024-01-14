@@ -10,10 +10,10 @@ impl EnvConfig {
         let env_profile = String::from(env!("THAPO_SKA_ENV_PROFILE"));
         let base_href = String::from(env!("THAPO_SKA_BASE_HREF"));
         let backend_url = String::from(env!("THAPO_SKA_BACKEND_URL"));
-        return EnvConfig {
+        EnvConfig {
             env_profile,
             base_href,
             backend_url,
-        };
+        }
     }
 }
