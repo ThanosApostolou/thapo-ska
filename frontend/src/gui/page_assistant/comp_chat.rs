@@ -7,7 +7,7 @@ use crate::{
     gui::page_assistant::{
         dtos::AskAssistantQuestionRequest, models::ChatPacketType, service_assistant,
     },
-    modules::global_state::{GlobalState},
+    modules::global_state::GlobalState,
 };
 
 use super::models::ChatPacketSignals;

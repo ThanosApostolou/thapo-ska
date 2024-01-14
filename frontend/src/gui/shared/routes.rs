@@ -102,7 +102,9 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_home() {
-        let home_path = RouteBuilder::new("/app/".to_string()).route_home().full_path();
+        let home_path = RouteBuilder::new("/app/".to_string())
+            .route_home()
+            .full_path();
         assert_eq!(home_path, "/app/home".to_string());
     }
 
@@ -122,13 +124,17 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_assistant_no_basehref() {
-        let home_path = RouteBuilder::new("".to_string()).route_assistant().full_path();
+        let home_path = RouteBuilder::new("".to_string())
+            .route_assistant()
+            .full_path();
         assert_eq!(home_path, "/assistant".to_string());
     }
 
     #[wasm_bindgen_test]
     fn test_test() {
-        let home_path = RouteBuilder::new("/app/".to_string()).route_test().full_path();
+        let home_path = RouteBuilder::new("/app/".to_string())
+            .route_test()
+            .full_path();
         assert_eq!(home_path, "/app/test".to_string());
     }
 
@@ -149,7 +155,10 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_test1_no_basehref() {
-        let home_path = RouteBuilder::new("".to_string()).route_test().route_test1().full_path();
+        let home_path = RouteBuilder::new("".to_string())
+            .route_test()
+            .route_test1()
+            .full_path();
         assert_eq!(home_path, "/test/test1".to_string());
     }
 
@@ -164,7 +173,10 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_test2_no_basehref() {
-        let home_path = RouteBuilder::new("".to_string()).route_test().route_test2().full_path();
+        let home_path = RouteBuilder::new("".to_string())
+            .route_test()
+            .route_test2()
+            .full_path();
         assert_eq!(home_path, "/test/test2".to_string());
     }
 }

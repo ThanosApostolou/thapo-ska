@@ -7,6 +7,6 @@ pub use comp_drawer::*;
 mod app;
 pub use app::*;
 
-pub mod page_home;
 pub mod page_assistant;
+pub mod page_home;
 pub mod shared;

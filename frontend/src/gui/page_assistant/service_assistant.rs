@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use reqwest::{Client};
+use reqwest::Client;
 
 use super::dtos::{
     AskAssistantQuestionRequest, AskAssistantQuestionResponse, AskAssistantQuestionResponseError,

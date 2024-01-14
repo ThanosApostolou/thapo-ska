@@ -7,8 +7,8 @@ pub struct EnvConfig {
 
 impl EnvConfig {
     pub fn from_env() -> EnvConfig {
-        let env_profile = dotenv::var("THAPO_SKA_ENV_PROFILE")
-            .expect("THAPO_SKA_ENV_PROFILE env var is missing");
+        let env_profile =
+            dotenv::var("THAPO_SKA_ENV_PROFILE").expect("THAPO_SKA_ENV_PROFILE env var is missing");
         let server_host = dotenv::var("SERVER_HOST").expect("SERVER_HOST env var is missing");
         let server_port_str = dotenv::var("SERVER_PORT").expect("SERVER_PORT env var is missing");
         let server_port = server_port_str
