@@ -14,10 +14,10 @@ impl EnvConfig {
         let server_port = server_port_str
             .parse::<u16>()
             .expect("SERVER_PORT was not a usize");
-        return EnvConfig {
+        EnvConfig {
             env_profile,
             server_host,
             server_port,
-        };
+        }
     }
 }

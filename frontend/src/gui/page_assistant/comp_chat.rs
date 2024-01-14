@@ -1,12 +1,21 @@
+use std::sync::Arc;
+
 use leptos::{web_sys::SubmitEvent, *};
 use log::info;
 
-use crate::gui::page_assistant::models::ChatPacketType;
+use crate::{
+    gui::page_assistant::{
+        dtos::AskAssistantQuestionRequest, models::ChatPacketType, service_assistant,
+    },
+    modules::global_state::{self, GlobalState},
+};
 
 use super::models::ChatPacketSignals;
 
 #[component]
 pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView {
+    let global_state = expect_context::<RwSignal<Arc<GlobalState>>>();
+    let (question, set_question) = create_signal("".to_string());
     let (question, set_question) = create_signal("".to_string());
 
     view! {
@@ -16,14 +25,23 @@ pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView
                     key=|chat_packet| chat_packet.timestamp.clone()
                     let:chat_packet
                 >
-                    <div class="chat chat-end">
-                        <div class="chat-bubble">{chat_packet.value}</div>
-                    </div>
+                    <Show when=move || chat_packet.packet_type.with(|packet_type| matches!(packet_type, ChatPacketType::ANSWER))
+                    >
+                        <div class="chat chat-start">
+                            <div class="chat-bubble">{chat_packet.value}</div>
+                        </div>
+                    </Show>
+                    <Show when=move || chat_packet.packet_type.with(|packet_type| matches!(packet_type, ChatPacketType::QUESTION))
+                    >
+                        <div class="chat chat-end">
+                            <div class="chat-bubble">{chat_packet.value}</div>
+                        </div>
+                    </Show>
                 </For>
             </div>
 
             <div class="ska-page-column">
-                <form class="form-control" on:submit=move |ev| on_submit(ev, question, chat_packets)>
+                <form class="form-control" on:submit=move |ev| on_submit(ev, global_state, question, chat_packets)>
                     <label class="label w-full">
                         // <span class="label-text mr-2">Ask</span>
                         <input type="text" placeholder="Ask your question" class="input input-bordered input-primary w-full mr-1" prop:value=question
@@ -41,16 +59,43 @@ pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView
 
 fn on_submit(
     ev: SubmitEvent,
+    global_state: RwSignal<Arc<GlobalState>>,
     question: ReadSignal<String>,
     chat_packets: RwSignal<Vec<ChatPacketSignals>>,
 ) {
     ev.prevent_default();
-    info!("question: {}", question.get());
-    chat_packets.update(|chat_packets| {
-        chat_packets.push(ChatPacketSignals {
-            timestamp: create_rw_signal(2),
-            value: create_rw_signal(question.get()),
-            packet_type: create_rw_signal(ChatPacketType::QUESTION),
-        })
-    })
+    spawn_local(async move {
+        info!("question: {}", question.get());
+        chat_packets.update(|chat_packets| {
+            chat_packets.push(ChatPacketSignals {
+                timestamp: create_rw_signal(2),
+                value: create_rw_signal(question.get()),
+                packet_type: create_rw_signal(ChatPacketType::QUESTION),
+            })
+        });
+
+        let request = AskAssistantQuestionRequest {
+            question: question.get(),
+        };
+        let api_client = global_state.get().api_client.clone();
+        let backend_url = global_state.get().env_config.backend_url.clone();
+        let result =
+            service_assistant::ask_assistant_question(api_client, &backend_url, &request).await;
+        match result {
+            Ok(response) => chat_packets.update(|chat_packets| {
+                let new_timestamp = match chat_packets.last() {
+                    Some(packet) => packet.timestamp.get() + 1,
+                    None => 1,
+                };
+                chat_packets.push(ChatPacketSignals {
+                    timestamp: create_rw_signal(new_timestamp),
+                    value: create_rw_signal(response.answer.clone()),
+                    packet_type: create_rw_signal(ChatPacketType::ANSWER),
+                })
+            }),
+            Err(error) => {
+                log::error!("comp_chat error: {}", error.ser().unwrap_or_default())
+            }
+        }
+    });
 }

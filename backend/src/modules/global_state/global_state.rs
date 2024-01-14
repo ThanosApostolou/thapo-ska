@@ -8,8 +8,8 @@ pub struct GlobalState {
 impl GlobalState {
     pub fn initialize_default() -> GlobalState {
         let env_config = EnvConfig::from_env();
-        return GlobalState {
+        GlobalState {
             env_config
-        };
+        }
     }
 }

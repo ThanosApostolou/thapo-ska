@@ -1,26 +1,25 @@
 use axum::{
     extract::State,
     http::StatusCode,
-    response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use std::{net::SocketAddr, str::FromStr, sync::Arc};
+use std::sync::Arc;
 
 use crate::modules::global_state::GlobalState;
 
-pub fn create_server(global_state: Arc<GlobalState>) -> Router {
-    // build our application with a routes
-    let backend_router = Router::new()
-        // `GET /` goes to `root`
-        .route("/", get(root))
-        // `POST /users` goes to `create_user`
-        .route("/users", post(create_user));
+use super::route_api::{build_route_api, PATH_API};
 
+pub fn create_server(global_state: Arc<GlobalState>) -> Router {
     let server_router = Router::new()
-        // `GET /` goes to `root`
-        .nest("/backend", backend_router)
+        .nest(
+            "/backend",
+            Router::new()
+                .route("/", get(root))
+                .route("/users", post(create_user))
+                .nest(PATH_API, build_route_api()),
+        )
         .with_state(global_state);
     return server_router;
 }
