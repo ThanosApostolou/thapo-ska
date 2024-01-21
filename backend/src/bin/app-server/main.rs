@@ -1,21 +1,26 @@
-use std::{
-    net::{Ipv4Addr, SocketAddr},
-    sync::Arc,
-};
+use std::sync::Arc;
 
-use axum::Router;
-use backend::{modules::global_state::GlobalState, server};
+use backend::{
+    modules::{db::migrate_db, global_state::GlobalState},
+    server,
+};
+use tokio::time::error::Error;
 
 #[tokio::main]
 async fn main() {
     let dotenv_file = std::env::var("THAPO_SKA_ENV_FILE").unwrap_or_else(|_| ".env".to_string());
     dotenv::from_filename(&dotenv_file)
         .expect(&*format!("could not load file {}", dotenv_file.clone()));
-
-    let global_state = GlobalState::initialize_default();
-    let global_state = Arc::new(global_state);
+    let secret_file =
+        std::env::var("THAPO_SKA_SECRET_FILE").unwrap_or_else(|_| ".secret".to_string());
+    dotenv::from_filename(&secret_file)
+        .expect(&*format!("could not load file {}", dotenv_file.clone()));
     // initialize tracing
     tracing_subscriber::fmt::init();
+
+    let global_state = GlobalState::initialize_default().await;
+    let global_state = Arc::new(global_state);
+    migrate_db(&global_state.db_connection).await.unwrap();
 
     let server = server::create_server(global_state.clone());
 

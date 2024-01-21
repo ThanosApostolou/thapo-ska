@@ -178,3 +178,4 @@ dmypy.json
 *.asv
 *.m~
 frontend/tailwind.css
+.secret

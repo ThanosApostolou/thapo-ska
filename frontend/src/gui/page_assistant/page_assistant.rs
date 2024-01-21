@@ -9,8 +9,8 @@ use crate::gui::page_assistant::{
 pub fn PageAssistant() -> impl IntoView {
     let chat_packets = create_rw_signal::<Vec<ChatPacketSignals>>(vec![ChatPacketSignals {
         timestamp: create_rw_signal(1),
-        value: create_rw_signal("some question".to_string()),
-        packet_type: create_rw_signal(ChatPacketType::QUESTION),
+        value: create_rw_signal("Please ask me anything related to this field".to_string()),
+        packet_type: create_rw_signal(ChatPacketType::ANSWER),
     }]);
 
     view! {
