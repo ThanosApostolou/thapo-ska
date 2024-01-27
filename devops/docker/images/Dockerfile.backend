@@ -9,6 +9,8 @@ COPY ./backend/src /app/backend/src
 COPY ./backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/backend/.env.${ARG_THAPO_SKA_ENV_PROFILE}
 COPY ./frontend/Cargo.toml /app/frontend/Cargo.toml
 COPY ./frontend/src/lib.rs /app/frontend/src/lib.rs
+COPY ./migration/Cargo.toml /app/migration/Cargo.toml
+COPY ./migration/src /app/migration/src
 RUN cargo build -p backend --release --features=feature-server --bin app-server
 RUN cargo build -p backend --release --features=feature-cli --bin app-cli
 

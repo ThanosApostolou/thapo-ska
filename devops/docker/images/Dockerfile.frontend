@@ -18,6 +18,8 @@ COPY ./backend/Cargo.toml /app/backend/Cargo.toml
 COPY ./backend/src/lib.rs /app/backend/src/lib.rs
 COPY ./backend/src/bin /app/backend/src/bin
 COPY ./frontend /app/frontend
+COPY ./migration/Cargo.toml /app/migration/Cargo.toml
+COPY ./migration/src/lib.rs /app/migration/src/lib.rs
 WORKDIR /app/frontend
 RUN npm ci && trunk build --release --public-url /app
 

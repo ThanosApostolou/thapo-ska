@@ -3,6 +3,14 @@ name: "${name}"
 
 networks:
   thapo_ska_network:
+  infranetwork:
+    external: true
+
+secrets:
+  secret_backend:
+    file: "${secret_backend_file}"
+  secret_iam:
+    file: "${secret_iam_file}"
 
 services:
   thapo-ska-gateway:
@@ -32,8 +40,13 @@ services:
       - "${backend_port}:${backend_port}"
     environment:
       THAPO_SKA_ENV_FILE: /app/.env.${thapo_ska_env_profile}
+      THAPO_SKA_SECRET_FILE: .secret
+    secrets:
+      - source: secret_backend
+        target: /app/.secret
     networks:
       - thapo_ska_network
+      - infranetwork
 
   thapo-ska-frontend:
     image: ${registry}/thapo_ska_frontend:${tag}
@@ -47,3 +60,24 @@ services:
       - "${frontend_port}:${frontend_port}"
     networks:
       - thapo_ska_network
+
+  # https://www.keycloak.org/server/containers
+  thapo_ska_iam:
+    image: ${registry}/thapo_ska_iam:${tag}
+    build:
+      context: ../..
+      dockerfile: devops/docker/images/Dockerfile.iam
+      args:
+        ARG_THAPO_SKA_ENV_PROFILE: "${thapo_ska_env_profile}"
+    restart: "${restart}"
+    command: "start"
+    environment:
+      THAPO_SKA_SECRET_FILE: /opt/keycloak/.secret
+    secrets:
+      - source: secret_iam
+        target: /opt/keycloak/.secret
+    ports:
+      - "${iam_port}:${iam_port}"
+    networks:
+      - thapo_ska_network
+      - infranetwork

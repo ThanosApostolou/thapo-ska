@@ -11,4 +11,4 @@ fi
 
 export THAPO_SKA_ENV_FILE=".env.local"
 cd "$SCRIPT_DIR/../devops/scripts"
-python docker-compose.py up local -s thapo-ska-gateway
+python docker-compose.py up local -s thapo_ska_iam

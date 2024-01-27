@@ -14,7 +14,7 @@ async fn main() {
     let secret_file =
         std::env::var("THAPO_SKA_SECRET_FILE").unwrap_or_else(|_| ".secret".to_string());
     dotenv::from_filename(&secret_file)
-        .expect(&*format!("could not load file {}", dotenv_file.clone()));
+        .expect(&*format!("could not load file {}", secret_file.clone()));
     // initialize tracing
     tracing_subscriber::fmt::init();
 
