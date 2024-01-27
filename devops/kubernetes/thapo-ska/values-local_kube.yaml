@@ -2,7 +2,7 @@ namespace: thapo-ska-local
 environment: local_kube
 
 # FRONTEND
-frontend:
+ska_frontend:
   image:
     registry: registry.thapo-dev.org:5000/thapo
     tag: 0.1.1-local_kube

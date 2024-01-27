@@ -1,15 +1,15 @@
 [package]
-name = "migration"
+name = "ska_migration"
 version = "0.1.0"
 edition = "2021"
 publish = false
 
 [lib]
-name = "migration"
+name = "ska_migration"
 path = "src/lib.rs"
 
 [dependencies]
-async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
+async-std = { workspace = true, features = ["attributes", "tokio1"] }
 sea-orm-migration = { workspace = true, features = [
   # Enable at least one `ASYNC_RUNTIME` and `DATABASE_DRIVER` feature if you want to run migration via CLI.
   # View the list of supported features at https://www.sea-ql.org/SeaORM/docs/install-and-config/database-and-async-runtime.

@@ -22,7 +22,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('action', type=str, choices=["up", "down", "build"])
     parser.add_argument('profile', type=str, choices=["local", "local_docker", "local_kube", "dev"])
-    parser.add_argument('-s', '--service', type=str, dest='service', required=False, choices=["thapo_ska_gateway", "thapo_ska_backend", "thapo-ska-frontend", "thapo_ska_iam"])
+    parser.add_argument('-s', '--service', type=str, dest='service', required=False, choices=["thapo_ska_gateway", "thapo_ska_backend", "thapo_ska_frontend", "thapo_ska_iam"])
     args = parser.parse_args()
 
     os.chdir(SCRIPTPATH.joinpath("../docker").resolve())

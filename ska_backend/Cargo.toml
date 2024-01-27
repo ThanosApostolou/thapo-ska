@@ -6,7 +6,7 @@ resolver = "2"
 default-run = "app-server"
 
 [dependencies]
-migration = { path = "../migration" }
+ska_migration = { path = "../ska_migration" }
 axum = { workspace = true, optional = true }
 hyper = { workspace = true, features = ["full"], optional = true }
 serde = { workspace = true, features = ["derive"] }

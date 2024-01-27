@@ -1,5 +1,5 @@
-use migration::{Migrator, MigratorTrait};
 use sea_orm::{ConnectOptions, DatabaseConnection, DbErr};
+use ska_migration::{Migrator, MigratorTrait};
 
 use crate::modules::global_state::{EnvConfig, SecretConfig};
 
@@ -31,6 +31,6 @@ pub async fn init_db_connection(
     return Ok(connection);
 }
 
-pub async fn migrate_db(connection: &DatabaseConnection) -> Result<(), migration::DbErr> {
+pub async fn migrate_db(connection: &DatabaseConnection) -> Result<(), ska_migration::DbErr> {
     return Migrator::up(connection, None).await;
 }

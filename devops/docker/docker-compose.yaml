@@ -48,7 +48,7 @@ services:
       - thapo_ska_network
       - infranetwork
 
-  thapo-ska-frontend:
+  thapo_ska_frontend:
     image: ${registry}/thapo_ska_frontend:${tag}
     build:
       context: ../..

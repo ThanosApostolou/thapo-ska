@@ -9,7 +9,7 @@ RUN apt-get update && apt-get full-upgrade -y && apt-get install --no-install-re
 
 FROM builder1 as builder2
 ARG ARG_THAPO_SKA_ENV_PROFILE
-ENV THAPO_SKA_ENV_FILE=/app/frontend/.env.${ARG_THAPO_SKA_ENV_PROFILE}
+ENV THAPO_SKA_ENV_FILE=/app/ska_frontend/.env.${ARG_THAPO_SKA_ENV_PROFILE}
 WORKDIR /app
 COPY ./rust-toolchain.toml /app/rust-toolchain.toml
 COPY ./Cargo.toml /app/Cargo.toml
@@ -17,10 +17,10 @@ COPY ./Cargo.lock /app/Cargo.lock
 COPY ./ska_backend/Cargo.toml /app/ska_backend/Cargo.toml
 COPY ./ska_backend/src/lib.rs /app/ska_backend/src/lib.rs
 COPY ./ska_backend/src/bin /app/ska_backend/src/bin
-COPY ./frontend /app/frontend
-COPY ./migration/Cargo.toml /app/migration/Cargo.toml
-COPY ./migration/src/lib.rs /app/migration/src/lib.rs
-WORKDIR /app/frontend
+COPY ./ska_frontend /app/ska_frontend
+COPY ./ska_migration/Cargo.toml /app/ska_migration/Cargo.toml
+COPY ./ska_migration/src/lib.rs /app/ska_migration/src/lib.rs
+WORKDIR /app/ska_frontend
 RUN npm ci && trunk build --release --public-url /app
 
 FROM docker.io/nginx:1.25.3
@@ -28,5 +28,5 @@ ARG ARG_THAPO_SKA_ENV_PROFILE
 ENV THAPO_SKA_ENV_FILE=/app/.env.${ARG_THAPO_SKA_ENV_PROFILE}
 RUN apt-get update && apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /html
-COPY --from=builder2 /app/frontend/dist /html/app
-COPY ./frontend/nginx/thapo-ska-${ARG_THAPO_SKA_ENV_PROFILE}.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder2 /app/ska_frontend/dist /html/app
+COPY ./ska_frontend/nginx/thapo-ska-${ARG_THAPO_SKA_ENV_PROFILE}.conf /etc/nginx/conf.d/default.conf

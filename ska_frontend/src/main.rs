@@ -4,7 +4,7 @@ use leptos::*;
 
 use log::Level;
 
-use frontend::{gui::App, modules::global_state::GlobalState};
+use ska_frontend::{gui::App, modules::global_state::GlobalState};
 
 fn main() {
     let global_state = GlobalState::initialize_default();

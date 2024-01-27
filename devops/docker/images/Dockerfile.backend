@@ -7,10 +7,10 @@ COPY ./Cargo.lock /app/Cargo.lock
 COPY ./ska_backend/Cargo.toml /app/ska_backend/Cargo.toml
 COPY ./ska_backend/src /app/ska_backend/src
 COPY ./ska_backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/ska_backend/.env.${ARG_THAPO_SKA_ENV_PROFILE}
-COPY ./frontend/Cargo.toml /app/frontend/Cargo.toml
-COPY ./frontend/src/lib.rs /app/frontend/src/lib.rs
-COPY ./migration/Cargo.toml /app/migration/Cargo.toml
-COPY ./migration/src /app/migration/src
+COPY ./ska_frontend/Cargo.toml /app/ska_frontend/Cargo.toml
+COPY ./ska_frontend/src/lib.rs /app/ska_frontend/src/lib.rs
+COPY ./ska_migration/Cargo.toml /app/ska_migration/Cargo.toml
+COPY ./ska_migration/src /app/ska_migration/src
 RUN cargo build -p ska_backend --release --features=feature-server --bin app-server
 RUN cargo build -p ska_backend --release --features=feature-cli --bin app-cli
 

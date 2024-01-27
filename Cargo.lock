@@ -1082,23 +1082,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "frontend"
-version = "0.1.1"
-dependencies = [
- "console_log",
- "dotenv",
- "leptos",
- "leptos_router",
- "log",
- "reqwest",
- "serde",
- "serde_json",
- "strum",
- "strum_macros",
- "wasm-bindgen-test",
-]
-
-[[package]]
 name = "funty"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2011,14 +1994,6 @@ name = "memchr"
 version = "2.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "523dc4f511e55ab87b694dc30d0f820d60906ef06413f93d4d7a1385599cc149"
-
-[[package]]
-name = "migration"
-version = "0.1.0"
-dependencies = [
- "async-std",
- "sea-orm-migration",
-]
 
 [[package]]
 name = "mime"
@@ -3310,14 +3285,39 @@ dependencies = [
  "axum",
  "dotenv",
  "hyper 1.1.0",
- "migration",
  "reqwest",
  "sea-orm",
  "serde",
  "serde_json",
+ "ska_migration",
  "tokio",
  "tracing",
  "tracing-subscriber",
+]
+
+[[package]]
+name = "ska_frontend"
+version = "0.1.1"
+dependencies = [
+ "console_log",
+ "dotenv",
+ "leptos",
+ "leptos_router",
+ "log",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "strum",
+ "strum_macros",
+ "wasm-bindgen-test",
+]
+
+[[package]]
+name = "ska_migration"
+version = "0.1.0"
+dependencies = [
+ "async-std",
+ "sea-orm-migration",
 ]
 
 [[package]]

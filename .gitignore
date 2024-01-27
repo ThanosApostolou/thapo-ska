@@ -177,5 +177,5 @@ dmypy.json
 ## Matlab/Octave
 *.asv
 *.m~
-frontend/tailwind.css
+ska_frontend/tailwind.css
 .secret
