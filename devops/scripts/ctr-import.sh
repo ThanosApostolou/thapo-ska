@@ -31,3 +31,4 @@ frontend_version="$(echo "$(cargo pkgid)" | rev | cut -d'#' -f1 | rev)"
 ctr_import "registry.thapo-dev.org:5000/thapo/thapo_ska_frontend:$frontend_version-$profile"
 
 ctr_import "registry.thapo-dev.org:5000/thapo/thapo_ska_gateway:$frontend_version-$profile"
+ctr_import "registry.thapo-dev.org:5000/thapo/thapo_ska_iam:$frontend_version-$profile"

@@ -13,7 +13,7 @@ secrets:
     file: "${secret_iam_file}"
 
 services:
-  thapo-ska-gateway:
+  thapo_ska_gateway:
     image: ${registry}/thapo_ska_gateway:${tag}
     build:
       context: ../..
