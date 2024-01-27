@@ -33,6 +33,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: service-backend
+                name: service-ska_backend
                 port:
-                  number: {{ .Values.backend.port }}
+                  number: {{ .Values.ska_backend.port }}

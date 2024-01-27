@@ -21,7 +21,7 @@ function ctr_import() {
 }
 
 
-cd "$SCRIPT_DIR/../../backend"
+cd "$SCRIPT_DIR/../../ska_backend"
 backend_version="$(echo "$(cargo pkgid)" | rev | cut -d'#' -f1 | rev)"
 ctr_import "registry.thapo-dev.org:5000/thapo/thapo_ska_backend:$backend_version-$profile"
 

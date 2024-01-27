@@ -14,7 +14,7 @@ if [ ! "$THAPO_SKA_ENV_PROFILE" = "local" ]  && [ ! "$THAPO_SKA_ENV_PROFILE" = "
     echo "wrong profile"
     exit 1
 fi
-cd "$SCRIPT_DIR/../../backend"
+cd "$SCRIPT_DIR/../../ska_backend"
 version="$(echo "$(cargo pkgid)" | rev | cut -d'#' -f1 | rev)"
 
 cd "$SCRIPT_DIR/../.."

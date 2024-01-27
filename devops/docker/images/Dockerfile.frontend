@@ -14,9 +14,9 @@ WORKDIR /app
 COPY ./rust-toolchain.toml /app/rust-toolchain.toml
 COPY ./Cargo.toml /app/Cargo.toml
 COPY ./Cargo.lock /app/Cargo.lock
-COPY ./backend/Cargo.toml /app/backend/Cargo.toml
-COPY ./backend/src/lib.rs /app/backend/src/lib.rs
-COPY ./backend/src/bin /app/backend/src/bin
+COPY ./ska_backend/Cargo.toml /app/ska_backend/Cargo.toml
+COPY ./ska_backend/src/lib.rs /app/ska_backend/src/lib.rs
+COPY ./ska_backend/src/bin /app/ska_backend/src/bin
 COPY ./frontend /app/frontend
 COPY ./migration/Cargo.toml /app/migration/Cargo.toml
 COPY ./migration/src/lib.rs /app/migration/src/lib.rs

@@ -4,15 +4,15 @@ WORKDIR /app
 COPY ./rust-toolchain.toml /app/rust-toolchain.toml
 COPY ./Cargo.toml /app/Cargo.toml
 COPY ./Cargo.lock /app/Cargo.lock
-COPY ./backend/Cargo.toml /app/backend/Cargo.toml
-COPY ./backend/src /app/backend/src
-COPY ./backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/backend/.env.${ARG_THAPO_SKA_ENV_PROFILE}
+COPY ./ska_backend/Cargo.toml /app/ska_backend/Cargo.toml
+COPY ./ska_backend/src /app/ska_backend/src
+COPY ./ska_backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/ska_backend/.env.${ARG_THAPO_SKA_ENV_PROFILE}
 COPY ./frontend/Cargo.toml /app/frontend/Cargo.toml
 COPY ./frontend/src/lib.rs /app/frontend/src/lib.rs
 COPY ./migration/Cargo.toml /app/migration/Cargo.toml
 COPY ./migration/src /app/migration/src
-RUN cargo build -p backend --release --features=feature-server --bin app-server
-RUN cargo build -p backend --release --features=feature-cli --bin app-cli
+RUN cargo build -p ska_backend --release --features=feature-server --bin app-server
+RUN cargo build -p ska_backend --release --features=feature-cli --bin app-cli
 
 FROM docker.io/debian:bookworm-20231120 as runner
 ARG ARG_THAPO_SKA_ENV_PROFILE
@@ -22,6 +22,6 @@ RUN apt-get update && apt-get clean && rm -rf /var/lib/apt/lists/* && \
 WORKDIR /app
 COPY --from=builder /app/target/release/app-server /app/app-server
 COPY --from=builder /app/target/release/app-cli /app/app-cli
-COPY --from=builder /app/backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/.env.${ARG_THAPO_SKA_ENV_PROFILE}
+COPY --from=builder /app/ska_backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/.env.${ARG_THAPO_SKA_ENV_PROFILE}
 USER thaposka
 CMD ./app-server

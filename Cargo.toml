@@ -1,5 +1,5 @@
 [workspace]
-members = ["backend", "frontend", "migration"]
+members = ["ska_backend", "frontend", "migration"]
 # default-members = []
 resolver = "2"
 
