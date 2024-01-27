@@ -452,23 +452,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "backend"
-version = "0.1.1"
-dependencies = [
- "axum",
- "dotenv",
- "hyper 1.1.0",
- "migration",
- "reqwest",
- "sea-orm",
- "serde",
- "serde_json",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "backtrace"
 version = "0.3.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3319,6 +3302,23 @@ name = "simdutf8"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f27f6278552951f1f2b8cf9da965d10969b2efdea95a6ec47987ab46edfe263a"
+
+[[package]]
+name = "ska_backend"
+version = "0.1.1"
+dependencies = [
+ "axum",
+ "dotenv",
+ "hyper 1.1.0",
+ "migration",
+ "reqwest",
+ "sea-orm",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
 
 [[package]]
 name = "slab"

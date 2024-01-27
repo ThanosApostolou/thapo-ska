@@ -1,10 +1,9 @@
 use std::sync::Arc;
 
-use backend::{
+use ska_backend::{
     modules::{db::migrate_db, global_state::GlobalState},
     server,
 };
-use tokio::time::error::Error;
 
 #[tokio::main]
 async fn main() {
