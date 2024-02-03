@@ -1,4 +1,4 @@
-FROM quay.io/keycloak/keycloak:21.1.1
+FROM quay.io/keycloak/keycloak:23.0.4
 ARG ARG_THAPO_SKA_ENV_PROFILE
 ENV THAPO_SKA_SECRET_FILE=/opt/keycloak/.secret
 COPY ./ska_iam/conf/${ARG_THAPO_SKA_ENV_PROFILE}/keycloak.conf /opt/keycloak/conf/keycloak.conf

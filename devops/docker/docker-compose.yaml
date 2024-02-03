@@ -73,6 +73,7 @@ services:
     command: "start"
     environment:
       THAPO_SKA_SECRET_FILE: /opt/keycloak/.secret
+      PROXY_ADDRESS_FORWARDING: true
     secrets:
       - source: secret_iam
         target: /opt/keycloak/.secret
