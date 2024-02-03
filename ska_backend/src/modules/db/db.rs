@@ -28,9 +28,9 @@ pub async fn init_db_connection(
         //     .sqlx_logging_level(log::LevelFilter::Info)
         .set_schema_search_path(env_config.db_schema.clone()); // Setting default PostgreSQL schema
     let connection = sea_orm::Database::connect(connect_options).await?;
-    return Ok(connection);
+    Ok(connection)
 }
 
 pub async fn migrate_db(connection: &DatabaseConnection) -> Result<(), ska_migration::DbErr> {
-    return Migrator::up(connection, None).await;
+    Migrator::up(connection, None).await
 }
