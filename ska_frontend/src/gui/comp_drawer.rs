@@ -46,7 +46,7 @@ pub fn DrawerComp() -> impl IntoView {
                 <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                 <ul class="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
                     <li><a href={PATH_HOME} on:click=move |_| setChecked(false) class:active=isLocationHome><img src="assets/icons/home.svg" width="24" />Home</a></li>
-                    <li><a href={PATH_ASSISTANT} on:click=move |_| {setChecked(false)} class:active=isAssistantHome><img src="assets/icons/academic-cap.svg" width="24" />Assistant</a></li>
+                    <li><a href={PATH_ASSISTANT} on:click=move |_| {setChecked(false)} class:active=isAssistantHome><img src="assets/icons/chat-bubble-left-right.svg" width="24" />Assistant</a></li>
                 </ul>
             </div>
 

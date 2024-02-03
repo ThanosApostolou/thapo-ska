@@ -20,7 +20,7 @@ pub fn CompHeader() -> impl IntoView {
                     <ul class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32">
                         <li>
                             <a href={PATH_ACCOUNT} class="btn btn-ghost">
-                                <img src="assets/icons/arrow-right-start-on-rectangle.svg" width="16" />login
+                                <img src="assets/icons/arrow-right-start-on-rectangle.svg" width="24" />login
                             </a>
                         </li>
                     </ul>
