@@ -1,6 +1,8 @@
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
 use reqwest::Client;
+
+use crate::modules::auth::UserDetails;
 
 use super::EnvConfig;
 

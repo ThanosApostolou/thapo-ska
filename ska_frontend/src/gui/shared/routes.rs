@@ -2,6 +2,7 @@ use std::rc::Rc;
 
 pub const PATH_HOME: &str = "home";
 pub const PATH_ASSISTANT: &str = "assistant";
+pub const PATH_ACCOUNT: &str = "account";
 pub const PATH_TEST: &str = "test";
 pub const PATH_TEST_TEST1: &str = "test1";
 pub const PATH_TEST_TEST2: &str = "test2";
