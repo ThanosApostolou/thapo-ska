@@ -17,11 +17,11 @@ use crate::{
 
 #[component]
 pub fn DrawerComp() -> impl IntoView {
-    let global_state = expect_context::<Arc<GlobalState>>();
+    let global_state = expect_context::<ReadSignal<GlobalState>>();
     let (checked, setChecked) = create_signal(false);
     let location = use_location();
 
-    let base_href = Signal::derive(move || global_state.env_config.base_href.clone());
+    let base_href = Signal::derive(move || global_state.get().env_config.base_href.clone());
     let isLocationHome = Signal::derive(move || {
         location.pathname.get().starts_with(
             RouteBuilder::new(base_href.get().clone())

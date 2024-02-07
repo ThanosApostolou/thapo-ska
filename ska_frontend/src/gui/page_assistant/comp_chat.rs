@@ -14,7 +14,7 @@ use super::models::ChatPacketSignals;
 
 #[component]
 pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView {
-    let global_state = expect_context::<Arc<GlobalState>>();
+    let global_state = expect_context::<ReadSignal<GlobalState>>();
     let (_question, _set_question) = create_signal("".to_string());
     let (question, set_question) = create_signal("".to_string());
 
@@ -41,7 +41,7 @@ pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView
             </div>
 
             <div class="ska-page-column">
-                <form class="form-control" on:submit=move |ev| on_submit(ev, global_state.clone(), question, chat_packets)>
+                <form class="form-control" on:submit=move |ev| on_submit(ev, global_state, question, chat_packets)>
                     <label class="label w-full">
                         // <span class="label-text mr-2">Ask</span>
                         <input type="text" placeholder="Ask your question" class="input input-bordered input-primary w-full mr-1" prop:value=question
@@ -59,7 +59,7 @@ pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView
 
 fn on_submit(
     ev: SubmitEvent,
-    global_state: Arc<GlobalState>,
+    global_state: ReadSignal<GlobalState>,
     question: ReadSignal<String>,
     chat_packets: RwSignal<Vec<ChatPacketSignals>>,
 ) {
@@ -77,8 +77,8 @@ fn on_submit(
         let request = AskAssistantQuestionRequest {
             question: question.get(),
         };
-        let api_client = global_state.api_client.clone();
-        let backend_url = global_state.env_config.backend_url.clone();
+        let api_client = global_state.get().api_client.clone();
+        let backend_url = global_state.get().env_config.backend_url.clone();
         let result =
             service_assistant::ask_assistant_question(api_client, &backend_url, &request).await;
         match result {

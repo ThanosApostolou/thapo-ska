@@ -10,4 +10,6 @@ pub mod page_account;
 pub mod page_assistant;
 pub mod page_home;
 pub mod page_not_found;
+mod page_root;
 pub mod shared;
+pub use page_root::*;

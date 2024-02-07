@@ -1,25 +1,28 @@
-use std::sync::Arc;
-
-use crate::{
-    gui::DrawerComp,
-    modules::global_state::{GlobalState, GlobalStore},
-};
+use crate::{gui::PageRoot, modules::global_state::GlobalState};
 use leptos::*;
 use leptos_router::Router;
 
 #[component]
-pub fn App(global_state: Arc<GlobalState>) -> impl IntoView {
-    provide_context::<Arc<GlobalState>>(global_state.clone());
-    provide_context::<RwSignal<GlobalStore>>(create_rw_signal(GlobalStore::initialize_default()));
-
-    log::info!(
-        "runtime2 THAPO_SKA_PROFILE={}",
-        global_state.clone().env_config.env_profile.clone()
-    );
+pub fn App() -> impl IntoView {
+    let init_action = create_action(move |()| async move { initialize().await });
+    init_action.dispatch(());
 
     view! {
         <Router>
-            <DrawerComp />
+            <Show when=move || init_action.value().with(|value| value.to_owned().is_none())
+            >
+                <p>loading...</p>
+            </Show>
+            <Show when=move || init_action.value().with(|value| value.to_owned().is_some())
+            >
+                <PageRoot global_state=init_action.value().get().to_owned().unwrap() />
+            </Show>
         </Router>
     }
+}
+
+async fn initialize() -> GlobalState {
+    log::info!("initialize called");
+    let global_state = GlobalState::initialize_default().await;
+    return global_state;
 }
