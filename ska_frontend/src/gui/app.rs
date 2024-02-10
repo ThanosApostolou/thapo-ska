@@ -23,6 +23,6 @@ pub fn App() -> impl IntoView {
 
 async fn initialize() -> GlobalState {
     log::info!("initialize called");
-    let global_state = GlobalState::initialize_default().await;
-    return global_state;
+
+    GlobalState::initialize_default().await
 }

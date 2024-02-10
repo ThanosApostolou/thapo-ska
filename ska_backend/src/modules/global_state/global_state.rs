@@ -1,6 +1,5 @@
 use sea_orm::DatabaseConnection;
 
-
 use crate::modules::db::init_db_connection;
 
 use super::{EnvConfig, SecretConfig};

@@ -20,6 +20,7 @@ strum_macros = { workspace = true }
 oauth2 = { workspace = true }
 openidconnect = { workspace = true }
 anyhow = { workspace = true }
+leptos-use = { workspace = true }
 
 [build-dependencies]
 dotenv = { workspace = true }

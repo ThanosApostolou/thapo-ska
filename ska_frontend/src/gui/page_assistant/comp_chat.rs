@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use leptos::{web_sys::SubmitEvent, *};
 use log::info;
 

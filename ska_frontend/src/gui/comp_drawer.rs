@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use leptos::*;
 use leptos_router::{use_location, Redirect, Route, Routes};
 

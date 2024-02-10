@@ -1,9 +1,22 @@
 use leptos::*;
 
-use crate::gui::shared::{PATH_ACCOUNT, PATH_HOME};
+use crate::{
+    gui::shared::PATH_HOME,
+    modules::{auth::auth_service, global_state::GlobalState, storage::auth_storage_service},
+};
 
 #[component]
 pub fn CompHeader() -> impl IntoView {
+    let global_state = expect_context::<ReadSignal<GlobalState>>();
+    let (session_pkce_verifier, session_set_pkce_verifier, session_remove_pkce_verifier) =
+        auth_storage_service::use_session_pkce_verifier();
+
+    let login_action =
+        create_action(
+            move |()| async move { login(global_state, session_set_pkce_verifier).await },
+        );
+    let logout_action = create_action(move |()| async move { logout(global_state).await });
+
     view! {
         <header class="navbar bg-neutral shadow-lg">
             <div class="flex flex-row flex-1">
@@ -19,13 +32,34 @@ pub fn CompHeader() -> impl IntoView {
                     </summary>
                     <ul class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32">
                         <li>
-                            <a href={PATH_ACCOUNT} class="btn btn-ghost">
+                            <button class="btn btn-ghost" on:click=move |_| {
+                                login_action.dispatch(())
+                            }>
                                 <img src="assets/icons/arrow-right-start-on-rectangle.svg" width="24" />login
-                            </a>
+                            </button>
+                        </li>
+                        <li>
+                            <button class="btn btn-ghost" on:click=move |_| {
+                                logout_action.dispatch(())
+                            }>
+                                <img src="assets/icons/arrow-right-start-on-rectangle.svg" width="24" />logout
+                            </button>
                         </li>
                     </ul>
                 </details>
             </div>
         </header>
     }
+}
+
+async fn login(
+    global_state: ReadSignal<GlobalState>,
+    session_set_pkce_verifier: WriteSignal<String>,
+) {
+    auth_service::login(global_state, session_set_pkce_verifier).await;
+}
+
+async fn logout(global_state: ReadSignal<GlobalState>) -> anyhow::Result<()> {
+    auth_service::logout(global_state).await?;
+    Ok(())
 }

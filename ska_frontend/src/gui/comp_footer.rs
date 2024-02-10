@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use leptos::*;
 
 use crate::modules::global_state::GlobalState;
