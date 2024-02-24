@@ -1,14 +1,13 @@
 use crate::{
     gui::PageRoot,
     modules::{
-        auth::{self, auth_service},
+        auth::auth_service,
         global_state::{GlobalState, GlobalStore},
         storage::auth_storage_service,
     },
 };
 use leptos::*;
 use leptos_router::Router;
-use oauth2::RefreshToken;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -36,7 +35,7 @@ async fn initialize() -> (GlobalState, GlobalStore) {
     let global_store = GlobalStore::initialize_default();
     let global_store = create_rw_signal(global_store);
 
-    let (storage_refresh_token, storage_set_refresh_token, storage_remove_refresh_token) =
+    let (storage_refresh_token, storage_set_refresh_token, _) =
         auth_storage_service::use_storage_refresh_token();
     auth_service::initial_check_login(
         global_store,
@@ -47,5 +46,5 @@ async fn initialize() -> (GlobalState, GlobalStore) {
     .await
     .unwrap();
 
-    return (global_state, global_store.get());
+    (global_state, global_store.get())
 }

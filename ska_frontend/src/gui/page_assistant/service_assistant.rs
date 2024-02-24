@@ -1,6 +1,6 @@
-use std::{borrow::Borrow, sync::Arc};
+use std::sync::Arc;
 
-use leptos::{RwSignal, SignalGet};
+use leptos::RwSignal;
 use reqwest::Client;
 
 use crate::modules::{global_state::GlobalStore, web::utils_web};

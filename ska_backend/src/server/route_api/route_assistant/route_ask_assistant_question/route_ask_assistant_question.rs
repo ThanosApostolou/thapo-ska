@@ -19,7 +19,7 @@ pub fn build_route_ask_assistant_question() -> MethodRouter<Arc<GlobalState>> {
 
 // basic handler that responds with a static string
 pub async fn handle_ask_assistant_question(
-    State(global_state): State<Arc<GlobalState>>,
+    State(_): State<Arc<GlobalState>>,
     Query(query): Query<AskAssistantQuestionRequest>,
 ) -> (StatusCode, Json<AskAssistantQuestionResponse>) {
     (

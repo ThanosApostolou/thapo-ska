@@ -21,7 +21,7 @@ use openidconnect::{
 use openidconnect::OAuth2TokenResponse;
 use reqwest::Url;
 
-use crate::modules::global_state::{EnvConfig, GlobalState, GlobalStore};
+use crate::modules::global_state::{EnvConfig, GlobalStore};
 
 pub type MyStandardTokenResponse = StandardTokenResponse<
     IdTokenFields<
@@ -210,7 +210,7 @@ pub async fn initial_check_login(
 }
 
 pub async fn login(oidc_client: &MyOidcClient, session_set_pkce_verifier: WriteSignal<String>) {
-    let (url, csrf_token, nonce, pkce_verifier) = get_auth_url(oidc_client).await;
+    let (url, _, _, pkce_verifier) = get_auth_url(oidc_client).await;
     session_set_pkce_verifier(pkce_verifier.secret().clone());
     log::info!("url={}", url.clone());
     window().location().set_href(url.as_str()).unwrap();
@@ -227,8 +227,8 @@ pub async fn after_login(
     code: Option<String>,
 ) -> anyhow::Result<()> {
     if global_store.get().refresh_token.get().is_none() {
-        if let Some(iss) = iss {
-            if let Some(state) = state {
+        if let Some(_) = iss {
+            if let Some(_) = state {
                 if let Some(code) = code {
                     let pkce_verifier = session_pkce_verifier.get();
                     log::info!("pkce_verifier_String={}", pkce_verifier);
@@ -242,7 +242,6 @@ pub async fn after_login(
                 }
             }
         }
-    } else {
     }
     Ok(())
 }

@@ -46,6 +46,6 @@ impl GlobalStore {
     }
 
     pub fn expect_context() -> RwSignal<GlobalStore> {
-        return expect_context::<RwSignal<GlobalStore>>();
+        expect_context::<RwSignal<GlobalStore>>()
     }
 }

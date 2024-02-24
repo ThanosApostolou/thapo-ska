@@ -1,22 +1,12 @@
-use std::{env, sync::Arc};
+use std::sync::Arc;
 
 use crate::modules::auth::auth_service;
 use leptos::{expect_context, ReadSignal};
-use oauth2::{
-    basic::{BasicErrorResponseType, BasicTokenType},
-    EmptyExtraTokenFields, RevocationErrorResponseType, StandardErrorResponse,
-    StandardRevocableToken, StandardTokenIntrospectionResponse, StandardTokenResponse,
-};
+
 use reqwest::Client;
 
 use super::EnvConfig;
-use openidconnect::{
-    core::{
-        CoreAuthDisplay, CoreAuthPrompt, CoreGenderClaim, CoreJsonWebKey, CoreJsonWebKeyType,
-        CoreJsonWebKeyUse, CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm,
-    },
-    EmptyAdditionalClaims, IdTokenFields,
-};
+
 #[derive(Clone, Debug)]
 pub struct GlobalState {
     pub env_config: EnvConfig,
@@ -41,6 +31,6 @@ impl GlobalState {
     }
 
     pub fn expect_context() -> ReadSignal<GlobalState> {
-        return expect_context::<ReadSignal<GlobalState>>();
+        expect_context::<ReadSignal<GlobalState>>()
     }
 }

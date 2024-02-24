@@ -1,9 +1,5 @@
-use std::io;
-
-use anyhow::anyhow;
-use leptos::{server_fn::codec::IntoRes, *};
+use leptos::*;
 use leptos_router::{use_query, ParamsError, Redirect};
-use openidconnect::*;
 
 use crate::{
     gui::page_login::LoginQuery,
@@ -20,7 +16,7 @@ pub fn PageLogin() -> impl IntoView {
     let global_store_signal = expect_context::<RwSignal<GlobalStore>>();
     let (session_pkce_verifier, session_set_pkce_verifier, _) =
         auth_storage_service::use_session_pkce_verifier();
-    let (storage_refresh_token, storage_set_refresh_token, storage_remove_refresh_token) =
+    let (_, storage_set_refresh_token, _) =
         auth_storage_service::use_storage_refresh_token();
     let base_href = Signal::derive(move || global_state_signal.get().env_config.base_href.clone());
     let login_query_memo = use_query::<LoginQuery>();
@@ -42,7 +38,7 @@ pub fn PageLogin() -> impl IntoView {
 
     view! {
         <Show
-            when=move || { check_login_complete.get() == true }
+            when=move || { check_login_complete.get() }
         >
         <Redirect path=base_href.with(|base_href| {base_href.clone() + "home"})  />
       </Show>
@@ -73,9 +69,4 @@ async fn check_login(
     check_login_complete.set(true);
     Ok(())
     // log::info!("query={}",)
-}
-
-fn test() -> anyhow::Result<()> {
-    let x = Err(anyhow!("test"))?;
-    Ok(())
 }

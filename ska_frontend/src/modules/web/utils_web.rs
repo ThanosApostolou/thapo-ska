@@ -12,5 +12,5 @@ pub fn add_common_headers(
         let access_token_str = "Bearer ".to_string() + access_token.secret().as_ref();
         request_builder = request_builder.header("Authorization", access_token_str)
     }
-    return request_builder;
+    request_builder
 }

@@ -1,14 +1,8 @@
 use crate::{
     gui::DrawerComp,
-    modules::{
-        auth::auth_service,
-        global_state::{GlobalState, GlobalStore},
-        storage::auth_storage_service,
-    },
+    modules::global_state::{GlobalState, GlobalStore},
 };
 use leptos::*;
-use leptos_router::{use_query, ParamsError};
-use oauth2::PkceCodeVerifier;
 
 #[component]
 pub fn PageRoot(global_state: GlobalState, global_store: GlobalStore) -> impl IntoView {
