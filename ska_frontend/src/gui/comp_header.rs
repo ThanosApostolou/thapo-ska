@@ -14,16 +14,12 @@ pub fn CompHeader() -> impl IntoView {
     let global_state = GlobalState::expect_context();
     let global_store = GlobalStore::expect_context();
     let (_, session_set_pkce_verifier, _) = auth_storage_service::use_session_pkce_verifier();
-    let (_, storage_set_refresh_token, _) = auth_storage_service::use_storage_refresh_token();
 
     let login_action =
         create_action(
             move |()| async move { login(global_state, session_set_pkce_verifier).await },
         );
-    let logout_action =
-        create_action(
-            move |()| async move { logout(global_state, storage_set_refresh_token).await },
-        );
+    let logout_action = create_action(move |()| async move { logout(global_state).await });
 
     view! {
         <header class="navbar bg-neutral shadow-lg">
@@ -68,14 +64,10 @@ async fn login(
     auth_service::login(&global_state.get().oidc_client, session_set_pkce_verifier).await;
 }
 
-async fn logout(
-    global_state: ReadSignal<GlobalState>,
-    storage_set_refresh_token: WriteSignal<String>,
-) -> anyhow::Result<()> {
+async fn logout(global_state: ReadSignal<GlobalState>) -> anyhow::Result<()> {
     auth_service::logout(
-        &global_state.get().env_config,
-        &global_state.get().oidc_provider_metadata,
-        storage_set_refresh_token,
+        &global_state.get_untracked().env_config,
+        &global_state.get_untracked().oidc_provider_metadata,
     )
     .await?;
     Ok(())

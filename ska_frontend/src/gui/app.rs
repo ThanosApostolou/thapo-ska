@@ -22,7 +22,7 @@ pub fn App() -> impl IntoView {
             </Show>
             <Show when=move || init_action.value().with(|value| value.to_owned().is_some())
             >
-                <PageRoot global_state=init_action.value().get().to_owned().unwrap().0 global_store=init_action.value().get().to_owned().unwrap().1 />
+                <PageRoot global_state=init_action.value().get_untracked().to_owned().unwrap().0 global_store=init_action.value().get_untracked().to_owned().unwrap().1 />
             </Show>
         </Router>
     }
@@ -46,5 +46,5 @@ async fn initialize() -> (GlobalState, GlobalStore) {
     .await
     .unwrap();
 
-    (global_state, global_store.get())
+    (global_state, global_store.get_untracked())
 }

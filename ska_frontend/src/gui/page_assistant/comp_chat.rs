@@ -65,7 +65,7 @@ fn on_submit(
 ) {
     ev.prevent_default();
     spawn_local(async move {
-        info!("question: {}", question.get());
+        info!("question: {}", question.get_untracked());
         chat_packets.update(|chat_packets| {
             chat_packets.push(ChatPacketSignals {
                 timestamp: create_rw_signal(2),
@@ -75,10 +75,10 @@ fn on_submit(
         });
 
         let request = AskAssistantQuestionRequest {
-            question: question.get(),
+            question: question.get_untracked(),
         };
-        let api_client = global_state.get().api_client.clone();
-        let backend_url = global_state.get().env_config.backend_url.clone();
+        let api_client = global_state.get_untracked().api_client.clone();
+        let backend_url = global_state.get_untracked().env_config.backend_url.clone();
         let result = service_assistant::ask_assistant_question(
             global_store,
             api_client,
@@ -89,7 +89,7 @@ fn on_submit(
         match result {
             Ok(response) => chat_packets.update(|chat_packets| {
                 let new_timestamp = match chat_packets.last() {
-                    Some(packet) => packet.timestamp.get() + 1,
+                    Some(packet) => packet.timestamp.get_untracked() + 1,
                     None => 1,
                 };
                 chat_packets.push(ChatPacketSignals {
