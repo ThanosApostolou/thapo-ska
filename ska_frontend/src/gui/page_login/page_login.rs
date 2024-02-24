@@ -34,6 +34,7 @@ pub fn PageLogin() -> impl IntoView {
             session_pkce_verifier,
             check_login_complete,
             session_set_pkce_verifier,
+            storage_set_refresh_token,
         )
         .await
     });
@@ -55,42 +56,20 @@ async fn check_login(
     session_pkce_verifier: Signal<String>,
     check_login_complete: RwSignal<bool>,
     session_set_pkce_verifier: WriteSignal<String>,
+    storage_set_refresh_token: WriteSignal<String>,
 ) -> Result<(), anyhow::Error> {
     let query = query_res?;
-    if let Some(iss) = query.iss.clone() {
-        if let Some(state) = query.state.clone() {
-            if let Some(code) = query.code.clone() {
-                let pkce_verifier = session_pkce_verifier.get();
-                log::info!("pkce_verifier_String={}", pkce_verifier);
-
-                let token_response = auth_service::exchange_code(
-                    &global_state.get().oidc_client,
-                    PkceCodeVerifier::new(pkce_verifier),
-                    code.clone(),
-                )
-                .await?;
-                let myer = Err::<(), String>("test".to_string());
-                let refresh_token = token_response
-                    .refresh_token()
-                    .ok_or(anyhow!("refresh token missing"))?;
-                let id_token = token_response
-                    .id_token()
-                    .ok_or(anyhow!("id token missing"))?;
-                let access_token = token_response.access_token();
-                // let access_token = token_response.access_token().clone();
-                global_store
-                    .get()
-                    .refresh_token
-                    .set(Some(refresh_token.clone()));
-                global_store.get().id_token.set(Some(id_token.clone()));
-                global_store
-                    .get()
-                    .access_token
-                    .set(Some(access_token.clone()));
-                session_set_pkce_verifier("".to_string());
-            }
-        }
-    }
+    auth_service::after_login(
+        global_store,
+        &global_state.get().oidc_client,
+        session_pkce_verifier,
+        session_set_pkce_verifier,
+        storage_set_refresh_token,
+        query.iss,
+        query.state,
+        query.code,
+    )
+    .await?;
     check_login_complete.set(true);
     Ok(())
     // log::info!("query={}",)

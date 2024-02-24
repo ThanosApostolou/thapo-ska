@@ -10,4 +10,4 @@ if [ ! $# -eq 0 ]
 fi
 
 export THAPO_SKA_ENV_FILE=".env.local"
-trunk serve --address 0.0.0.0 --port 14081 --public-url /app
+trunk serve --no-autoreload --address 0.0.0.0 --port 14081 --public-url /app

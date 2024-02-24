@@ -11,15 +11,12 @@ use leptos_router::{use_query, ParamsError};
 use oauth2::PkceCodeVerifier;
 
 #[component]
-pub fn PageRoot(global_state: GlobalState) -> impl IntoView {
+pub fn PageRoot(global_state: GlobalState, global_store: GlobalStore) -> impl IntoView {
     let (global_state_signal, _) = create_signal(global_state);
-    let global_store_signal: RwSignal<GlobalStore> =
-        create_rw_signal(GlobalStore::initialize_default());
+    let global_store_signal: RwSignal<GlobalStore> = create_rw_signal(global_store);
 
     provide_context::<ReadSignal<GlobalState>>(global_state_signal);
     provide_context::<RwSignal<GlobalStore>>(global_store_signal);
-
-
 
     view! {
         <DrawerComp />

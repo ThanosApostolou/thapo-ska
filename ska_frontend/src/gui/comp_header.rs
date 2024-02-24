@@ -2,19 +2,28 @@ use leptos::*;
 
 use crate::{
     gui::shared::PATH_HOME,
-    modules::{auth::auth_service, global_state::GlobalState, storage::auth_storage_service},
+    modules::{
+        auth::auth_service,
+        global_state::{GlobalState, GlobalStore},
+        storage::auth_storage_service,
+    },
 };
 
 #[component]
 pub fn CompHeader() -> impl IntoView {
-    let global_state = expect_context::<ReadSignal<GlobalState>>();
+    let global_state = GlobalState::expect_context();
+    let global_store = GlobalStore::expect_context();
     let (_, session_set_pkce_verifier, _) = auth_storage_service::use_session_pkce_verifier();
+    let (_, storage_set_refresh_token, _) = auth_storage_service::use_storage_refresh_token();
 
     let login_action =
         create_action(
             move |()| async move { login(global_state, session_set_pkce_verifier).await },
         );
-    let logout_action = create_action(move |()| async move { logout(global_state).await });
+    let logout_action =
+        create_action(
+            move |()| async move { logout(global_state, storage_set_refresh_token).await },
+        );
 
     view! {
         <header class="navbar bg-neutral shadow-lg">
@@ -26,6 +35,7 @@ pub fn CompHeader() -> impl IntoView {
                 <span class="flex-1"></span>
                 <details class="dropdown dropdown-end">
                     <summary class="m-1 btn">
+                        <Show when=move || global_store.get().refresh_token.get().is_some()><p>user</p></Show>
                         <img src="assets/icons/user-circle.svg" width="24" />
                         <img src="assets/icons/chevron-down.svg" width="16" />
                     </summary>
@@ -55,10 +65,18 @@ async fn login(
     global_state: ReadSignal<GlobalState>,
     session_set_pkce_verifier: WriteSignal<String>,
 ) {
-    auth_service::login(global_state, session_set_pkce_verifier).await;
+    auth_service::login(&global_state.get().oidc_client, session_set_pkce_verifier).await;
 }
 
-async fn logout(global_state: ReadSignal<GlobalState>) -> anyhow::Result<()> {
-    auth_service::logout(global_state).await?;
+async fn logout(
+    global_state: ReadSignal<GlobalState>,
+    storage_set_refresh_token: WriteSignal<String>,
+) -> anyhow::Result<()> {
+    auth_service::logout(
+        &global_state.get().env_config,
+        &global_state.get().oidc_provider_metadata,
+        storage_set_refresh_token,
+    )
+    .await?;
     Ok(())
 }
