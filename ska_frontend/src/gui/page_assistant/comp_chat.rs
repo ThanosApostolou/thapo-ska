@@ -5,14 +5,15 @@ use crate::{
     gui::page_assistant::{
         dtos::AskAssistantQuestionRequest, models::ChatPacketType, service_assistant,
     },
-    modules::global_state::GlobalState,
+    modules::global_state::{GlobalState, GlobalStore},
 };
 
 use super::models::ChatPacketSignals;
 
 #[component]
 pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView {
-    let global_state = expect_context::<ReadSignal<GlobalState>>();
+    let global_state = GlobalState::expect_context();
+    let global_store = GlobalStore::expect_context();
     let (_question, _set_question) = create_signal("".to_string());
     let (question, set_question) = create_signal("".to_string());
 
@@ -39,7 +40,7 @@ pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView
             </div>
 
             <div class="ska-page-column">
-                <form class="form-control" on:submit=move |ev| on_submit(ev, global_state, question, chat_packets)>
+                <form class="form-control" on:submit=move |ev| on_submit(ev, global_state, global_store, question, chat_packets)>
                     <label class="label w-full">
                         // <span class="label-text mr-2">Ask</span>
                         <input type="text" placeholder="Ask your question" class="input input-bordered input-primary w-full mr-1" prop:value=question
@@ -58,6 +59,7 @@ pub fn CompChat(chat_packets: RwSignal<Vec<ChatPacketSignals>>) -> impl IntoView
 fn on_submit(
     ev: SubmitEvent,
     global_state: ReadSignal<GlobalState>,
+    global_store: RwSignal<GlobalStore>,
     question: ReadSignal<String>,
     chat_packets: RwSignal<Vec<ChatPacketSignals>>,
 ) {
@@ -77,8 +79,13 @@ fn on_submit(
         };
         let api_client = global_state.get().api_client.clone();
         let backend_url = global_state.get().env_config.backend_url.clone();
-        let result =
-            service_assistant::ask_assistant_question(api_client, &backend_url, &request).await;
+        let result = service_assistant::ask_assistant_question(
+            global_store,
+            api_client,
+            &backend_url,
+            &request,
+        )
+        .await;
         match result {
             Ok(response) => chat_packets.update(|chat_packets| {
                 let new_timestamp = match chat_packets.last() {

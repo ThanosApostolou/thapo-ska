@@ -3,12 +3,7 @@ use leptos_router::{use_location, Redirect, Route, Routes};
 
 use crate::{
     gui::{
-        page_account::PageAccount,
-        page_assistant::PageAssistant,
-        page_home::PageHome,
-        page_not_found::PageNotFound,
-        shared::{RouteBuilder, PATH_ASSISTANT, PATH_HOME},
-        CompFooter, CompHeader,
+        page_account::PageAccount, page_assistant::PageAssistant, page_home::PageHome, page_login::PageLogin, page_not_found::PageNotFound, shared::{RouteBuilder, PATH_ASSISTANT, PATH_HOME}, CompFooter, CompHeader
     },
     modules::global_state::GlobalState,
 };
@@ -58,6 +53,7 @@ pub fn DrawerComp() -> impl IntoView {
                     <Route path="/home" view=PageHome />
                     <Route path="/assistant" view=PageAssistant />
                     <Route path="/account" view=PageAccount />
+                    <Route path="/login" view=PageLogin />
                     <Route path="" view=move || { view! { <Redirect path="home" /> }} />
                     <Route path="*" view=PageNotFound />
                 </Routes>

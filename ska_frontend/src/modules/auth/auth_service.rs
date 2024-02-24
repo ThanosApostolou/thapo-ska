@@ -2,9 +2,9 @@ use anyhow::{anyhow, Result};
 use leptos::*;
 use oauth2::{
     basic::{BasicErrorResponseType, BasicTokenType},
-    EmptyExtraTokenFields, PkceCodeVerifier, RefreshToken, RevocationErrorResponseType,
-    StandardErrorResponse, StandardRevocableToken, StandardTokenIntrospectionResponse,
-    StandardTokenResponse,
+    ClientSecret, EmptyExtraTokenFields, PkceCodeVerifier, RefreshToken,
+    RevocationErrorResponseType, StandardErrorResponse, StandardRevocableToken,
+    StandardTokenIntrospectionResponse, StandardTokenResponse,
 };
 use openidconnect::{
     core::{
@@ -23,9 +23,11 @@ use openidconnect::{
 use openidconnect::OAuth2TokenResponse;
 use reqwest::Url;
 
-use crate::modules::global_state::GlobalState;
+use crate::modules::global_state::{EnvConfig, GlobalState};
 
-pub async fn create_oidc_client() -> anyhow::Result<(
+pub async fn create_oidc_client(
+    env_config: &EnvConfig,
+) -> anyhow::Result<(
     ProviderMetadata<
         LogoutProviderMetadata<EmptyAdditionalProviderMetadata>,
         CoreAuthDisplay,
@@ -72,9 +74,7 @@ pub async fn create_oidc_client() -> anyhow::Result<(
     >,
 )> {
     let provider_metadata = ProviderMetadataWithLogout::discover_async(
-        IssuerUrl::new(
-            "https://thapo-ska-local.thapo-local.org:9443/iam/realms/thapo_ska_local".to_string(),
-        )?,
+        IssuerUrl::new(env_config.auth_issuer_url.clone())?,
         async_http_client,
     )
     .await?;
@@ -86,12 +86,12 @@ pub async fn create_oidc_client() -> anyhow::Result<(
     // Some(ClientSecret::new("client_secret".to_string()))
     let client = Client::from_provider_metadata(
         provider_metadata.clone(),
-        ClientId::new("thapo_ska_local_frontend".to_string()),
-        None,
+        ClientId::new(env_config.auth_client_id.clone()),
+        Some(ClientSecret::new(env_config.auth_client_secret.clone())),
     )
     // Set the URL the user will be redirected to after the authorization process.
     .set_redirect_uri(RedirectUrl::new(
-        "https://thapo-ska-local.thapo-local.org:9443/app/home".to_string(),
+        env_config.frontend_url.clone() + "/login",
     )?);
     Ok((provider_metadata, client))
 }
@@ -148,7 +148,7 @@ pub async fn get_auth_url(
     (auth_url, csrf_token, nonce, pkce_verifier)
 }
 
-pub async fn get_token_response(
+pub async fn exchange_code(
     client: &Client<
         EmptyAdditionalClaims,
         CoreAuthDisplay,
@@ -276,10 +276,13 @@ pub async fn logout(
     let mut final_url = Url::parse(end_session_endpoint.as_str())?;
     final_url
         .query_pairs_mut()
-        .append_pair("client_id", "thapo_ska_local_frontend")
+        .append_pair(
+            "client_id",
+            global_state.get().env_config.auth_client_id.as_str(),
+        )
         .append_pair(
             "post_logout_redirect_uri",
-            "https://thapo-ska-local.thapo-local.org:9443/app/home",
+            (global_state.get().env_config.frontend_url.clone() + "/home").as_str(),
         );
     window()
         .location()

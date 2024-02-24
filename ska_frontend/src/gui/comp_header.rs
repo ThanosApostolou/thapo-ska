@@ -8,8 +8,7 @@ use crate::{
 #[component]
 pub fn CompHeader() -> impl IntoView {
     let global_state = expect_context::<ReadSignal<GlobalState>>();
-    let (session_pkce_verifier, session_set_pkce_verifier, session_remove_pkce_verifier) =
-        auth_storage_service::use_session_pkce_verifier();
+    let (_, session_set_pkce_verifier, _) = auth_storage_service::use_session_pkce_verifier();
 
     let login_action =
         create_action(

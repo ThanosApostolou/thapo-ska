@@ -1,6 +1,7 @@
-use std::sync::Arc;
+use std::{env, sync::Arc};
 
 use crate::modules::auth::auth_service;
+use leptos::{expect_context, ReadSignal};
 use oauth2::{
     basic::{BasicErrorResponseType, BasicTokenType},
     EmptyExtraTokenFields, RevocationErrorResponseType, StandardErrorResponse,
@@ -72,12 +73,16 @@ impl GlobalState {
         let api_client = Arc::new(Client::builder().build().unwrap_or_default());
 
         let (oidc_provider_metadata, oidc_client) =
-            auth_service::create_oidc_client().await.unwrap();
+            auth_service::create_oidc_client(&env_config).await.unwrap();
         GlobalState {
             env_config,
             api_client,
             oidc_provider_metadata,
             oidc_client,
         }
+    }
+
+    pub fn expect_context() -> ReadSignal<GlobalState> {
+        return expect_context::<ReadSignal<GlobalState>>();
     }
 }
