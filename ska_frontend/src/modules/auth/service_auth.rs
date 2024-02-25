@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use anyhow::anyhow;
 use leptos::*;
 use oauth2::{
@@ -14,14 +16,18 @@ use openidconnect::{
     },
     reqwest::async_http_client,
     AuthorizationCode, Client, ClientId, CsrfToken, EmptyAdditionalClaims, IdTokenFields,
-    IssuerUrl, Nonce, PkceCodeChallenge, ProviderMetadata, ProviderMetadataWithLogout, RedirectUrl,
-    TokenResponse,
+    IssuerUrl, Nonce, OAuth2TokenResponse, PkceCodeChallenge, ProviderMetadata,
+    ProviderMetadataWithLogout, RedirectUrl, TokenResponse,
 };
-// Use OpenID Connect Discovery to fetch the provider metadata.
-use openidconnect::OAuth2TokenResponse;
 use reqwest::Url;
 
-use crate::modules::global_state::{EnvConfig, GlobalStore};
+use crate::modules::{
+    error::DtoErrorResponse,
+    global_state::{EnvConfig, GlobalStore},
+    web::utils_web,
+};
+
+use super::DtoUserDetails;
 
 pub type MyStandardTokenResponse = StandardTokenResponse<
     IdTokenFields<
@@ -71,6 +77,8 @@ pub type MyOidcClient = Client<
     StandardErrorResponse<RevocationErrorResponseType>,
 >;
 
+const PATH_API_AUTH: &str = "/api/auth";
+
 pub async fn create_oidc_client(
     env_config: &EnvConfig,
 ) -> anyhow::Result<(MyProviderMetadata, MyOidcClient)> {
@@ -97,7 +105,7 @@ pub async fn create_oidc_client(
     Ok((provider_metadata, client))
 }
 
-pub async fn get_auth_url(client: &MyOidcClient) -> (Url, CsrfToken, Nonce, PkceCodeVerifier) {
+async fn get_auth_url(client: &MyOidcClient) -> (Url, CsrfToken, Nonce, PkceCodeVerifier) {
     log::trace!("auth_service::get_auth_url start");
     // Generate a PKCE challenge.
     let (pkce_challenge, pkce_verifier) = PkceCodeChallenge::new_random_sha256();
@@ -123,7 +131,7 @@ pub async fn get_auth_url(client: &MyOidcClient) -> (Url, CsrfToken, Nonce, Pkce
     (auth_url, csrf_token, nonce, pkce_verifier)
 }
 
-pub async fn exchange_code(
+async fn exchange_code(
     client: &MyOidcClient,
     pkce_verifier: PkceCodeVerifier,
     code: String,
@@ -141,7 +149,7 @@ pub async fn exchange_code(
 }
 
 /// exchanges a refresh_token for a MyStandardTokenResponse
-pub async fn exchange_refresh_token(
+async fn exchange_refresh_token(
     oidc_client: &MyOidcClient,
     refresh_token: &RefreshToken,
 ) -> anyhow::Result<MyStandardTokenResponse> {
@@ -163,7 +171,7 @@ pub async fn exchange_refresh_token(
     Ok(response)
 }
 
-pub fn store_token_response(
+fn store_token_response(
     global_store: RwSignal<GlobalStore>,
     token_response: &MyStandardTokenResponse,
     storage_set_refresh_token: WriteSignal<String>,
@@ -194,11 +202,27 @@ pub fn store_token_response(
     Ok(())
 }
 
+async fn app_login(
+    global_store: RwSignal<GlobalStore>,
+    api_client: Arc<reqwest::Client>,
+    backend_url: String,
+) -> Result<DtoUserDetails, DtoErrorResponse> {
+    let url_app_login = backend_url + PATH_API_AUTH + "/app_login";
+    let request_builder = api_client.post(&url_app_login);
+
+    let result =
+        utils_web::send_request::<DtoUserDetails>(&global_store.get_untracked(), request_builder)
+            .await?;
+    Ok(result)
+}
+
 pub async fn initial_check_login(
     global_store: RwSignal<GlobalStore>,
     storage_refresh_token: Signal<String>,
     storage_set_refresh_token: WriteSignal<String>,
     oidc_client: &MyOidcClient,
+    api_client: Arc<reqwest::Client>,
+    backend_url: String,
 ) -> anyhow::Result<()> {
     log::trace!("auth_service::initial_check_login start");
     let refresh_token_str = storage_refresh_token();
@@ -208,8 +232,11 @@ pub async fn initial_check_login(
         match token_response {
             Ok(token_response) => {
                 store_token_response(global_store, &token_response, storage_set_refresh_token)?;
+                let user_details = app_login(global_store, api_client, backend_url.clone())
+                    .await
+                    .map_err(|err| anyhow!(err))?;
             }
-            Err(err) => {
+            Err(_) => {
                 storage_set_refresh_token("".to_string());
             }
         };
@@ -242,20 +269,17 @@ pub async fn after_login(
         .refresh_token
         .get_untracked()
         .is_none()
+        && iss.is_some()
+        && state.is_some()
     {
-        if let Some(_) = iss {
-            if let Some(_) = state {
-                if let Some(code) = code {
-                    let pkce_verifier = session_pkce_verifier.get_untracked();
+        if let Some(code) = code {
+            let pkce_verifier = session_pkce_verifier.get_untracked();
 
-                    let token_response =
-                        exchange_code(oidc_client, PkceCodeVerifier::new(pkce_verifier), code)
-                            .await?;
-                    store_token_response(global_store, &token_response, storage_set_refresh_token)?;
+            let token_response =
+                exchange_code(oidc_client, PkceCodeVerifier::new(pkce_verifier), code).await?;
+            store_token_response(global_store, &token_response, storage_set_refresh_token)?;
 
-                    session_set_pkce_verifier("".to_string());
-                }
-            }
+            session_set_pkce_verifier("".to_string());
         }
     }
     log::trace!("auth_service::after_login end");

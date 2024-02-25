@@ -3,7 +3,7 @@ use leptos::*;
 use crate::{
     gui::shared::PATH_HOME,
     modules::{
-        auth::auth_service,
+        auth::service_auth,
         global_state::{GlobalState, GlobalStore},
         storage::auth_storage_service,
     },
@@ -61,11 +61,11 @@ async fn login(
     global_state: ReadSignal<GlobalState>,
     session_set_pkce_verifier: WriteSignal<String>,
 ) {
-    auth_service::login(&global_state.get().oidc_client, session_set_pkce_verifier).await;
+    service_auth::login(&global_state.get().oidc_client, session_set_pkce_verifier).await;
 }
 
 async fn logout(global_state: ReadSignal<GlobalState>) -> anyhow::Result<()> {
-    auth_service::logout(
+    service_auth::logout(
         &global_state.get_untracked().env_config,
         &global_state.get_untracked().oidc_provider_metadata,
     )

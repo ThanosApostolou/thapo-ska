@@ -1,11 +1,11 @@
 use leptos::{create_rw_signal, expect_context, RwSignal};
 use openidconnect::{core::*, *};
 
-use crate::modules::auth::UserDetails;
+use crate::modules::auth::DtoUserDetails;
 
 #[derive(Clone, Debug)]
 pub struct GlobalStore {
-    pub user_details: RwSignal<Option<UserDetails>>,
+    pub user_details: RwSignal<Option<DtoUserDetails>>,
     pub refresh_token: RwSignal<Option<RefreshToken>>,
     pub id_token: RwSignal<
         Option<
@@ -23,7 +23,7 @@ pub struct GlobalStore {
 
 impl GlobalStore {
     pub fn initialize_default() -> GlobalStore {
-        let user_details: RwSignal<Option<UserDetails>> = create_rw_signal(Option::None);
+        let user_details: RwSignal<Option<DtoUserDetails>> = create_rw_signal(Option::None);
         let refresh_token: RwSignal<Option<RefreshToken>> = create_rw_signal(Option::None);
         let id_token: RwSignal<
             Option<

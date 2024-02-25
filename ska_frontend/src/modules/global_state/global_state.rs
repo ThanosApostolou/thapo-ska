@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use crate::modules::auth::auth_service;
+use crate::modules::auth::service_auth;
 use leptos::{expect_context, ReadSignal};
 
 use reqwest::Client;
@@ -11,8 +11,8 @@ use super::EnvConfig;
 pub struct GlobalState {
     pub env_config: EnvConfig,
     pub api_client: Arc<Client>,
-    pub oidc_provider_metadata: auth_service::MyProviderMetadata,
-    pub oidc_client: auth_service::MyOidcClient,
+    pub oidc_provider_metadata: service_auth::MyProviderMetadata,
+    pub oidc_client: service_auth::MyOidcClient,
 }
 
 impl GlobalState {
@@ -21,7 +21,7 @@ impl GlobalState {
         let api_client = Arc::new(Client::builder().build().unwrap_or_default());
 
         let (oidc_provider_metadata, oidc_client) =
-            auth_service::create_oidc_client(&env_config).await.unwrap();
+            service_auth::create_oidc_client(&env_config).await.unwrap();
         GlobalState {
             env_config,
             api_client,

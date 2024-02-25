@@ -20,7 +20,7 @@ pub async fn ask_assistant_question(
     let ask_assistant_question_url =
         backend_url.clone() + PATH_API_ASSISTANT + "/ask_assistant_question";
     let request_builder = api_client.get(&ask_assistant_question_url).query(request);
-    let request_builder = utils_web::add_common_headers(&global_store(), request_builder);
+    let request_builder = utils_web::request_builder_with_headers(&global_store(), request_builder);
     // let request_builder.header(headers)
     let http_response = request_builder.send().await.map_err(|error| {
         log::error!("{}", error.status().unwrap_or_default());

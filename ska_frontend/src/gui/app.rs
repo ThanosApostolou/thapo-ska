@@ -1,7 +1,7 @@
 use crate::{
     gui::PageRoot,
     modules::{
-        auth::auth_service,
+        auth::service_auth,
         global_state::{GlobalState, GlobalStore},
         storage::auth_storage_service,
     },
@@ -37,11 +37,13 @@ async fn initialize() -> (GlobalState, GlobalStore) {
 
     let (storage_refresh_token, storage_set_refresh_token, _) =
         auth_storage_service::use_storage_refresh_token();
-    auth_service::initial_check_login(
+    service_auth::initial_check_login(
         global_store,
         storage_refresh_token,
         storage_set_refresh_token,
         &global_state.oidc_client,
+        global_state.api_client.clone(),
+        global_state.env_config.backend_url.clone(),
     )
     .await
     .unwrap();

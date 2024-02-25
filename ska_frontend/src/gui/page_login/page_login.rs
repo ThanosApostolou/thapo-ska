@@ -4,7 +4,7 @@ use leptos_router::{use_query, ParamsError, Redirect};
 use crate::{
     gui::page_login::LoginQuery,
     modules::{
-        auth::auth_service,
+        auth::service_auth,
         global_state::{GlobalState, GlobalStore},
         storage::auth_storage_service,
     },
@@ -16,8 +16,7 @@ pub fn PageLogin() -> impl IntoView {
     let global_store_signal = expect_context::<RwSignal<GlobalStore>>();
     let (session_pkce_verifier, session_set_pkce_verifier, _) =
         auth_storage_service::use_session_pkce_verifier();
-    let (_, storage_set_refresh_token, _) =
-        auth_storage_service::use_storage_refresh_token();
+    let (_, storage_set_refresh_token, _) = auth_storage_service::use_storage_refresh_token();
     let base_href = Signal::derive(move || global_state_signal.get().env_config.base_href.clone());
     let login_query_memo = use_query::<LoginQuery>();
     let check_login_complete = create_rw_signal(false);
@@ -55,7 +54,7 @@ async fn check_login(
     storage_set_refresh_token: WriteSignal<String>,
 ) -> Result<(), anyhow::Error> {
     let query = query_res?;
-    auth_service::after_login(
+    service_auth::after_login(
         global_store,
         &global_state.get().oidc_client,
         session_pkce_verifier,
