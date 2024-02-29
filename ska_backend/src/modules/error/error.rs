@@ -1,10 +1,11 @@
 use std::fmt;
 
+use axum::http;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ErrorResponse {
-    pub status_code: u16,
+    pub status_code: ErrorCode,
     pub is_unexpected_error: bool,
     pub packets: Vec<ErrorPacket>,
 }
@@ -15,7 +16,7 @@ impl ErrorResponse {
     }
 
     pub fn new(
-        status_code: u16,
+        status_code: ErrorCode,
         is_unexpected_error: bool,
         packets: Vec<ErrorPacket>,
     ) -> ErrorResponse {
@@ -70,5 +71,42 @@ impl fmt::Display for ErrorPacket {
             "message={}, backend_message={}",
             self.message, self.backend_message
         )
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub enum ErrorCode {
+    BadRequest400,
+    Unauthorized401,
+    Forbidden403,
+    UnprocessableEntity422,
+    InternalServerError500,
+}
+
+impl ErrorCode {
+    pub fn into_status_code(&self) -> http::StatusCode {
+        match self {
+            ErrorCode::BadRequest400 => http::StatusCode::BAD_REQUEST,
+            ErrorCode::Unauthorized401 => http::StatusCode::UNAUTHORIZED,
+            ErrorCode::Forbidden403 => http::StatusCode::FORBIDDEN,
+            ErrorCode::UnprocessableEntity422 => http::StatusCode::BAD_REQUEST,
+            ErrorCode::InternalServerError500 => http::StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+
+    pub fn into_u16(&self) -> u16 {
+        match self {
+            ErrorCode::BadRequest400 => 400,
+            ErrorCode::Unauthorized401 => 401,
+            ErrorCode::Forbidden403 => 403,
+            ErrorCode::UnprocessableEntity422 => 422,
+            ErrorCode::InternalServerError500 => 500,
+        }
+    }
+}
+
+impl fmt::Display for ErrorCode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self)
     }
 }

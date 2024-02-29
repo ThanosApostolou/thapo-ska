@@ -1,15 +1,21 @@
+use hyper::client;
 use oauth2::{
     basic::{BasicErrorResponseType, BasicTokenType},
-    EmptyExtraTokenFields, RevocationErrorResponseType, StandardErrorResponse,
-    StandardRevocableToken, StandardTokenIntrospectionResponse, StandardTokenResponse,
+    reqwest::async_http_client,
+    AccessToken, ClientId, ClientSecret, EmptyExtraTokenFields, RevocationErrorResponseType,
+    StandardErrorResponse, StandardRevocableToken, StandardTokenIntrospectionResponse,
+    StandardTokenResponse, TokenIntrospectionResponse,
 };
 use openidconnect::{
     core::{
         CoreAuthDisplay, CoreAuthPrompt, CoreGenderClaim, CoreJsonWebKey, CoreJsonWebKeyType,
         CoreJsonWebKeyUse, CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm,
     },
-    Client, EmptyAdditionalClaims, IdTokenFields, ProviderMetadata,
+    Client, EmptyAdditionalClaims, IdTokenFields, IssuerUrl, ProviderMetadata,
+    ProviderMetadataWithLogout,
 };
+
+use crate::modules::global_state::{EnvConfig, SecretConfig};
 
 pub type MyStandardTokenResponse = StandardTokenResponse<
     IdTokenFields<
@@ -61,32 +67,41 @@ pub type MyOidcClient = Client<
 
 // const PATH_API_AUTH: &'static str = "/auth";
 
-// pub async fn create_oidc_client(
-//     env_config: &EnvConfig,
-// ) -> anyhow::Result<(MyProviderMetadata, MyOidcClient)> {
-//     let provider_metadata = ProviderMetadataWithLogout::discover_async(
-//         IssuerUrl::new(env_config.auth_issuer_url.clone())?,
-//         async_http_client,
-//     )
-//     .await?;
+pub async fn create_oidc_client(
+    env_config: &EnvConfig,
+    secret_config: &SecretConfig,
+) -> anyhow::Result<(MyProviderMetadata, MyOidcClient)> {
+    let provider_metadata = ProviderMetadataWithLogout::discover_async(
+        IssuerUrl::new(env_config.auth_issuer_url.clone())?,
+        async_http_client,
+    )
+    .await?;
 
-//     // let log = LogoutProviderMetadata
+    // let log = LogoutProviderMetadata
 
-//     // Create an OpenID Connect client by specifying the client ID, client secret, authorization URL
-//     // and token URL.
-//     // Some(ClientSecret::new("client_secret".to_string()))
-//     let client = Client::from_provider_metadata(
-//         provider_metadata.clone(),
-//         ClientId::new(env_config.auth_client_id.clone()),
-//         Some(ClientSecret::new(env_config.auth_client_secret.clone())),
-//     )
-//     // Set the URL the user will be redirected to after the authorization process.
-//     .set_redirect_uri(RedirectUrl::new(
-//         env_config.frontend_url.clone() + "/login",
-//     )?);
-//     Ok((provider_metadata, client))
-// }
+    // Create an OpenID Connect client by specifying the client ID, client secret, authorization URL
+    // and token URL.
+    // Some(ClientSecret::new("client_secret".to_string()))
+    let client = Client::from_provider_metadata(
+        provider_metadata.clone(),
+        ClientId::new(env_config.auth_client_id.clone()),
+        Some(ClientSecret::new(secret_config.auth_client_secret.clone())),
+    );
 
+    Ok((provider_metadata, client))
+}
+
+pub async fn introspect(
+    oidc_client: &MyOidcClient,
+    access_token_str: String,
+) -> anyhow::Result<StandardTokenIntrospectionResponse<EmptyExtraTokenFields, BasicTokenType>> {
+    let access_token: AccessToken = AccessToken::new(access_token_str);
+    let response = oidc_client
+        .introspect(&access_token)?
+        .request_async(async_http_client)
+        .await?;
+    Ok(response)
+}
 // async fn get_auth_url(client: &MyOidcClient) -> (Url, CsrfToken, Nonce, PkceCodeVerifier) {
 //     log::trace!("auth_service::get_auth_url start");
 //     // Generate a PKCE challenge.

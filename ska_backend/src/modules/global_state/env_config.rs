@@ -7,6 +7,8 @@ pub struct EnvConfig {
     pub db_port: u16,
     pub db_database: String,
     pub db_schema: String,
+    pub auth_issuer_url: String,
+    pub auth_client_id: String,
 }
 
 impl EnvConfig {
@@ -31,6 +33,10 @@ impl EnvConfig {
             dotenv::var("THAPO_SKA_DB_DATABASE").expect("THAPO_SKA_DB_DATABASE env var is missing");
         let db_schema =
             dotenv::var("THAPO_SKA_DB_SCHEMA").expect("THAPO_SKA_DB_SCHEMA env var is missing");
+        let auth_issuer_url = dotenv::var("THAPO_SKA_AUTH_ISSUER_URL")
+            .expect("THAPO_SKA_AUTH_ISSUER_URL env var is missing");
+        let auth_client_id = dotenv::var("THAPO_SKA_AUTH_CLIENT_ID")
+            .expect("THAPO_SKA_AUTH_CLIENT_ID env var is missing");
 
         EnvConfig {
             env_profile,
@@ -40,6 +46,8 @@ impl EnvConfig {
             db_port,
             db_database,
             db_schema,
+            auth_issuer_url,
+            auth_client_id,
         }
     }
 }
