@@ -1,10 +1,11 @@
-use hyper::client;
+use axum::http::HeaderValue;
+use hyper::{client, header, HeaderMap};
 use oauth2::{
     basic::{BasicErrorResponseType, BasicTokenType},
     reqwest::async_http_client,
-    AccessToken, ClientId, ClientSecret, EmptyExtraTokenFields, RevocationErrorResponseType,
-    StandardErrorResponse, StandardRevocableToken, StandardTokenIntrospectionResponse,
-    StandardTokenResponse, TokenIntrospectionResponse,
+    AccessToken, ClientId, ClientSecret, EmptyExtraTokenFields, IntrospectionUrl,
+    RevocationErrorResponseType, StandardErrorResponse, StandardRevocableToken,
+    StandardTokenIntrospectionResponse, StandardTokenResponse, TokenIntrospectionResponse,
 };
 use openidconnect::{
     core::{
@@ -15,7 +16,8 @@ use openidconnect::{
     ProviderMetadataWithLogout,
 };
 
-use crate::modules::global_state::{EnvConfig, SecretConfig};
+use crate::modules::global_state::{EnvConfig, GlobalState, SecretConfig};
+use std::sync::Arc;
 
 pub type MyStandardTokenResponse = StandardTokenResponse<
     IdTokenFields<
@@ -73,7 +75,7 @@ pub async fn create_oidc_client(
 ) -> anyhow::Result<(MyProviderMetadata, MyOidcClient)> {
     let provider_metadata = ProviderMetadataWithLogout::discover_async(
         IssuerUrl::new(env_config.auth_issuer_url.clone())?,
-        async_http_client,
+        my_async_http_client,
     )
     .await?;
 
@@ -82,11 +84,14 @@ pub async fn create_oidc_client(
     // Create an OpenID Connect client by specifying the client ID, client secret, authorization URL
     // and token URL.
     // Some(ClientSecret::new("client_secret".to_string()))
+
+    let introspection_url = IntrospectionUrl::new(env_config.auth_introspection_url.clone())?;
     let client = Client::from_provider_metadata(
         provider_metadata.clone(),
         ClientId::new(env_config.auth_client_id.clone()),
         Some(ClientSecret::new(secret_config.auth_client_secret.clone())),
-    );
+    )
+    .set_introspection_uri(introspection_url);
 
     Ok((provider_metadata, client))
 }
@@ -98,9 +103,65 @@ pub async fn introspect(
     let access_token: AccessToken = AccessToken::new(access_token_str);
     let response = oidc_client
         .introspect(&access_token)?
-        .request_async(async_http_client)
+        .request_async(my_async_http_client)
         .await?;
     Ok(response)
+}
+
+pub async fn authenticate(
+    global_state: Arc<GlobalState>,
+    headers: &HeaderMap,
+) -> anyhow::Result<StandardTokenIntrospectionResponse<EmptyExtraTokenFields, BasicTokenType>> {
+    let empty = HeaderValue::from_str("empty").unwrap();
+    let header_authorization = headers.get("Authorization").unwrap_or(&empty).to_str()?;
+    tracing::info!("headers {}", header_authorization);
+    let access_token_str = header_authorization
+        .strip_prefix("Bearer ")
+        .ok_or(anyhow::anyhow!("no bearer"))?;
+    let response = introspect(&global_state.oidc_client, access_token_str.to_string()).await?;
+    Ok(response)
+}
+
+pub async fn my_async_http_client(
+    request: oauth2::HttpRequest,
+) -> Result<oauth2::HttpResponse, oauth2::reqwest::Error<reqwest::Error>> {
+    let client = {
+        let builder = reqwest::Client::builder().danger_accept_invalid_certs(true);
+
+        // Following redirects opens the client up to SSRF vulnerabilities.
+        // but this is not possible to prevent on wasm targets
+        #[cfg(not(target_arch = "wasm32"))]
+        let builder = builder.redirect(reqwest::redirect::Policy::none());
+
+        builder.build().map_err(oauth2::reqwest::Error::Reqwest)?
+    };
+
+    let mut request_builder = client
+        .request(request.method, request.url.as_str())
+        .body(request.body);
+    for (name, value) in &request.headers {
+        request_builder = request_builder.header(name.as_str(), value.as_bytes());
+    }
+    let request = request_builder
+        .build()
+        .map_err(oauth2::reqwest::Error::Reqwest)?;
+
+    let response = client
+        .execute(request)
+        .await
+        .map_err(oauth2::reqwest::Error::Reqwest)?;
+
+    let status_code = response.status();
+    let headers = response.headers().to_owned();
+    let chunks = response
+        .bytes()
+        .await
+        .map_err(oauth2::reqwest::Error::Reqwest)?;
+    Ok(oauth2::HttpResponse {
+        status_code,
+        headers,
+        body: chunks.to_vec(),
+    })
 }
 // async fn get_auth_url(client: &MyOidcClient) -> (Url, CsrfToken, Nonce, PkceCodeVerifier) {
 //     log::trace!("auth_service::get_auth_url start");

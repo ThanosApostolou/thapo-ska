@@ -17,7 +17,7 @@ async fn main() {
     // initialize tracing
     tracing_subscriber::fmt::init();
 
-    let global_state = GlobalState::initialize_default().await;
+    let global_state = GlobalState::initialize_default().await.unwrap();
     let global_state = Arc::new(global_state);
     migrate_db(&global_state.db_connection).await.unwrap();
 

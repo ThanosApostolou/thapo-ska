@@ -37,7 +37,7 @@ async fn initialize() -> (GlobalState, GlobalStore) {
 
     let (storage_refresh_token, storage_set_refresh_token, _) =
         auth_storage_service::use_storage_refresh_token();
-    service_auth::initial_check_login(
+    let result = service_auth::initial_check_login(
         global_store,
         storage_refresh_token,
         storage_set_refresh_token,
@@ -45,8 +45,10 @@ async fn initialize() -> (GlobalState, GlobalStore) {
         global_state.api_client.clone(),
         global_state.env_config.backend_url.clone(),
     )
-    .await
-    .unwrap();
+    .await;
+    if let Err(error) = result {
+        log::error!("error: {}", error)
+    }
 
     (global_state, global_store.get_untracked())
 }
