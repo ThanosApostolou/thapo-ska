@@ -8,6 +8,8 @@ default-run = "app-server"
 [dependencies]
 ska_migration = { path = "../ska_migration" }
 axum = { workspace = true, optional = true }
+tower-http = { workspace = true, features = ["full"] }
+tower = { workspace = true }
 hyper = { workspace = true, features = ["full"], optional = true }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
@@ -26,6 +28,7 @@ strum_macros = { workspace = true }
 oauth2 = { workspace = true }
 openidconnect = { workspace = true }
 anyhow = { workspace = true }
+const_format = { workspace = true }
 
 [features]
 feature-server = ["dep:axum", "dep:hyper"]

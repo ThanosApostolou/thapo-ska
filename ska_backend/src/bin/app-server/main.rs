@@ -9,11 +9,11 @@ use ska_backend::{
 async fn main() {
     let dotenv_file = std::env::var("THAPO_SKA_ENV_FILE").unwrap_or_else(|_| ".env".to_string());
     dotenv::from_filename(&dotenv_file)
-        .expect(&*format!("could not load file {}", dotenv_file.clone()));
+        .unwrap_or_else(|_| panic!("could not load file {}", dotenv_file.clone()));
     let secret_file =
         std::env::var("THAPO_SKA_SECRET_FILE").unwrap_or_else(|_| ".secret".to_string());
     dotenv::from_filename(&secret_file)
-        .expect(&*format!("could not load file {}", secret_file.clone()));
+        .unwrap_or_else(|_| panic!("could not load file {}", secret_file.clone()));
     // initialize tracing
     tracing_subscriber::fmt::init();
 

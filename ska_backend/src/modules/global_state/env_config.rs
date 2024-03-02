@@ -1,6 +1,8 @@
 #[derive(Clone, PartialEq, PartialOrd, Eq, Ord, Debug, Hash)]
 pub struct EnvConfig {
+    pub rust_log: String,
     pub env_profile: String,
+    pub server_path: String,
     pub server_host: String,
     pub server_port: u16,
     pub db_host: String,
@@ -10,12 +12,16 @@ pub struct EnvConfig {
     pub auth_issuer_url: String,
     pub auth_introspection_url: String,
     pub auth_client_id: String,
+    pub request_timeout: u64,
 }
 
 impl EnvConfig {
     pub fn from_env() -> EnvConfig {
+        let rust_log: String = dotenv::var("RUST_LOG").expect("RUST_LOG env var is missing");
         let env_profile =
             dotenv::var("THAPO_SKA_ENV_PROFILE").expect("THAPO_SKA_ENV_PROFILE env var is missing");
+        let server_path =
+            dotenv::var("THAPO_SKA_SERVER_PATH").expect("THAPO_SKA_SERVER_PATH env var is missing");
         let server_host =
             dotenv::var("THAPO_SKA_SERVER_HOST").expect("THAPO_SKA_SERVER_HOST env var is missing");
         let server_port_str =
@@ -40,9 +46,16 @@ impl EnvConfig {
             .expect("THAPO_SKA_AUTH_INTROSPECTION_URL env var is missing");
         let auth_client_id = dotenv::var("THAPO_SKA_AUTH_CLIENT_ID")
             .expect("THAPO_SKA_AUTH_CLIENT_ID env var is missing");
+        let request_timeout_str = dotenv::var("THAPO_SKA_REQUEST_TIMEOUT")
+            .expect("THAPO_SKA_REQUEST_TIMEOUT env var is missing");
+        let request_timeout = request_timeout_str
+            .parse::<u64>()
+            .expect("THAPO_SKA_REQUEST_TIMEOUT was not a usize");
 
         EnvConfig {
+            rust_log,
             env_profile,
+            server_path,
             server_host,
             server_port,
             db_host,
@@ -52,6 +65,7 @@ impl EnvConfig {
             auth_issuer_url,
             auth_introspection_url,
             auth_client_id,
+            request_timeout,
         }
     }
 }
