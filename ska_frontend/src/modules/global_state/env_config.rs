@@ -6,7 +6,6 @@ pub struct EnvConfig {
     pub backend_url: String,
     pub auth_issuer_url: String,
     pub auth_client_id: String,
-    pub auth_client_secret: String,
 }
 
 impl EnvConfig {
@@ -17,7 +16,6 @@ impl EnvConfig {
         let backend_url = String::from(env!("THAPO_SKA_BACKEND_URL"));
         let auth_issuer_url = String::from(env!("THAPO_SKA_AUTH_ISSUER_URL"));
         let auth_client_id = String::from(env!("THAPO_SKA_AUTH_CLIENT_ID"));
-        let auth_client_secret = String::from(env!("THAPO_SKA_AUTH_CLIENT_SECRET"));
         EnvConfig {
             env_profile,
             base_href,
@@ -25,7 +23,6 @@ impl EnvConfig {
             backend_url,
             auth_issuer_url,
             auth_client_id,
-            auth_client_secret,
         }
     }
 }

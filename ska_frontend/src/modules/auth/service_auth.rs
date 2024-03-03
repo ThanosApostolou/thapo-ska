@@ -96,7 +96,7 @@ pub async fn create_oidc_client(
     let client = Client::from_provider_metadata(
         provider_metadata.clone(),
         ClientId::new(env_config.auth_client_id.clone()),
-        Some(ClientSecret::new(env_config.auth_client_secret.clone())),
+        None,
     )
     // Set the URL the user will be redirected to after the authorization process.
     .set_redirect_uri(RedirectUrl::new(
