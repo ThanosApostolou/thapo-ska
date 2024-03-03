@@ -2,6 +2,7 @@ use std::fmt;
 
 use axum::http;
 use serde::{Deserialize, Serialize};
+use strum_macros::{AsRefStr, IntoStaticStr};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ErrorResponse {
@@ -16,12 +17,12 @@ impl ErrorResponse {
     }
 
     pub fn new(
-        status_code: ErrorCode,
+        error_code: ErrorCode,
         is_unexpected_error: bool,
         packets: Vec<ErrorPacket>,
     ) -> ErrorResponse {
         ErrorResponse {
-            status_code,
+            status_code: error_code,
             is_unexpected_error,
             packets,
         }
@@ -74,7 +75,7 @@ impl fmt::Display for ErrorPacket {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, AsRefStr, IntoStaticStr, PartialEq)]
 pub enum ErrorCode {
     BadRequest400,
     Unauthorized401,
@@ -107,6 +108,6 @@ impl ErrorCode {
 
 impl fmt::Display for ErrorCode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self)
+        write!(f, "{}", self.as_ref())
     }
 }

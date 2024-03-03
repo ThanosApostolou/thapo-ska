@@ -16,8 +16,13 @@ use openidconnect::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::modules::global_state::{EnvConfig, GlobalState, SecretConfig};
-use std::sync::Arc;
+use crate::modules::{
+    error::{ErrorCode, ErrorResponse},
+    global_state::{EnvConfig, GlobalState, SecretConfig},
+};
+use std::{collections::HashSet, str::FromStr};
+
+use super::auth_models::{AuthRoles, AuthTypes, AuthUser, UserAuthenticationDetails};
 
 pub type MyStandardTokenResponse = StandardTokenResponse<
     IdTokenFields<
@@ -70,6 +75,7 @@ pub type MyOidcClient = Client<
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MyExtraTokenFields {
     pub realm_access: RealmAccess,
+    pub email: String,
 }
 
 impl ExtraTokenFields for MyExtraTokenFields {}
@@ -108,10 +114,11 @@ pub async fn create_oidc_client(
     Ok((provider_metadata, client))
 }
 
-pub async fn introspect(
+async fn introspect(
     oidc_client: &MyOidcClient,
     access_token_str: String,
 ) -> anyhow::Result<StandardTokenIntrospectionResponse<MyExtraTokenFields, BasicTokenType>> {
+    tracing::debug!("service_auth::introspect start");
     let access_token: AccessToken = AccessToken::new(access_token_str);
     let response: StandardTokenIntrospectionResponse<MyExtraTokenFields, BasicTokenType> =
         oidc_client
@@ -120,13 +127,15 @@ pub async fn introspect(
             .await?;
     tracing::info!("roles: {:?}", response.extra_fields().realm_access.roles);
     tracing::info!("active: {:?}", response.active());
+    tracing::debug!("service_auth::introspect end");
     Ok(response)
 }
 
-pub async fn authenticate_user(
-    global_state: Arc<GlobalState>,
+async fn authenticate_user(
+    global_state: &GlobalState,
     headers: &HeaderMap,
-) -> anyhow::Result<StandardTokenIntrospectionResponse<MyExtraTokenFields, BasicTokenType>> {
+) -> anyhow::Result<UserAuthenticationDetails> {
+    tracing::debug!("service_auth::authenticate_user start");
     let empty = HeaderValue::from_str("empty").unwrap();
     let header_authorization = headers.get("Authorization").unwrap_or(&empty).to_str()?;
     // tracing::info!("headers {}", header_authorization);
@@ -134,11 +143,68 @@ pub async fn authenticate_user(
         .strip_prefix("Bearer ")
         .ok_or(anyhow::anyhow!("no bearer"))?;
     let response = introspect(&global_state.oidc_client, access_token_str.to_string()).await?;
+    if !response.active() {
+        return Err(anyhow::anyhow!("token is not active"));
+    }
     let ef: &MyExtraTokenFields = response.extra_fields();
-    Ok(response)
+    let sub = response.sub().ok_or(anyhow::anyhow!("no sub"))?.to_string();
+    let username = response
+        .username()
+        .ok_or(anyhow::anyhow!("no username"))?
+        .to_string();
+
+    let mut roles = HashSet::<AuthRoles>::new();
+    for role_str in &ef.realm_access.roles {
+        let role_result = AuthRoles::from_str(role_str);
+        if let Ok(role) = role_result {
+            roles.insert(role);
+        }
+    }
+
+    let user_authentication_details: UserAuthenticationDetails = UserAuthenticationDetails {
+        sub,
+        username,
+        email: ef.email.clone(),
+        roles,
+    };
+    tracing::debug!("service_auth::authenticate_user end");
+    Ok(user_authentication_details)
 }
 
-pub async fn my_async_http_client(
+pub async fn perform_auth_user(
+    global_state: &GlobalState,
+    headers: &HeaderMap,
+    auth_type: &AuthTypes,
+) -> Result<AuthUser, ErrorResponse> {
+    tracing::debug!("service_auth::perform_auth_user start");
+    match auth_type {
+        AuthTypes::Public => Ok(AuthUser::None),
+        AuthTypes::Authentication => {
+            let response_result = authenticate_user(global_state, headers).await;
+            match response_result {
+                Ok(user_authentication_details) => {
+                    tracing::debug!("service_auth::perform_auth_user Authentication ok");
+                    Ok(AuthUser::Authenticated(user_authentication_details))
+                }
+                Err(e) => {
+                    tracing::error!(
+                        "service_auth::perform_auth_user Authentication error: {}",
+                        e
+                    );
+                    Err(ErrorResponse {
+                        status_code: ErrorCode::Unauthorized401,
+                        is_unexpected_error: true,
+                        packets: vec![],
+                    })
+                }
+            }
+        }
+        AuthTypes::AuthorizationNoRoles => todo!(),
+        AuthTypes::Authorization(_) => todo!(),
+    }
+}
+
+async fn my_async_http_client(
     request: oauth2::HttpRequest,
 ) -> Result<oauth2::HttpResponse, oauth2::reqwest::Error<reqwest::Error>> {
     let client = {

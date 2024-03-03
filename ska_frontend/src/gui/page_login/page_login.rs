@@ -63,6 +63,8 @@ async fn check_login(
         query.iss,
         query.state,
         query.code,
+        global_state.get_untracked().api_client,
+        global_state.get_untracked().env_config.backend_url.clone(),
     )
     .await?;
     check_login_complete.set(true);

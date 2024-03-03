@@ -232,7 +232,7 @@ pub async fn initial_check_login(
         match token_response {
             Ok(token_response) => {
                 store_token_response(global_store, &token_response, storage_set_refresh_token)?;
-                let user_details = app_login(global_store, api_client, backend_url.clone())
+                app_login(global_store, api_client, backend_url.clone())
                     .await
                     .map_err(|err| anyhow!(err))?;
             }
@@ -262,6 +262,8 @@ pub async fn after_login(
     iss: Option<String>,
     state: Option<String>,
     code: Option<String>,
+    api_client: Arc<reqwest::Client>,
+    backend_url: String,
 ) -> anyhow::Result<()> {
     log::trace!("auth_service::after_login start");
     if global_store
@@ -280,6 +282,9 @@ pub async fn after_login(
             store_token_response(global_store, &token_response, storage_set_refresh_token)?;
 
             session_set_pkce_verifier("".to_string());
+            app_login(global_store, api_client, backend_url)
+                .await
+                .map_err(|err| anyhow!(err))?;
         }
     }
     log::trace!("auth_service::after_login end");
