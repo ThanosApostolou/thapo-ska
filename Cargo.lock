@@ -2129,9 +2129,9 @@ dependencies = [
 
 [[package]]
 name = "leptos"
-version = "0.6.6"
+version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c0772cef6b7f26966b9243797a27e3e7f69f91cd444cb0c42e0d67e67e605ac"
+checksum = "b1366ba6f823fcf7f3a6d74cf27a4771e9d8fa7fe1595b5cfe40ebf3e24f7915"
 dependencies = [
  "cfg-if",
  "leptos_config",
@@ -2283,9 +2283,9 @@ dependencies = [
 
 [[package]]
 name = "leptos_router"
-version = "0.6.6"
+version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac85523a2d11d135955670b89eb3c0cadf2f51547779dece5e74584380767276"
+checksum = "d955a81242ce897721e8d11f4a44db0cb422e098c7844260bd7645ec46a1a4b9"
 dependencies = [
  "cfg-if",
  "gloo-net 0.2.6",
@@ -2380,9 +2380,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.20"
+version = "0.4.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
+checksum = "90ed8c1e510134f979dbc4f070f87d4313098b704861a105fe34231c70a3901c"
 dependencies = [
  "value-bag",
 ]

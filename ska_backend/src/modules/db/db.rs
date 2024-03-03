@@ -32,5 +32,8 @@ pub async fn init_db_connection(
 }
 
 pub async fn migrate_db(connection: &DatabaseConnection) -> Result<(), ska_migration::DbErr> {
-    Migrator::up(connection, None).await
+    tracing::debug!("db::migrate_db start");
+    Migrator::up(connection, None).await?;
+    Migrator::status(connection).await?;
+    Ok(())
 }
