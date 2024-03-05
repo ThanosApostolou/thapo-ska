@@ -19,7 +19,7 @@ pub async fn handle_app_login(
     Extension(user_authentication_details): Extension<UserAuthenticationDetails>,
 ) -> Result<Json<DtoUserDetails>, (StatusCode, Json<ErrorResponse>)> {
     tracing::info!("handle_app_login start");
-    let result = do_app_login(global_state, user_authentication_details);
+    let result = do_app_login(&global_state, user_authentication_details).await;
     match result {
         Ok(dto_user_details) => {
             tracing::info!("handle_app_login end");
@@ -28,7 +28,7 @@ pub async fn handle_app_login(
         Err(error_response) => {
             tracing::warn!("handle_app_login end error");
             Err((
-                error_response.status_code.into_status_code(),
+                error_response.error_code.into_status_code(),
                 Json(error_response),
             ))
         }

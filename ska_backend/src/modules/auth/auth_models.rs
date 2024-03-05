@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use serde::{Deserialize, Serialize};
-use strum_macros::{AsRefStr, EnumString, IntoStaticStr};
+use strum_macros::{AsRefStr, Display, EnumString, IntoStaticStr};
 
 #[derive(Clone, Debug, Serialize, Deserialize, AsRefStr, IntoStaticStr)]
 pub enum AuthTypes {
@@ -12,14 +12,25 @@ pub enum AuthTypes {
 }
 
 #[derive(
-    Clone, Debug, Serialize, Deserialize, AsRefStr, IntoStaticStr, EnumString, PartialEq, Eq, Hash,
+    Clone,
+    Debug,
+    Serialize,
+    Deserialize,
+    AsRefStr,
+    IntoStaticStr,
+    EnumString,
+    Display,
+    PartialEq,
+    Eq,
+    Hash,
 )]
+#[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
 pub enum AuthRoles {
-    #[strum(serialize = "SKA_ADMIN")]
+    #[serde(rename = "SKA_ADMIN")]
     SkaAdmin,
-    #[strum(serialize = "SKA_USER")]
+    #[serde(rename = "SKA_USER")]
     SkaUser,
-    #[strum(serialize = "SKA_GUEST")]
+    #[serde(rename = "SKA_GUEST")]
     SkaGuest,
 }
 

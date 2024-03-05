@@ -153,6 +153,7 @@ async fn authenticate_user(
         .ok_or(anyhow::anyhow!("no username"))?
         .to_string();
 
+    tracing::debug!("token roles:{:?}", &ef.realm_access.roles);
     let mut roles = HashSet::<AuthRoles>::new();
     for role_str in &ef.realm_access.roles {
         let role_result = AuthRoles::from_str(role_str);
@@ -192,7 +193,7 @@ pub async fn perform_auth_user(
                         e
                     );
                     Err(ErrorResponse {
-                        status_code: ErrorCode::Unauthorized401,
+                        error_code: ErrorCode::Unauthorized401,
                         is_unexpected_error: true,
                         packets: vec![],
                     })

@@ -57,7 +57,7 @@ pub async fn middleware_auth(
                 Err(e) => {
                     tracing::error!("middleware_auth error: {}", e);
                     Response::builder()
-                        .status(e.status_code.into_status_code())
+                        .status(e.error_code.into_status_code())
                         .body(Body::empty())
                         .unwrap()
                 }

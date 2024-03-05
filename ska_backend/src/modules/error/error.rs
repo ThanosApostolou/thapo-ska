@@ -6,7 +6,7 @@ use strum_macros::{AsRefStr, IntoStaticStr};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ErrorResponse {
-    pub status_code: ErrorCode,
+    pub error_code: ErrorCode,
     pub is_unexpected_error: bool,
     pub packets: Vec<ErrorPacket>,
 }
@@ -22,9 +22,30 @@ impl ErrorResponse {
         packets: Vec<ErrorPacket>,
     ) -> ErrorResponse {
         ErrorResponse {
-            status_code: error_code,
+            error_code,
             is_unexpected_error,
             packets,
+        }
+    }
+
+    pub fn new_standard(
+        message: String,
+        is_unexpected_error: bool,
+        is_frontend: bool,
+    ) -> ErrorResponse {
+        ErrorResponse {
+            error_code: ErrorCode::UnprocessableEntity422,
+            is_unexpected_error,
+            packets: vec![ErrorPacket {
+                message: {
+                    if is_frontend {
+                        message.clone()
+                    } else {
+                        "".to_string()
+                    }
+                },
+                backend_message: message,
+            }],
         }
     }
 }
@@ -34,7 +55,7 @@ impl fmt::Display for ErrorResponse {
         write!(
             f,
             "status_code={}, is_unexpected_error={}, #packets={}",
-            self.status_code,
+            self.error_code,
             self.is_unexpected_error,
             self.packets.len()
         )
