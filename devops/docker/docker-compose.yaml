@@ -12,6 +12,15 @@ secrets:
   secret_iam:
     file: "${secret_iam_file}"
 
+volumes:
+  ska_volume:
+    name: ska_volume_${thapo_ska_env_profile}
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${ska_volume_path}
+
 services:
   thapo_ska_gateway:
     image: ${registry}/thapo_ska_gateway:${tag}
@@ -44,6 +53,8 @@ services:
     secrets:
       - source: secret_backend
         target: /app/.secret
+    volumes:
+      - ska_volume:/home/thaposka/.config/ska/${thapo_ska_env_profile}
     networks:
       - thapo_ska_network
       - infranetwork

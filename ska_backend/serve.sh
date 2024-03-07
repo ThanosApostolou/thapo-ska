@@ -11,4 +11,4 @@ fi
 
 export THAPO_SKA_ENV_FILE=".env.local"
 export THAPO_SKA_SECRET_FILE=".secret"
-cargo watch --features "feature-server" -x 'run  --bin app-server'
+cargo watch -x 'run  --bin app-server'

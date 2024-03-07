@@ -11,14 +11,16 @@ COPY ./ska_frontend/Cargo.toml /app/ska_frontend/Cargo.toml
 COPY ./ska_frontend/src/lib.rs /app/ska_frontend/src/lib.rs
 COPY ./ska_migration/Cargo.toml /app/ska_migration/Cargo.toml
 COPY ./ska_migration/src /app/ska_migration/src
-RUN cargo build -p ska_backend --release --features=feature-server --bin app-server
-RUN cargo build -p ska_backend --release --features=feature-cli --bin app-cli
+RUN cargo build -p ska_backend --release --bin app-server
+RUN cargo build -p ska_backend --release --bin app-cli
 
 FROM docker.io/debian:bookworm-20231120 as runner
 ARG ARG_THAPO_SKA_ENV_PROFILE
 ENV THAPO_SKA_ENV_FILE=/app/.env.${ARG_THAPO_SKA_ENV_PROFILE}
-RUN apt-get update && apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    useradd -m -u 14000 -U thaposka
+RUN apt-get update && apt-get install -y libssl3 && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    useradd -m -u 14000 -U thaposka && \
+    mkdir -p /home/thaposka/.config/ska/${ARG_THAPO_SKA_ENV_PROFILE} && \
+    chown -R thaposka:thaposka /home/thaposka/.config/ska/${ARG_THAPO_SKA_ENV_PROFILE}
 WORKDIR /app
 COPY --from=builder /app/target/release/app-server /app/app-server
 COPY --from=builder /app/target/release/app-cli /app/app-cli

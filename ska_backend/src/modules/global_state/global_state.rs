@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use sea_orm::DatabaseConnection;
+use tracing_subscriber::prelude::*;
 
 use crate::modules::{
     auth::{
@@ -27,6 +28,21 @@ pub struct GlobalState {
 impl GlobalState {
     pub async fn initialize_default() -> anyhow::Result<GlobalState> {
         let env_config = EnvConfig::from_env();
+
+        // initialize tracing
+        let file_appender =
+            tracing_appender::rolling::daily(&env_config.log_dir, "ska_backend.log");
+        let (file_writter, _guard) = tracing_appender::non_blocking(file_appender);
+        let log_layer_stdout = tracing_subscriber::fmt::layer().pretty();
+        let log_layer_file = tracing_subscriber::fmt::layer()
+            .with_writer(file_writter)
+            .with_ansi(false);
+        let subscriber = tracing_subscriber::Registry::default()
+            .with(log_layer_stdout)
+            .with(log_layer_file);
+        tracing::subscriber::set_global_default(subscriber)
+            .expect("Unable to set global subscriber");
+
         let secret_config = SecretConfig::from_env();
         let db_connection = init_db_connection(&env_config, &secret_config)
             .await

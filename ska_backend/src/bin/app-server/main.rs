@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{fmt::Debug, sync::Arc};
 
 use ska_backend::{
     modules::{db::migrate_db, global_state::GlobalState},
@@ -14,11 +14,10 @@ async fn main() {
         std::env::var("THAPO_SKA_SECRET_FILE").unwrap_or_else(|_| ".secret".to_string());
     dotenv::from_filename(&secret_file)
         .unwrap_or_else(|_| panic!("could not load file {}", secret_file.clone()));
-    // initialize tracing
-    tracing_subscriber::fmt::init();
 
     let global_state = GlobalState::initialize_default().await.unwrap();
     let global_state = Arc::new(global_state);
+    tracing::info!("log_dir={}", global_state.env_config.log_dir);
     migrate_db(&global_state.db_connection).await.unwrap();
 
     let server = server::create_server(global_state.clone());

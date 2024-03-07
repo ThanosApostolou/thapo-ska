@@ -13,6 +13,7 @@ pub struct EnvConfig {
     pub auth_introspection_url: String,
     pub auth_client_id: String,
     pub request_timeout: u64,
+    pub log_dir: String,
 }
 
 impl EnvConfig {
@@ -52,6 +53,8 @@ impl EnvConfig {
             .parse::<u64>()
             .expect("THAPO_SKA_REQUEST_TIMEOUT was not a usize");
 
+        let log_dir =
+            dotenv::var("THAPO_SKA_LOG_DIR").expect("THAPO_SKA_LOG_DIR env var is missing");
         EnvConfig {
             rust_log,
             env_profile,
@@ -66,6 +69,7 @@ impl EnvConfig {
             auth_introspection_url,
             auth_client_id,
             request_timeout,
+            log_dir,
         }
     }
 }
