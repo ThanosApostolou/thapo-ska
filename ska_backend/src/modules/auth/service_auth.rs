@@ -11,8 +11,8 @@ use openidconnect::{
         CoreAuthDisplay, CoreAuthPrompt, CoreGenderClaim, CoreJsonWebKey, CoreJsonWebKeyType,
         CoreJsonWebKeyUse, CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm,
     },
-    Client, EmptyAdditionalClaims, IdTokenFields, IssuerUrl, ProviderMetadata,
-    ProviderMetadataWithLogout,
+    Client, EmptyAdditionalClaims, EmptyAdditionalProviderMetadata, IdTokenFields, IssuerUrl,
+    ProviderMetadata, ProviderMetadataWithLogout,
 };
 use serde::{Deserialize, Serialize};
 
@@ -91,11 +91,33 @@ pub async fn create_oidc_client(
     env_config: &EnvConfig,
     secret_config: &SecretConfig,
 ) -> anyhow::Result<(MyProviderMetadata, MyOidcClient)> {
-    let provider_metadata = ProviderMetadataWithLogout::discover_async(
-        IssuerUrl::new(env_config.auth_issuer_url.clone())?,
-        my_async_http_client,
-    )
-    .await?;
+    tracing::info!("auth_issuer_url={}", env_config.auth_issuer_url.clone());
+    // let provider_metadata = ProviderMetadata::discover_async(
+    //     IssuerUrl::new(env_config.auth_issuer_url.clone())?,
+    //     my_async_http_client,
+    // )
+    // .await?;
+
+    let issuer = IssuerUrl::new(env_config.auth_issuer_url.clone())?;
+    let authorization_endpoint = oauth2::AuthUrl::new(env_config.auth_issuer_url.clone())?;
+    let jwks_uri = openidconnect::JsonWebKeySetUrl::new(env_config.auth_issuer_url.clone())?;
+    let response_types_supported = vec![];
+    let subject_types_supported = vec![];
+    let id_token_signing_alg_values_supported = vec![];
+    let additional_metadata = openidconnect::LogoutProviderMetadata {
+        end_session_endpoint: None,
+        additional_metadata: EmptyAdditionalProviderMetadata::default(),
+    };
+
+    let provider_metadata = ProviderMetadataWithLogout::new(
+        issuer,
+        authorization_endpoint,
+        jwks_uri,
+        response_types_supported,
+        subject_types_supported,
+        id_token_signing_alg_values_supported,
+        additional_metadata,
+    );
 
     // let log = LogoutProviderMetadata
 

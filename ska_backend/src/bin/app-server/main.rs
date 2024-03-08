@@ -1,4 +1,4 @@
-use std::{fmt::Debug, sync::Arc};
+use std::sync::Arc;
 
 use ska_backend::{
     modules::{db::migrate_db, global_state::GlobalState},
