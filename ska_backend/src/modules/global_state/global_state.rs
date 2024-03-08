@@ -6,7 +6,7 @@ use tracing_subscriber::prelude::*;
 use crate::modules::{
     auth::{
         auth_models::AuthTypes,
-        service_auth::{self, MyOidcClient, MyProviderMetadata},
+        service_auth::{self, MyAuthClient},
     },
     db::init_db_connection,
     web::routes::Routes,
@@ -19,8 +19,7 @@ pub struct GlobalState {
     pub env_config: EnvConfig,
     pub secret_config: SecretConfig,
     pub db_connection: DatabaseConnection,
-    pub provider_metadata: MyProviderMetadata,
-    pub oidc_client: MyOidcClient,
+    pub auth_client: MyAuthClient,
     pub routes: Routes,
     pub routes_map: HashMap<String, AuthTypes>,
 }
@@ -48,8 +47,7 @@ impl GlobalState {
             .await
             .unwrap();
 
-        let (provider_metadata, oidc_client) =
-            service_auth::create_oidc_client(&env_config, &secret_config).await?;
+        let auth_client = service_auth::create_oidc_client(&env_config, &secret_config).await?;
         let routes = Routes::new();
         let routes_map = routes.routes_auth_types_map(env_config.server_path.clone());
 
@@ -57,8 +55,7 @@ impl GlobalState {
             env_config,
             secret_config,
             db_connection,
-            provider_metadata,
-            oidc_client,
+            auth_client,
             routes,
             routes_map,
         })

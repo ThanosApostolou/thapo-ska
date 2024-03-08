@@ -3967,7 +3967,6 @@ dependencies = [
  "dotenv",
  "hyper 1.2.0",
  "oauth2",
- "openidconnect",
  "reqwest",
  "sea-orm",
  "serde",

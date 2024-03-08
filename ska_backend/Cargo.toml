@@ -27,7 +27,6 @@ sea-orm = { workspace = true, features = [
 strum = { workspace = true }
 strum_macros = { workspace = true }
 oauth2 = { workspace = true }
-openidconnect = { workspace = true }
 anyhow = { workspace = true }
 const_format = { workspace = true }
 chrono = { workspace = true }

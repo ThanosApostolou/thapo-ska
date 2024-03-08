@@ -2,18 +2,11 @@ use axum::http::HeaderValue;
 use hyper::HeaderMap;
 use oauth2::{
     basic::{BasicErrorResponseType, BasicTokenType},
-    AccessToken, ClientId, ClientSecret, EmptyExtraTokenFields, ExtraTokenFields, IntrospectionUrl,
+    AccessToken, Client, ClientId, ClientSecret, ExtraTokenFields, IntrospectionUrl,
     RevocationErrorResponseType, StandardErrorResponse, StandardRevocableToken,
     StandardTokenIntrospectionResponse, StandardTokenResponse, TokenIntrospectionResponse,
 };
-use openidconnect::{
-    core::{
-        CoreAuthDisplay, CoreAuthPrompt, CoreGenderClaim, CoreJsonWebKey, CoreJsonWebKeyType,
-        CoreJsonWebKeyUse, CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm,
-    },
-    Client, EmptyAdditionalClaims, EmptyAdditionalProviderMetadata, IdTokenFields, IssuerUrl,
-    ProviderMetadata, ProviderMetadataWithLogout,
-};
+
 use serde::{Deserialize, Serialize};
 
 use crate::modules::{
@@ -24,48 +17,9 @@ use std::{collections::HashSet, str::FromStr};
 
 use super::auth_models::{AuthRoles, AuthTypes, AuthUser, UserAuthenticationDetails};
 
-pub type MyStandardTokenResponse = StandardTokenResponse<
-    IdTokenFields<
-        EmptyAdditionalClaims,
-        EmptyExtraTokenFields,
-        CoreGenderClaim,
-        CoreJweContentEncryptionAlgorithm,
-        CoreJwsSigningAlgorithm,
-        CoreJsonWebKeyType,
-    >,
-    BasicTokenType,
->;
-
-pub type MyProviderMetadata = ProviderMetadata<
-    openidconnect::LogoutProviderMetadata<openidconnect::EmptyAdditionalProviderMetadata>,
-    CoreAuthDisplay,
-    openidconnect::core::CoreClientAuthMethod,
-    openidconnect::core::CoreClaimName,
-    openidconnect::core::CoreClaimType,
-    openidconnect::core::CoreGrantType,
-    CoreJweContentEncryptionAlgorithm,
-    openidconnect::core::CoreJweKeyManagementAlgorithm,
-    CoreJwsSigningAlgorithm,
-    CoreJsonWebKeyType,
-    CoreJsonWebKeyUse,
-    CoreJsonWebKey,
-    openidconnect::core::CoreResponseMode,
-    openidconnect::core::CoreResponseType,
-    openidconnect::core::CoreSubjectIdentifierType,
->;
-
-pub type MyOidcClient = Client<
-    EmptyAdditionalClaims,
-    CoreAuthDisplay,
-    CoreGenderClaim,
-    CoreJweContentEncryptionAlgorithm,
-    CoreJwsSigningAlgorithm,
-    CoreJsonWebKeyType,
-    CoreJsonWebKeyUse,
-    CoreJsonWebKey,
-    CoreAuthPrompt,
+pub type MyAuthClient = Client<
     StandardErrorResponse<BasicErrorResponseType>,
-    MyStandardTokenResponse,
+    StandardTokenResponse<MyExtraTokenFields, BasicTokenType>,
     BasicTokenType,
     StandardTokenIntrospectionResponse<MyExtraTokenFields, BasicTokenType>,
     StandardRevocableToken,
@@ -90,54 +44,26 @@ pub struct RealmAccess {
 pub async fn create_oidc_client(
     env_config: &EnvConfig,
     secret_config: &SecretConfig,
-) -> anyhow::Result<(MyProviderMetadata, MyOidcClient)> {
+) -> anyhow::Result<MyAuthClient> {
     tracing::info!("auth_issuer_url={}", env_config.auth_issuer_url.clone());
-    // let provider_metadata = ProviderMetadata::discover_async(
-    //     IssuerUrl::new(env_config.auth_issuer_url.clone())?,
-    //     my_async_http_client,
-    // )
-    // .await?;
 
-    let issuer = IssuerUrl::new(env_config.auth_issuer_url.clone())?;
-    let authorization_endpoint = oauth2::AuthUrl::new(env_config.auth_issuer_url.clone())?;
-    let jwks_uri = openidconnect::JsonWebKeySetUrl::new(env_config.auth_issuer_url.clone())?;
-    let response_types_supported = vec![];
-    let subject_types_supported = vec![];
-    let id_token_signing_alg_values_supported = vec![];
-    let additional_metadata = openidconnect::LogoutProviderMetadata {
-        end_session_endpoint: None,
-        additional_metadata: EmptyAdditionalProviderMetadata::default(),
-    };
-
-    let provider_metadata = ProviderMetadataWithLogout::new(
-        issuer,
-        authorization_endpoint,
-        jwks_uri,
-        response_types_supported,
-        subject_types_supported,
-        id_token_signing_alg_values_supported,
-        additional_metadata,
-    );
-
-    // let log = LogoutProviderMetadata
-
-    // Create an OpenID Connect client by specifying the client ID, client secret, authorization URL
-    // and token URL.
-    // Some(ClientSecret::new("client_secret".to_string()))
-
-    let introspection_url = IntrospectionUrl::new(env_config.auth_introspection_url.clone())?;
-    let client = Client::from_provider_metadata(
-        provider_metadata.clone(),
+    let auth_client: MyAuthClient = oauth2::Client::new(
         ClientId::new(env_config.auth_client_id.clone()),
         Some(ClientSecret::new(secret_config.auth_client_secret.clone())),
+        oauth2::AuthUrl::new(env_config.auth_issuer_url.clone())?,
+        Some(oauth2::TokenUrl::new(
+            env_config.auth_issuer_url.clone() + "/protocol/openid-connect/token",
+        )?),
     )
-    .set_introspection_uri(introspection_url);
+    .set_introspection_uri(IntrospectionUrl::new(
+        env_config.auth_issuer_url.clone() + "/protocol/openid-connect/token/introspect",
+    )?);
 
-    Ok((provider_metadata, client))
+    Ok(auth_client)
 }
 
 async fn introspect(
-    oidc_client: &MyOidcClient,
+    oidc_client: &MyAuthClient,
     access_token_str: String,
 ) -> anyhow::Result<StandardTokenIntrospectionResponse<MyExtraTokenFields, BasicTokenType>> {
     tracing::debug!("service_auth::introspect start");
@@ -164,7 +90,7 @@ async fn authenticate_user(
     let access_token_str = header_authorization
         .strip_prefix("Bearer ")
         .ok_or(anyhow::anyhow!("no bearer"))?;
-    let response = introspect(&global_state.oidc_client, access_token_str.to_string()).await?;
+    let response = introspect(&global_state.auth_client, access_token_str.to_string()).await?;
     if !response.active() {
         return Err(anyhow::anyhow!("token is not active"));
     }
