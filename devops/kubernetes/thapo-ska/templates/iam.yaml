@@ -45,12 +45,18 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /iam
+              path: /iam/health/live
               port: http-iam
+            failureThreshold: 40
+            initialDelaySeconds: 40
+            periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /iam
+              path: /iam/health/ready
               port: http-iam
+            failureThreshold: 40
+            initialDelaySeconds: 40
+            periodSeconds: 10
           resources:
             limits:
               cpu: {{ .Values.skaiam.resources.limits.cpu }}

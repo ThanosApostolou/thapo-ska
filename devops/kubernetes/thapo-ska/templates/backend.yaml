@@ -65,10 +65,15 @@ spec:
             - name: secret-backend-volume
               readOnly: true
               mountPath: "/app/.secrets"
+            - name: ska-data
+              mountPath: "/home/thaposka/.config/ska/local_kube"
       volumes:
         - name: secret-backend-volume
           secret:
             secretName: secret-backend
+        - name: ska-data
+          persistentVolumeClaim:
+            claimName: ska-pvc
 
 ---
 

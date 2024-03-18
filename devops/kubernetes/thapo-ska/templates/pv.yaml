@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: ska-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: {{ .Values.pv.storage }}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-path
+  hostPath:
+    path: {{ .Values.pv.path }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: ska-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: local-path
+  volumeName: ska-pv
+  resources:
+    requests:
+      storage: {{ .Values.pv.storage }}

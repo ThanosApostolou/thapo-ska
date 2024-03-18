@@ -57,11 +57,11 @@ skaiam:
 
   resources:
     limits:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 300m
+      memory: 1024Mi
     requests:
-      cpu: 100m
-      memory: 64Mi
+      cpu: 200m
+      memory: 512Mi
 
 # INGRESS
 ingress:
@@ -69,3 +69,8 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/app-root: /app
   host: thapo-ska-local.thapo-local.org
+
+# PV
+pv:
+  storage: 16Gi
+  path: /var/lib/container-data/local-path-provisioner/thapo-ska/local
