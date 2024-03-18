@@ -1,3 +1,14 @@
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: configmap-skabackend
+data:
+  THAPO_SKA_SECRET_FILE: /app/.secrets/.secret
+
+---
+
 # DEPLOYMENT
 apiVersion: apps/v1
 kind: Deployment
@@ -47,7 +58,17 @@ spec:
             requests:
               cpu: {{ .Values.skabackend.resources.requests.cpu }}
               memory: {{ .Values.skabackend.resources.requests.memory }}
+          envFrom:
+            - configMapRef:
+                name: configmap-skabackend
           volumeMounts:
+            - name: secret-backend-volume
+              readOnly: true
+              mountPath: "/app/.secrets"
+      volumes:
+        - name: secret-backend-volume
+          secret:
+            secretName: secret-backend
 
 ---
 

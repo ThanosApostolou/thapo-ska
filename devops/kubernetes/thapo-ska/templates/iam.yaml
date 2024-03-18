@@ -63,7 +63,7 @@ spec:
                 name: configmap-skaiam
           volumeMounts:
             - name: secret-iam-volume
-              readonly: true
+              readOnly: true
               mountPath: "/opt/keycloak/.secrets"
       volumes:
         - name: secret-iam-volume

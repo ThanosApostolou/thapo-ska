@@ -19,8 +19,7 @@ pub fn create_server(global_state: Arc<GlobalState>) -> Router {
         .nest(
             &global_state.env_config.server_path,
             Router::new()
-                .route("/", get(root))
-                .route("/users", post(create_user))
+                .route("/", global_state.routes.root_endpoint.method_router.clone())
                 .nest(
                     global_state.routes.route_api.path.self_path,
                     build_route_api(&global_state.routes.route_api),
@@ -56,45 +55,16 @@ pub fn create_server(global_state: Arc<GlobalState>) -> Router {
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-struct RootResponseDto {
+pub struct RootResponseDto {
     msg: String,
 }
 
 // basic handler that responds with a static string
-async fn root(State(global_state): State<Arc<GlobalState>>) -> (StatusCode, Json<RootResponseDto>) {
+pub async fn handle_root(State(_): State<Arc<GlobalState>>) -> (StatusCode, Json<RootResponseDto>) {
     (
         StatusCode::OK,
         Json(RootResponseDto {
-            msg: format!("hello world {}", &global_state.env_config.env_profile),
+            msg: format!("server running"),
         }),
     )
-}
-
-async fn create_user(
-    // this argument tells axum to parse the request body
-    // as JSON into a `CreateUser` type
-    Json(payload): Json<CreateUser>,
-) -> (StatusCode, Json<User>) {
-    // insert your application logic here
-    let user = User {
-        id: 1337,
-        username: payload.username,
-    };
-
-    // this will be converted into a JSON response
-    // with a status code of `201 Created`
-    (StatusCode::CREATED, Json(user))
-}
-
-// the input to our `create_user` handler
-#[derive(Deserialize)]
-struct CreateUser {
-    username: String,
-}
-
-// the output to our `create_user` handler
-#[derive(Serialize)]
-struct User {
-    id: u64,
-    username: String,
 }

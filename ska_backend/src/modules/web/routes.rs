@@ -4,6 +4,7 @@ use std::sync::Arc;
 use axum::routing::{get, post, MethodRouter};
 use const_format::formatcp;
 
+use crate::server::handle_root;
 use crate::server::route_api::route_assistant::route_ask_assistant_question::handle_ask_assistant_question;
 use crate::{
     modules::{auth::auth_models::AuthTypes, global_state::GlobalState},
@@ -51,6 +52,7 @@ pub struct RoutePath {
 #[derive(Clone, Debug)]
 pub struct Routes {
     pub route_api: RouteApi,
+    pub root_endpoint: EndpointInfo,
 }
 
 impl Default for Routes {
@@ -96,6 +98,14 @@ impl Routes {
         };
 
         Routes {
+            root_endpoint: EndpointInfo {
+                path: RoutePath {
+                    parent_path: "",
+                    self_path: "",
+                },
+                auth_type: AuthTypes::Public,
+                method_router: get(handle_root),
+            },
             route_api: RouteApi {
                 path: RoutePath {
                     parent_path: "",
@@ -108,7 +118,13 @@ impl Routes {
     }
 
     pub fn routes_auth_types_map(&self, server_path: String) -> HashMap<String, AuthTypes> {
-        let mut map = HashMap::new();
+        let mut map: HashMap<String, AuthTypes> = HashMap::new();
+        map.insert(
+            self.root_endpoint
+                .full_path_with_server_path(server_path.clone()),
+            self.root_endpoint.auth_type.clone(),
+        );
+
         for endpoint in &self.route_api.route_auth.endpoints {
             map.insert(
                 endpoint.full_path_with_server_path(server_path.clone()),
