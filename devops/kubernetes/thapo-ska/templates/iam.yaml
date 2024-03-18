@@ -1,0 +1,92 @@
+# ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: configmap-skaiam
+data:
+  THAPO_SKA_SECRET_FILE: /opt/keycloak/.secrets/.secret
+
+---
+
+# DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: deployment-skaiam
+  labels:
+    app.kubernetes.io/name: deployment-skaiam
+    app.kubernetes.io/component: skaiam
+    app: skaiam
+    environment: {{ .Values.environment }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: deployment-skaiam
+  template:
+    metadata:
+      namespace: {{ .Values.namespace }}
+      name: deployment-skaiam
+      annotations:
+      labels:
+        app.kubernetes.io/name: deployment-skaiam
+        app.kubernetes.io/component: skaiam
+        app: skaiam
+        environment: {{ .Values.environment }}
+    spec:
+      containers:
+        - name: skaiam
+          image: "{{ .Values.skaiam.image.registry }}/thapo_ska_iam:{{ .Values.skaiam.image.tag }}"
+          imagePullPolicy: {{ .Values.skaiam.image.imagePullPolicy }}
+          ports:
+            - name: http-iam
+              containerPort: {{ .Values.skaiam.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /iam
+              port: http-iam
+          readinessProbe:
+            httpGet:
+              path: /iam
+              port: http-iam
+          resources:
+            limits:
+              cpu: {{ .Values.skaiam.resources.limits.cpu }}
+              memory: {{ .Values.skaiam.resources.limits.memory }}
+            requests:
+              cpu: {{ .Values.skaiam.resources.requests.cpu }}
+              memory: {{ .Values.skaiam.resources.requests.memory }}
+          envFrom:
+            - configMapRef:
+                name: configmap-skaiam
+          volumeMounts:
+            - name: secret-iam-volume
+              readonly: true
+              mountPath: "/opt/keycloak/.secrets"
+      volumes:
+        - name: secret-iam-volume
+          secret:
+            secretName: secret-iam
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-skaiam
+  labels:
+    app.kubernetes.io/name: service-skaiam
+    app.kubernetes.io/component: skaiam
+    app: skaiam
+    environment: {{ .Values.environment }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: deployment-skaiam
+  ports:
+    - port: {{ .Values.skaiam.port }}
+      targetPort: http-iam
+      protocol: TCP
+      name: http-iam

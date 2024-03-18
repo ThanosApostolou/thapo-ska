@@ -26,13 +26,20 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: service-ska_frontend
+                name: service-skafrontend
                 port:
-                  number: {{ .Values.ska_frontend.port }}
+                  number: {{ .Values.skafrontend.port }}
           - path: /backend
             pathType: Prefix
             backend:
               service:
-                name: service-ska_backend
+                name: service-skabackend
                 port:
-                  number: {{ .Values.ska_backend.port }}
+                  number: {{ .Values.skabackend.port }}
+          - path: /iam
+            pathType: Prefix
+            backend:
+              service:
+                name: service-skaiam
+                port:
+                  number: {{ .Values.skaiam.port }}

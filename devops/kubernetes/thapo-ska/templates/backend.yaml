@@ -3,50 +3,50 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ .Values.namespace }}
-  name: deployment-ska_backend
+  name: deployment-skabackend
   labels:
-    app.kubernetes.io/name: deployment-ska_backend
-    app.kubernetes.io/component: ska_backend
-    app: ska_backend
+    app.kubernetes.io/name: deployment-skabackend
+    app.kubernetes.io/component: skabackend
+    app: skabackend
     environment: {{ .Values.environment }}
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: deployment-ska_backend
+      app.kubernetes.io/name: deployment-skabackend
   template:
     metadata:
       namespace: {{ .Values.namespace }}
-      name: deployment-ska_backend
+      name: deployment-skabackend
       annotations:
       labels:
-        app.kubernetes.io/name: deployment-ska_backend
-        app.kubernetes.io/component: ska_backend
-        app: ska_backend
+        app.kubernetes.io/name: deployment-skabackend
+        app.kubernetes.io/component: skabackend
+        app: skabackend
         environment: {{ .Values.environment }}
     spec:
       containers:
-        - name: ska_backend
-          image: "{{ .Values.ska_backend.image.registry }}/thapo_ska_backend:{{ .Values.ska_backend.image.tag }}"
-          imagePullPolicy: {{ .Values.backend.image.imagePullPolicy }}
+        - name: skabackend
+          image: "{{ .Values.skabackend.image.registry }}/thapo_ska_backend:{{ .Values.skabackend.image.tag }}"
+          imagePullPolicy: {{ .Values.skabackend.image.imagePullPolicy }}
           ports:
-            - name: http-ska_backend
-              containerPort: {{ .Values.backend.port }}
+            - name: http-backend
+              containerPort: {{ .Values.skabackend.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /backend
-              port: http-ska_backend
+              port: http-backend
           readinessProbe:
             httpGet:
               path: /backend
-              port: http-ska_backend
+              port: http-backend
           resources:
             limits:
-              cpu: {{ .Values.ska_backend.resources.limits.cpu }}
-              memory: {{ .Values.ska_backend.resources.limits.memory }}
+              cpu: {{ .Values.skabackend.resources.limits.cpu }}
+              memory: {{ .Values.skabackend.resources.limits.memory }}
             requests:
-              cpu: {{ .Values.ska_backend.resources.requests.cpu }}
-              memory: {{ .Values.ska_backend.resources.requests.memory }}
+              cpu: {{ .Values.skabackend.resources.requests.cpu }}
+              memory: {{ .Values.skabackend.resources.requests.memory }}
           volumeMounts:
 
 ---
@@ -54,56 +54,56 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-ska_backend
+  name: service-skabackend
   labels:
-    app.kubernetes.io/name: service-ska_backend
-    app.kubernetes.io/component: ska_backend
-    app: ska_backend
+    app.kubernetes.io/name: service-skabackend
+    app.kubernetes.io/component: skabackend
+    app: skabackend
     environment: {{ .Values.environment }}
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: deployment-ska_backend
+    app.kubernetes.io/name: deployment-skabackend
   ports:
-    - port: {{ .Values.ska_backend.port }}
-      targetPort: http-ska_backend
+    - port: {{ .Values.skabackend.port }}
+      targetPort: http-backend
       protocol: TCP
-      name: http-ska_backend
+      name: http-backend
 
 ---
 
-{{- if .Values.ska_backend.autoscaling.enabled }}
+{{- if .Values.skabackend.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: hpa-ska_backend
+  name: hpa-skabackend
   labels:
-    app.kubernetes.io/name: hpa-ska_backend
-    app.kubernetes.io/component: ska_backend
-    app: ska_backend
+    app.kubernetes.io/name: hpa-skabackend
+    app.kubernetes.io/component: skabackend
+    app: skabackend
     environment: {{ .Values.environment }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: deployment-ska_backend
-  minReplicas: {{ .Values.ska_backend.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.ska_backend.autoscaling.maxReplicas }}
+    name: deployment-skabackend
+  minReplicas: {{ .Values.skabackend.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.skabackend.autoscaling.maxReplicas }}
   metrics:
-    {{- if .Values.ska_backend.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.skabackend.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.ska_backend.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.skabackend.autoscaling.targetCPUUtilizationPercentage }}
     {{- end }}
-    {{- if .Values.ska_backend.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.skabackend.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.ska_backend.autoscaling.targetMemoryUtilizationPercentage }}
+          averageUtilization: {{ .Values.skabackend.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}

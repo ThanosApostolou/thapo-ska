@@ -2,7 +2,7 @@ namespace: thapo-ska-local
 environment: local_kube
 
 # FRONTEND
-ska_frontend:
+skafrontend:
   image:
     registry: registry.thapo-dev.org:5000/thapo
     tag: 0.1.1-local_kube
@@ -25,7 +25,7 @@ ska_frontend:
     # targetMemoryUtilizationPercentage: 80
 
 # BACKEND
-ska_backend:
+skabackend:
   image:
     registry: registry.thapo-dev.org:5000/thapo
     tag: 0.1.1-local_kube
@@ -47,9 +47,25 @@ ska_backend:
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
 
+# IAM
+skaiam:
+  image:
+    registry: registry.thapo-dev.org:5000/thapo
+    tag: 0.1.1-local_kube
+    imagePullPolicy: IfNotPresent
+  port: 14083
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
 # INGRESS
 ingress:
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/app-root: /app
-  host: thapo-ska-local.thapo-dev.org
+  host: thapo-ska-local.thapo-local.org
