@@ -11,8 +11,8 @@ skafrontend:
 
   resources:
     limits:
-      cpu: 800m
-      memory: 512Mi
+      cpu: 100m
+      memory: 128Mi
     requests:
       cpu: 100m
       memory: 64Mi
@@ -34,8 +34,8 @@ skabackend:
 
   resources:
     limits:
-      cpu: 800m
-      memory: 512Mi
+      cpu: 200m
+      memory: 256Mi
     requests:
       cpu: 100m
       memory: 64Mi
@@ -47,9 +47,30 @@ skabackend:
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
 
+# IAM
+skaiam:
+  image:
+    registry: registry.thapo-dev.org:5000/thapo
+    tag: 0.1.1-prod
+    imagePullPolicy: Always
+  port: 14283
+
+  resources:
+    limits:
+      cpu: 300m
+      memory: 1024Mi
+    requests:
+      cpu: 200m
+      memory: 512Mi
+
 # INGRESS
 ingress:
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/app-root: /app
   host: thapo-ska.thapo.org
+
+# PV
+pv:
+  storage: 32Gi
+  path: /var/lib/container-data/local-path-provisioner/thapo-ska/prod
