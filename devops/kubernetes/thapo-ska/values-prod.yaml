@@ -73,4 +73,4 @@ ingress:
 # PV
 pv:
   storage: 32Gi
-  path: /var/lib/container-data/local-path-provisioner/thapo-ska/prod
+  path: /mnt/data/container-data/local-path-provisioner/thapo-ska/prod
