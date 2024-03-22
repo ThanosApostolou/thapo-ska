@@ -31,6 +31,9 @@ skabackend:
     tag: 0.1.1-prod
     imagePullPolicy: Always
   port: 14282
+  volumeMounts:
+    skadata:
+      mountPath: /home/thaposka/.config/ska/prod
 
   resources:
     limits:

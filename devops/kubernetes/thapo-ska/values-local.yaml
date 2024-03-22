@@ -31,6 +31,9 @@ skabackend:
     tag: 0.1.1-local_kube
     imagePullPolicy: IfNotPresent
   port: 14082
+  volumeMounts:
+    skadata:
+      mountPath: /home/thaposka/.config/ska/local_kube
 
   resources:
     limits:
