@@ -45,7 +45,7 @@ target/
 .jpb/
 build/
 !**/src/**/build/
-bin/
+/bin/
 !**/src/**/bin/
 out/
 !**/src/**/out/

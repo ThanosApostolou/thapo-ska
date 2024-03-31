@@ -1,29 +1,57 @@
-FROM docker.io/rust:1.74.1 as builder
+FROM docker.io/rust:1.77.0 as builder1
+ARG ARG_THAPO_SKA_ENV_FILE
+RUN apt-get update && apt-get full-upgrade -y && apt-get install -y python-is-python3 python3 python3-dev python3-pip python3-poetry rsync && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    cargo install --locked just
+
+FROM builder1 as builder2
 ARG ARG_THAPO_SKA_ENV_PROFILE
-WORKDIR /app
-COPY ./rust-toolchain.toml /app/rust-toolchain.toml
-COPY ./Cargo.toml /app/Cargo.toml
-COPY ./Cargo.lock /app/Cargo.lock
-COPY ./ska_backend/Cargo.toml /app/ska_backend/Cargo.toml
-COPY ./ska_backend/src /app/ska_backend/src
-COPY ./ska_backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/ska_backend/.env.${ARG_THAPO_SKA_ENV_PROFILE}
-COPY ./ska_frontend/Cargo.toml /app/ska_frontend/Cargo.toml
-COPY ./ska_frontend/src/lib.rs /app/ska_frontend/src/lib.rs
-COPY ./ska_migration/Cargo.toml /app/ska_migration/Cargo.toml
-COPY ./ska_migration/src /app/ska_migration/src
-RUN cargo build -p ska_backend --release --bin app-server
-RUN cargo build -p ska_backend --release --bin app-cli
+WORKDIR /build
+COPY ./justfile /build/justfile
+COPY ./rust-toolchain.toml /build/rust-toolchain.toml
+COPY ./Cargo.toml /build/Cargo.toml
+COPY ./Cargo.lock /build/Cargo.lock
+COPY ./ska_backend/Cargo.toml /build/ska_backend/Cargo.toml
+COPY ./ska_backend/src /build/ska_backend/src
+COPY ./ska_frontend/Cargo.toml /build/ska_frontend/Cargo.toml
+COPY ./ska_frontend/src/lib.rs /build/ska_frontend/src/lib.rs
+COPY ./ska_migration/Cargo.toml /build/ska_migration/Cargo.toml
+COPY ./ska_migration/src /build/ska_migration/src
+RUN just backend_build
+
+FROM builder1 as builder3
+ARG ARG_THAPO_SKA_ENV_PROFILE
+WORKDIR /build
+COPY ./justfile /build/justfile
+COPY ./poetry.lock /build/poetry.lock
+COPY ./poetry.toml /build/poetry.toml
+COPY ./pyproject.toml /build/pyproject.toml
+COPY ./ska_llm /build/ska_llm
+RUN touch README.md
+RUN just llm_build
+
+FROM builder1 as builder4
+ARG ARG_THAPO_SKA_ENV_PROFILE
+WORKDIR /build
+COPY ./justfile /build/justfile
+COPY --from=builder2 /build/target/release/app-server /build/target/release/app-server
+COPY --from=builder2 /build/target/release/app-cli /build/target/release/app-cli
+COPY --from=builder3 /build/dist/*.whl /build/dist/
+COPY ./ska_backend/distribution /build/ska_backend/distribution
+ENV THAPO_SKA_ENV_PROFILE=${ARG_THAPO_SKA_ENV_PROFILE}
+RUN just backend_pack
+
 
 FROM docker.io/debian:bookworm-20231120 as runner
 ARG ARG_THAPO_SKA_ENV_PROFILE
-ENV THAPO_SKA_ENV_FILE=/app/.env.${ARG_THAPO_SKA_ENV_PROFILE}
-RUN apt-get update && apt-get install -y libssl3 && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+RUN apt-get update && apt-get install --no-install-recommends -y libssl3 python3 python-is-python3 && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     useradd -m -u 14000 -U thaposka && \
     mkdir -p /home/thaposka/.config/ska/${ARG_THAPO_SKA_ENV_PROFILE} && \
     chown -R thaposka:thaposka /home/thaposka/.config/ska/${ARG_THAPO_SKA_ENV_PROFILE}
 WORKDIR /app
-COPY --from=builder /app/target/release/app-server /app/app-server
-COPY --from=builder /app/target/release/app-cli /app/app-cli
-COPY --from=builder /app/ska_backend/.env.${ARG_THAPO_SKA_ENV_PROFILE} /app/.env.${ARG_THAPO_SKA_ENV_PROFILE}
+COPY --from=builder4 /build/dist/ska_backend /app
+RUN ls -la
+RUN ls -la ./bin
+RUN ls -la ./etc
+RUN ls -la ./share
 USER thaposka
-CMD ./app-server
+CMD ./bin/app-server.sh

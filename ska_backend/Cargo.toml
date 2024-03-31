@@ -30,6 +30,7 @@ oauth2 = { workspace = true }
 anyhow = { workspace = true }
 const_format = { workspace = true }
 chrono = { workspace = true }
+pyo3 = { workspace = true }
 
 [[bin]]
 name = "app-server"

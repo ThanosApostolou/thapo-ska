@@ -48,7 +48,6 @@ services:
     ports:
       - "${backend_port}:${backend_port}"
     environment:
-      THAPO_SKA_ENV_FILE: /app/.env.${thapo_ska_env_profile}
       THAPO_SKA_SECRET_FILE: .secret
     secrets:
       - source: secret_backend

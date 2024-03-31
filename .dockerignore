@@ -2,3 +2,4 @@
 **/dist/
 **/node_modules/
 **/.secret
+**/__pycache__

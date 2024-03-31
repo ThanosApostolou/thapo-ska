@@ -12,11 +12,27 @@ pub struct EnvConfig {
     pub auth_issuer_url: String,
     pub auth_client_id: String,
     pub request_timeout: u64,
-    pub log_dir: String,
+    pub ska_conf_dir: String,
+    pub ska_data_dir: String,
+    pub ska_tmp_dir: String,
+    pub ska_user_conf_dir: String,
 }
 
 impl EnvConfig {
     pub fn from_env() -> EnvConfig {
+        let ska_conf_dir =
+            dotenv::var("THAPO_SKA_CONF_DIR").expect("THAPO_SKA_CONF_DIR env var is missing");
+
+        let dotenv_file = ska_conf_dir.clone() + "/.env";
+        dotenv::from_filename(&dotenv_file)
+            .unwrap_or_else(|_| panic!("could not load file {}", dotenv_file.clone()));
+
+        let ska_data_dir =
+            dotenv::var("THAPO_SKA_DATA_DIR").expect("THAPO_SKA_DATA_DIR env var is missing");
+        let ska_tmp_dir =
+            dotenv::var("THAPO_SKA_TMP_DIR").expect("THAPO_SKA_TMP_DIR env var is missing");
+        let ska_user_conf_dir = dotenv::var("THAPO_SKA_USER_CONF_DIR")
+            .expect("THAPO_SKA_USER_CONF_DIR env var is missing");
         let rust_log: String = dotenv::var("RUST_LOG").expect("RUST_LOG env var is missing");
         let env_profile =
             dotenv::var("THAPO_SKA_ENV_PROFILE").expect("THAPO_SKA_ENV_PROFILE env var is missing");
@@ -50,8 +66,6 @@ impl EnvConfig {
             .parse::<u64>()
             .expect("THAPO_SKA_REQUEST_TIMEOUT was not a usize");
 
-        let log_dir =
-            dotenv::var("THAPO_SKA_LOG_DIR").expect("THAPO_SKA_LOG_DIR env var is missing");
         EnvConfig {
             rust_log,
             env_profile,
@@ -65,7 +79,10 @@ impl EnvConfig {
             auth_issuer_url,
             auth_client_id,
             request_timeout,
-            log_dir,
+            ska_conf_dir,
+            ska_data_dir,
+            ska_tmp_dir,
+            ska_user_conf_dir,
         }
     }
 }

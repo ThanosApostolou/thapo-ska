@@ -1,9 +1,9 @@
-FROM docker.io/rust:1.74.1 as builder1
+FROM docker.io/rust:1.77.0 as builder1
 ARG ARG_THAPO_SKA_ENV_FILE
 RUN apt-get update && apt-get full-upgrade -y && apt-get install --no-install-recommends -y npm && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     npm install -g tailwindcss@3.3.6 && \
-    rustup install nightly-2023-12-11 && \
-    rustup default nightly-2023-12-11 && \
+    rustup install nightly-2024-03-25 && \
+    rustup default nightly-2024-03-25 && \
     rustup target add wasm32-unknown-unknown && \
     cargo install trunk
 

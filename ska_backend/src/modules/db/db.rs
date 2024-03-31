@@ -15,7 +15,6 @@ pub async fn init_db_connection(
         env_config.db_port,
         env_config.db_database
     );
-    tracing::info!("database_url: {}", database_url);
     let mut connect_options = ConnectOptions::new(database_url);
     connect_options
         // .max_connections(100)
