@@ -7,7 +7,7 @@ backend_run_server:
     export THAPO_SKA_CONF_DIR="ska_backend/distribution/etc/local"
     export THAPO_SKA_SECRET_FILE="ska_backend/.secret"
     source .venv/bin/activate
-    cargo watch -x 'run --bin app-server'
+    cargo watch -p ska_backend -w "./ska_backend/src" -x 'run --bin app-server'
 
 backend_run_cli:
     #!/usr/bin/env bash
@@ -35,3 +35,18 @@ backend_pack:
     rsync -av target/release/app-cli dist/ska_backend/bin/app-cli
 
     pip install --compile ./dist/thapo_ska-0.1.0-py3-none-any.whl -t dist/ska_backend/share/thapo_ska_py
+
+frontend_run:
+    #!/usr/bin/env bash
+    set -eu
+    cd ska_frontend
+    export THAPO_SKA_ENV_FILE=".env.local"
+    trunk serve --no-autoreload --address 0.0.0.0 --port 14081 --public-url /app
+
+iam_gateway_run:
+    #!/usr/bin/env bash
+    set -eu
+    export THAPO_SKA_ENV_FILE=".env.local"
+    cd "devops/scripts"
+    python docker-compose.py up local -s thapo_ska_iam
+    python docker-compose.py up local -s thapo_ska_gateway

@@ -6,6 +6,7 @@ resolver = "2"
 default-run = "app-server"
 
 [dependencies]
+clap = { worskapce = true, features = ["derive"] }
 tower-http = { workspace = true, features = ["full"] }
 reqwest = { workspace = true }
 ska_migration = { path = "../ska_migration" }

@@ -1,9 +1,4 @@
-use axum::{
-    extract::State,
-    http::StatusCode,
-    routing::{get, post},
-    Json, Router,
-};
+use axum::{extract::State, http::StatusCode, Json, Router};
 use serde::{Deserialize, Serialize};
 use std::{str::FromStr, sync::Arc, time};
 use tower_http::{catch_panic, cors, timeout, trace};
@@ -64,7 +59,7 @@ pub async fn handle_root(State(_): State<Arc<GlobalState>>) -> (StatusCode, Json
     (
         StatusCode::OK,
         Json(RootResponseDto {
-            msg: format!("server running"),
+            msg: "server running".to_string(),
         }),
     )
 }
