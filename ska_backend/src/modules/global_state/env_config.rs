@@ -16,6 +16,7 @@ pub struct EnvConfig {
     pub ska_data_dir: String,
     pub ska_tmp_dir: String,
     pub ska_user_conf_dir: String,
+    pub ska_llm_dir: String,
 }
 
 impl EnvConfig {
@@ -33,6 +34,8 @@ impl EnvConfig {
             dotenv::var("THAPO_SKA_TMP_DIR").expect("THAPO_SKA_TMP_DIR env var is missing");
         let ska_user_conf_dir = dotenv::var("THAPO_SKA_USER_CONF_DIR")
             .expect("THAPO_SKA_USER_CONF_DIR env var is missing");
+        let ska_llm_dir =
+            dotenv::var("THAPO_SKA_LLM_DIR").expect("THAPO_SKA_LLM_DIR env var is missing");
         let rust_log: String = dotenv::var("RUST_LOG").expect("RUST_LOG env var is missing");
         let env_profile =
             dotenv::var("THAPO_SKA_ENV_PROFILE").expect("THAPO_SKA_ENV_PROFILE env var is missing");
@@ -83,6 +86,7 @@ impl EnvConfig {
             ska_data_dir,
             ska_tmp_dir,
             ska_user_conf_dir,
+            ska_llm_dir,
         }
     }
 }

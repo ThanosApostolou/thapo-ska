@@ -2,11 +2,14 @@ use crate::modules::global_state::GlobalState;
 
 use super::do_download;
 
-// #[derive(Args)]
-// pub struct CmdDownload {}
-
 pub fn handle_download(global_state: &GlobalState) {
-    tracing::debug!("cmd_download.handle_download start");
-    do_download(global_state);
-    tracing::debug!("cmd_download.handle_download end");
+    tracing::debug!("handle_download start");
+    let res = do_download(global_state);
+    match res {
+        Ok(_) => tracing::debug!("handle_download end"),
+        Err(err) => {
+            tracing::error!("handle_download end with error {}", err);
+            std::process::exit(1);
+        }
+    }
 }
