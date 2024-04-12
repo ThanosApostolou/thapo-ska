@@ -14,5 +14,5 @@ async fn main() {
     let global_state = GlobalState::initialize_cli().await.unwrap();
     let global_state = Arc::new(global_state);
 
-    start_cli(&global_state);
+    start_cli(&global_state).await;
 }

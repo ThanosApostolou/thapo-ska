@@ -4,6 +4,7 @@ use pyo3::types::PyList;
 
 use crate::domain::nn_model::{service_nn_model, NnModelData};
 use crate::modules::global_state::GlobalState;
+use crate::modules::myfs::my_paths;
 use crate::prelude::*;
 
 pub fn do_download(global_state: &GlobalState) -> anyhow::Result<()> {
@@ -11,7 +12,7 @@ pub fn do_download(global_state: &GlobalState) -> anyhow::Result<()> {
     let contents = fs::read_to_string(global_state.env_config.ska_llm_dir.clone() + "/lib.py")
         .expect("Should have been able to read the file");
 
-    let download_dir = service_nn_model::get_models_download_dir(&global_state.env_config);
+    let download_dir = my_paths::get_models_download_dir(&global_state.env_config);
     let download_dir = download_dir.as_path();
     if download_dir.exists() {
         fs::remove_dir_all(download_dir)?;

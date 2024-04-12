@@ -9,7 +9,7 @@ def download_llm_huggingface(downloadDir: str, nn_models: list[tuple[str, str, s
 
     for nn_model in nn_models:
         (repo_id, rel_path, revision, allow_patterns) = nn_model
-        snapshot_download(repo_id=repo_id, local_dir=downloadDir + "/" + rel_path, revision=revision, allow_patterns=allow_patterns)
+        snapshot_download(repo_id=repo_id, local_dir=downloadDir + "/" + rel_path, revision=revision, allow_patterns=allow_patterns, local_dir_use_symlinks=False)
 
 
     # snapshot_download(repo_id="sentence-transformers/all-MiniLM-L6-v2", local_dir=downloadDir + "/all-MiniLM-L6-v2")
