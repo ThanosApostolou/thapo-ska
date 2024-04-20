@@ -33,3 +33,7 @@ pub fn get_models_download_dir(env_config: &EnvConfig) -> PathBuf {
 pub fn get_models_dir(env_config: &EnvConfig) -> PathBuf {
     get_ska_user_conf_dir(env_config).join("llms")
 }
+
+pub fn get_models_download_data_dir(env_config: &EnvConfig) -> PathBuf {
+    get_ska_tmp_dir(env_config).join("data")
+}

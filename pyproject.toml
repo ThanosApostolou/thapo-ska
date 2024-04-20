@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{ include = "ska_llm" }]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.13"
+python = ">=3.9,<3.12"
 pandas = "~2.2.1"
 numpy = "~1.26.4"
 matplotlib = "~3.8.3"
@@ -17,6 +17,10 @@ scikit-learn = "~1.4.1.post1"
 langchain = "~0.1.13"
 huggingface-hub = "~0.22.1"
 transformers = "~4.39.1"
+lxml = { extras = ["html-clean"], version = "~5.2.1" }
+unstructured = { extras = ["csv", "pdf", "image", "md"], version = "~0.13.2" }
+sentence-transformers = "~2.7.0"
+faiss-cpu = "~1.8.0"
 
 
 [tool.poetry.group.dev.dependencies]

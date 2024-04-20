@@ -1,7 +1,10 @@
 use clap::{Args, Subcommand};
 
 use crate::{
-    cli::cmd_model::{cmd_download::handle_download, cmd_insert::handle_insert},
+    cli::cmd_model::{
+        cmd_download::handle_download, cmd_download_data::handle_download_data,
+        cmd_insert::handle_insert,
+    },
     modules::global_state::GlobalState,
 };
 
@@ -15,6 +18,7 @@ pub struct CmdModel {
 pub enum ModelSubcommands {
     /// does testing things
     Download,
+    DownloadData,
     Insert,
 }
 
@@ -22,6 +26,7 @@ pub fn handle_model(global_state: &GlobalState, cmd_model: &CmdModel) {
     tracing::debug!("handle_model start");
     match &cmd_model.command {
         ModelSubcommands::Download => handle_download(global_state),
+        ModelSubcommands::DownloadData => handle_download_data(global_state),
         ModelSubcommands::Insert => handle_insert(global_state),
     }
     tracing::debug!("handle_model end");
