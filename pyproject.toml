@@ -21,6 +21,8 @@ lxml = { extras = ["html-clean"], version = "~5.2.1" }
 unstructured = { extras = ["csv", "pdf", "image", "md"], version = "~0.13.2" }
 sentence-transformers = "~2.7.0"
 faiss-cpu = "~1.8.0"
+ctransformers = "~0.2.27"
+llama-cpp-python = "~0.2.63"
 
 
 [tool.poetry.group.dev.dependencies]

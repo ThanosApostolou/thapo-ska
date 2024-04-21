@@ -7,3 +7,7 @@ def download_llm_huggingface(downloadDir: str, nn_models: list[tuple[str, str, s
 
 def rag_prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
     rag.prepare(data_path, vector_store_path, embedding_model_path)
+
+
+def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str):
+    return rag.invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type)
