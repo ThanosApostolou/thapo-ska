@@ -1,5 +1,4 @@
 from huggingface_hub import snapshot_download
-from ska_llm.scripts.hello import hello
 
 
 
@@ -17,7 +16,6 @@ def download_llm_huggingface(downloadDir: str, nn_models: list[tuple[str, str, s
 
 
 def main():
-    hello()
     download_llm_huggingface("./dist/llms", [])
 
 if __name__ == "__main__":

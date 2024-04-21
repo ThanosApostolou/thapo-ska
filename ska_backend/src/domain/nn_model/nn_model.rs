@@ -12,6 +12,7 @@ impl NnModelEnum {
     pub fn get_data(&self) -> NnModelData {
         match self {
             NnModelEnum::AllMiniLML6 => NnModelData {
+                name: "all-MiniLM-L6-v2".to_string(),
                 repo_id: "sentence-transformers/all-MiniLM-L6-v2".to_string(),
                 rel_path: "all-MiniLM-L6-v2".to_string(),
                 revision: "e4ce9877abf3edfe10b0d82785e83bdcb973e22e".to_string(),
@@ -19,6 +20,7 @@ impl NnModelEnum {
                 model_type: NnModelType::ModelEmbedding,
             },
             NnModelEnum::Llama27BChatGGUF => NnModelData {
+                name: "Llama-2-7B-Chat-GGUF".to_string(),
                 repo_id: "TheBloke/Llama-2-7B-Chat-GGUF".to_string(),
                 rel_path: "Llama-2-7B-Chat-GGUF".to_string(),
                 revision: "191239b3e26b2882fb562ffccdd1cf0f65402adb".to_string(),
@@ -26,6 +28,7 @@ impl NnModelEnum {
                 model_type: NnModelType::ModelLlm,
             },
             NnModelEnum::TinyLlama1_1BChat => NnModelData {
+                name: "TinyLlama-1.1B-Chat-v1.0".to_string(),
                 repo_id: "TinyLlama/TinyLlama-1.1B-Chat-v1.0".to_string(),
                 rel_path: "TinyLlama-1.1B-Chat".to_string(),
                 revision: "fe8a4ea1ffedaf415f4da2f062534de366a451e6".to_string(),
@@ -46,6 +49,7 @@ impl NnModelEnum {
 
 #[derive(Debug, Clone)]
 pub struct NnModelData {
+    pub name: String,
     pub repo_id: String,
     pub rel_path: String,
     pub revision: String,

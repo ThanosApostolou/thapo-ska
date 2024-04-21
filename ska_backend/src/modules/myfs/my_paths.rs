@@ -24,6 +24,10 @@ pub fn get_ska_llm_dir(env_config: &EnvConfig) -> PathBuf {
     PathBuf::from(&env_config.ska_llm_dir)
 }
 
+pub fn get_ska_llm_lib_py(env_config: &EnvConfig) -> PathBuf {
+    get_ska_llm_dir(env_config).join("lib.py")
+}
+
 // Derived paths used in app
 
 pub fn get_models_download_dir(env_config: &EnvConfig) -> PathBuf {
@@ -36,4 +40,12 @@ pub fn get_models_dir(env_config: &EnvConfig) -> PathBuf {
 
 pub fn get_models_download_data_dir(env_config: &EnvConfig) -> PathBuf {
     get_ska_tmp_dir(env_config).join("data")
+}
+
+pub fn get_models_data_dir(env_config: &EnvConfig) -> PathBuf {
+    get_ska_user_conf_dir(env_config).join("data")
+}
+
+pub fn get_vector_store_dir(env_config: &EnvConfig) -> PathBuf {
+    get_ska_user_conf_dir(env_config).join("vector_store")
 }

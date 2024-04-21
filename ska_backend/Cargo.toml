@@ -6,7 +6,7 @@ resolver = "2"
 default-run = "app-server"
 
 [dependencies]
-clap = { worskapce = true, features = ["derive"] }
+clap = { workspace = true, features = ["derive"] }
 tower-http = { workspace = true, features = ["full"] }
 reqwest = { workspace = true }
 ska_migration = { path = "../ska_migration" }
@@ -31,7 +31,10 @@ oauth2 = { workspace = true }
 anyhow = { workspace = true }
 const_format = { workspace = true }
 chrono = { workspace = true }
-pyo3 = { workspace = true }
+pyo3 = { workspace = true, features = [
+    "auto-initialize",
+    "experimental-inspect",
+] }
 
 [[bin]]
 name = "app-server"

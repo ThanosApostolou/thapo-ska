@@ -5,7 +5,7 @@ from langchain_community.document_loaders.pdf import UnstructuredPDFLoader
 from langchain_community.document_loaders.html import UnstructuredHTMLLoader
 from langchain_community.document_loaders.xml import UnstructuredXMLLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings.huggingface import HuggingFaceEmbeddings
+from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings
 from langchain_community.vectorstores.faiss import FAISS
 
 from langchain_community.llms.ctransformers import CTransformers
@@ -19,10 +19,13 @@ from langchain_core.output_parsers import StrOutputParser
 from ska_llm.scripts import constants
 
 def get_embeddings(embedding_model_path: str):
-    return HuggingFaceEmbeddings(
+    print("get_embeddings start")
+    emb =  HuggingFaceBgeEmbeddings(
         model_name=embedding_model_path,
         model_kwargs={'device': 'cpu'}
     )
+    print("get_embeddings end")
+    return emb
 
 
 def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
@@ -67,6 +70,7 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
     texts = splitter.split_documents(docs)
 
     # create the embeddings and store to database
+    print("get_embeddings()")
     embeddings = get_embeddings(embedding_model_path)
 
     # create and save the local database
