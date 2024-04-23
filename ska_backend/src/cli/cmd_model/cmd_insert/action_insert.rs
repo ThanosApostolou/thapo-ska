@@ -1,11 +1,10 @@
-use std::{fs, path::Path};
+use std::fs;
 
 use anyhow::anyhow;
 
 use crate::domain::nn_model::service_nn_model;
 use crate::modules::global_state::GlobalState;
 use crate::modules::myfs::{my_paths, utils_fs};
-use crate::prelude::*;
 
 pub fn do_insert(global_state: &GlobalState) -> anyhow::Result<()> {
     tracing::trace!("do_insert start");
@@ -40,4 +39,3 @@ pub fn do_insert(global_state: &GlobalState) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn insert_model() {}

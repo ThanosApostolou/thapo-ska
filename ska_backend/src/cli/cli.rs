@@ -3,8 +3,8 @@ use clap::{Parser, Subcommand};
 use crate::{cli::cmd_db::handle_db, modules::global_state::GlobalState};
 
 use super::{
-    cmd_db::CmdDb,
-    cmd_model::{handle_model, CmdModel},
+    cmd_db::CmdDbArgs,
+    cmd_model::{handle_model, CmdModelArgs},
 };
 
 #[derive(Parser, Debug)]
@@ -23,8 +23,8 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
-    Model(CmdModel),
-    Db(CmdDb),
+    Model(CmdModelArgs),
+    Db(CmdDbArgs),
 }
 
 pub async fn start_cli(global_state: &GlobalState) {

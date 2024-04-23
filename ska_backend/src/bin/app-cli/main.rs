@@ -1,5 +1,3 @@
-use ska_backend::prelude::*;
-
 use ska_backend::cli::start_cli;
 use ska_backend::modules::global_state::GlobalState;
 use std::sync::Arc;

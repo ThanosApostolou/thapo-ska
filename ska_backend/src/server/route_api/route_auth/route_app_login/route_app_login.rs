@@ -15,7 +15,7 @@ use std::sync::Arc;
 // basic handler that responds with a static string
 pub async fn handle_app_login(
     State(global_state): State<Arc<GlobalState>>,
-    headers: HeaderMap,
+    _headers: HeaderMap,
     Extension(user_authentication_details): Extension<UserAuthenticationDetails>,
 ) -> Result<Json<DtoUserDetails>, (StatusCode, Json<ErrorResponse>)> {
     tracing::info!("handle_app_login start");

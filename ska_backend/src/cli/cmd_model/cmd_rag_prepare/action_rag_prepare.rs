@@ -22,7 +22,7 @@ pub fn do_rag_prepare(global_state: &GlobalState, emb_name: &String) -> anyhow::
             emb_model_data.name
         ));
     }
-    let python_lib_path = my_paths::get_ska_llm_lib_py(&global_state.env_config)
+    let python_main_path = my_paths::get_ska_llm_main_py(&global_state.env_config)
         .to_str()
         .ok_or(anyhow::anyhow!("path not string"))?
         .to_string();
@@ -35,12 +35,12 @@ pub fn do_rag_prepare(global_state: &GlobalState, emb_name: &String) -> anyhow::
         .ok_or(anyhow::anyhow!("path not string"))?
         .to_string();
     let embedding_model_path = my_paths::get_models_dir(&global_state.env_config)
-        .join(&emb_model_data.rel_path)
+        .join(&emb_model_data.model_path)
         .to_str()
         .ok_or(anyhow::anyhow!("path not string"))?
         .to_string();
     py_rag_prepare(
-        python_lib_path,
+        python_main_path,
         data_path,
         vector_store_path,
         embedding_model_path,
@@ -50,14 +50,14 @@ pub fn do_rag_prepare(global_state: &GlobalState, emb_name: &String) -> anyhow::
 }
 
 fn py_rag_prepare(
-    python_lib_path: String,
+    python_main_path: String,
     data_path: String,
     vector_store_path: String,
     embedding_model_path: String,
 ) -> anyhow::Result<()> {
     process::Command::new("python3")
         .args([
-            python_lib_path,
+            python_main_path,
             "rag_prepare".to_string(),
             data_path,
             vector_store_path,

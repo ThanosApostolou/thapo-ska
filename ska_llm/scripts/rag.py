@@ -15,6 +15,8 @@ from langchain.chains.retrieval_qa.base import RetrievalQA, BaseRetrievalQA
 from langchain_core.callbacks import CallbackManager, StdOutCallbackHandler
 from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 from langchain_core.output_parsers import StrOutputParser
+from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 from ska_llm.scripts import constants
 
@@ -81,7 +83,7 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
 
 
 def create_llm(llm_model_path: str, model_type: str):
-    context_length = 2048
+    context_length = 4096
     max_new_tokens = 64
     top_p = 0.95
     temperature = 0.8
@@ -93,6 +95,30 @@ def create_llm(llm_model_path: str, model_type: str):
         llm = CTransformers(
             model=llm_model_path,
             model_type='llama',
+            config={
+                'top_k': 40,
+                'top_p': top_p,
+                'temperature': temperature,
+                'repetition_penalty': repetition_penalty,
+                'last_n_tokens': last_n_tokens,
+                'seed': -1,
+                'max_new_tokens': max_new_tokens,
+                'stop': None,
+                'stream': False,
+                'reset': True,
+                'batch_size': batch_size,
+                'threads': -1,
+                'context_length': context_length,
+                'gpu_layers': 0
+            },
+            client=None
+        )
+        return llm
+    elif model_type == 'gpt2':
+        # parameters: https://github.com/marella/ctransformers?tab=readme-ov-file#documentation
+        llm = CTransformers(
+            model=llm_model_path,
+            model_type='gpt2',
             config={
                 'top_k': 40,
                 'top_p': top_p,
@@ -138,6 +164,18 @@ def create_llm(llm_model_path: str, model_type: str):
             logprobs=None,
             repeat_penalty=repetition_penalty
         )
+        return llm
+    elif model_type == 'huggingface':
+        tokenizer = AutoTokenizer.from_pretrained(llm_model_path)
+        model = AutoModelForCausalLM.from_pretrained(llm_model_path, device_map='cpu')
+        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_new_tokens=max_new_tokens)
+        llm = HuggingFacePipeline(pipeline=pipe)
+
+        # llm = HuggingFacePipeline.from_model_id(
+        #     model_id=llm_model_path,
+        #     task="text-generation",
+        #     pipeline_kwargs={"max_new_tokens": max_new_tokens},
+        # )
         return llm
     else:
         raise Exception(f"unsuported model_type {model_type}")

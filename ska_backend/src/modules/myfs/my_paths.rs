@@ -24,8 +24,8 @@ pub fn get_ska_llm_dir(env_config: &EnvConfig) -> PathBuf {
     PathBuf::from(&env_config.ska_llm_dir)
 }
 
-pub fn get_ska_llm_lib_py(env_config: &EnvConfig) -> PathBuf {
-    get_ska_llm_dir(env_config).join("lib.py")
+pub fn get_ska_llm_main_py(env_config: &EnvConfig) -> PathBuf {
+    get_ska_llm_dir(env_config).join("main.py")
 }
 
 // Derived paths used in app

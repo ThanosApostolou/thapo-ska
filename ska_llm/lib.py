@@ -2,8 +2,8 @@ import sys
 from ska_llm.scripts import download_llms, rag
 
 
-def download_llm_huggingface(downloadDir: str, nn_models: list[tuple[str, str, str, str]]):
-    download_llms.download_llm_huggingface(downloadDir, nn_models)
+def download_llm_huggingface(downloadDir: str, repo_id: str, rel_path: str, revision: str, allow_patterns: str, ignore_patterns: str):
+    download_llms.download_llm_huggingface(downloadDir, repo_id, rel_path, revision, allow_patterns, ignore_patterns)
 
 
 def rag_prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
@@ -12,7 +12,9 @@ def rag_prepare(data_path: str, vector_store_path: str, embedding_model_path: st
 
 
 def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str):
-    return rag.invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type)
+    output = rag.invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type)
+    print(output)
+    return output
 
 
 if __name__ == '__main__':

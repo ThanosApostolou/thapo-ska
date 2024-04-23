@@ -31,10 +31,7 @@ oauth2 = { workspace = true }
 anyhow = { workspace = true }
 const_format = { workspace = true }
 chrono = { workspace = true }
-pyo3 = { workspace = true, features = [
-    "auto-initialize",
-    "experimental-inspect",
-] }
+
 
 [[bin]]
 name = "app-server"

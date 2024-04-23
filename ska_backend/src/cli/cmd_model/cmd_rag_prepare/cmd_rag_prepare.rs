@@ -5,7 +5,7 @@ use crate::modules::global_state::GlobalState;
 use super::do_rag_prepare;
 
 #[derive(Args, Debug)]
-pub struct CmdRagPrepare {
+pub struct CmdRagPrepareArgs {
     #[arg(short, long)]
     pub emb_name: String,
 }
