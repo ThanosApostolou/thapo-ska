@@ -23,6 +23,8 @@ pub enum NnModelEnum {
     AllMiniLML6,
     Llama27BChatGGUF,
     TinyLlama1_1BChat,
+    Opt350M,
+    Gpt2,
 }
 impl NnModelEnum {
     pub fn get_data(&self) -> NnModelData {
@@ -75,6 +77,39 @@ Context: {context}
 Answer: [/INST]".to_string(),
                 llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
             },
+            NnModelEnum::Opt350M => NnModelData {
+                name: "opt350m".to_string(),
+                repo_id: "facebook/opt-350m".to_string(),
+                rel_path: "opt-350m".to_string(),
+                model_path: "opt-350m".to_string(),
+                revision: "08ab08cc4b72ff5593870b5d527cf4230323703c".to_string(),
+                allow_patterns: "*.json,*.txt,*.md,*.bin,*.model".to_string(),
+                ignore_patterns: "*.safetensors,*.h5,*.msgpack,*.ot".to_string(),
+                model_type: NnModelType::ModelLlm,
+                default_prompt: "
+You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
+Question: {question}
+Context: {context}
+Answer:".to_string(),
+                llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
+            },
+
+            NnModelEnum::Gpt2 => NnModelData {
+                name: "gpt2".to_string(),
+                repo_id: "openai-community/gpt2".to_string(),
+                rel_path: "gpt2".to_string(),
+                model_path: "gpt2".to_string(),
+                revision: "607a30d783dfa663caf39e06633721c8d4cfcd7e".to_string(),
+                allow_patterns: "*.json,*.txt,*.md,*.safetensors,*.model".to_string(),
+                ignore_patterns: "*.bin,*.h5,*.msgpack,*.ot".to_string(),
+                model_type: NnModelType::ModelLlm,
+                default_prompt: "
+You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
+Question: {question}
+Context: {context}
+Answer:".to_string(),
+                llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
+            },
         }
     }
 
@@ -83,6 +118,8 @@ Answer: [/INST]".to_string(),
             NnModelEnum::AllMiniLML6.get_data(),
             NnModelEnum::Llama27BChatGGUF.get_data(),
             NnModelEnum::TinyLlama1_1BChat.get_data(),
+            NnModelEnum::Opt350M.get_data(),
+            NnModelEnum::Gpt2.get_data(),
         ])
     }
 }

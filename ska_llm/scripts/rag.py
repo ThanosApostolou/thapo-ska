@@ -8,10 +8,9 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings
 from langchain_community.vectorstores.faiss import FAISS
 
-from langchain_community.llms.ctransformers import CTransformers
 from langchain_community.llms.llamacpp import LlamaCpp
 from langchain.prompts import PromptTemplate
-from langchain.chains.retrieval_qa.base import RetrievalQA, BaseRetrievalQA
+# from langchain.chains.retrieval_qa.base import RetrievalQA, BaseRetrievalQA
 from langchain_core.callbacks import CallbackManager, StdOutCallbackHandler
 from langchain_core.runnables import RunnablePassthrough, RunnableParallel
 from langchain_core.output_parsers import StrOutputParser
@@ -24,7 +23,8 @@ def get_embeddings(embedding_model_path: str):
     print("get_embeddings start")
     emb =  HuggingFaceBgeEmbeddings(
         model_name=embedding_model_path,
-        model_kwargs={'device': 'cpu'}
+        model_kwargs={'device': 'cpu'},
+        encode_kwargs = {'normalize_embeddings': True}
     )
     print("get_embeddings end")
     return emb
@@ -64,8 +64,8 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
 
     # transformation: split the documents into chunks
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=50
+        chunk_size=192,
+        chunk_overlap=16
     )
 
     print("splitter.split_documents")
@@ -83,62 +83,15 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
 
 
 def create_llm(llm_model_path: str, model_type: str):
-    context_length = 4096
+    context_length = 512
     max_new_tokens = 64
     top_p = 0.95
     temperature = 0.8
     batch_size = 8
     last_n_tokens = 32
     repetition_penalty = 1.1
-    if model_type == 'ctransformers_llama':
-        # parameters: https://github.com/marella/ctransformers?tab=readme-ov-file#documentation
-        llm = CTransformers(
-            model=llm_model_path,
-            model_type='llama',
-            config={
-                'top_k': 40,
-                'top_p': top_p,
-                'temperature': temperature,
-                'repetition_penalty': repetition_penalty,
-                'last_n_tokens': last_n_tokens,
-                'seed': -1,
-                'max_new_tokens': max_new_tokens,
-                'stop': None,
-                'stream': False,
-                'reset': True,
-                'batch_size': batch_size,
-                'threads': -1,
-                'context_length': context_length,
-                'gpu_layers': 0
-            },
-            client=None
-        )
-        return llm
-    elif model_type == 'gpt2':
-        # parameters: https://github.com/marella/ctransformers?tab=readme-ov-file#documentation
-        llm = CTransformers(
-            model=llm_model_path,
-            model_type='gpt2',
-            config={
-                'top_k': 40,
-                'top_p': top_p,
-                'temperature': temperature,
-                'repetition_penalty': repetition_penalty,
-                'last_n_tokens': last_n_tokens,
-                'seed': -1,
-                'max_new_tokens': max_new_tokens,
-                'stop': None,
-                'stream': False,
-                'reset': True,
-                'batch_size': batch_size,
-                'threads': -1,
-                'context_length': context_length,
-                'gpu_layers': 0
-            },
-            client=None
-        )
-        return llm
-    elif model_type == 'llamacpp':
+
+    if model_type == 'llamacpp':
         # Callbacks support token-wise streaming
         callback_manager = CallbackManager([StdOutCallbackHandler()])
         llm = LlamaCpp(
@@ -168,7 +121,7 @@ def create_llm(llm_model_path: str, model_type: str):
     elif model_type == 'huggingface':
         tokenizer = AutoTokenizer.from_pretrained(llm_model_path)
         model = AutoModelForCausalLM.from_pretrained(llm_model_path, device_map='cpu')
-        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_new_tokens=max_new_tokens)
+        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_length=512)
         llm = HuggingFacePipeline(pipeline=pipe)
 
         # llm = HuggingFacePipeline.from_model_id(
@@ -209,6 +162,7 @@ def create_chain(vector_store_path: str, embedding_model_path: str, llm_model_pa
     #         'verbose': True,
     #         'prompt': prompt}
     # )
+    # return qa_chain
 
 
     def format_docs(docs):
