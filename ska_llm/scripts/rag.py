@@ -127,8 +127,8 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
 
     # transformation: split the documents into chunks
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=192,
-        chunk_overlap=16
+        chunk_size=128,
+        chunk_overlap=8
     )
 
     print("splitter.split_documents")
@@ -146,8 +146,8 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
 
 
 def create_llm(llm_model_path: str, model_type: str):
-    context_length = 512
-    max_tokens = 256
+    context_length = 384
+    max_tokens = 128
     top_p = 0.95
     temperature = 0.8
     batch_size = 8

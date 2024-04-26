@@ -38,6 +38,7 @@ pub fn handle_model(global_state: &GlobalState, cmd_model: &CmdModelArgs) {
             &cmd_rag_invoke_args.emb_name,
             &cmd_rag_invoke_args.llm_name,
             &cmd_rag_invoke_args.question,
+            &cmd_rag_invoke_args.prompt_template,
         ),
     }
     tracing::debug!("handle_model end");

@@ -12,6 +12,8 @@ pub struct CmdRagInvokeArgs {
     pub llm_name: String,
     #[arg(short, long)]
     pub question: String,
+    #[arg(short, long)]
+    pub prompt_template: Option<String>,
 }
 
 pub fn handle_rag_invoke(
@@ -19,9 +21,10 @@ pub fn handle_rag_invoke(
     emb_name: &String,
     llm_name: &String,
     question: &String,
+    prompt_template: &Option<String>,
 ) {
     tracing::debug!("handle_rag_invoke start");
-    let res = action_rag_invoke(global_state, emb_name, llm_name, question);
+    let res = action_rag_invoke(global_state, emb_name, llm_name, question, prompt_template);
     match res {
         Ok(_) => tracing::debug!("handle_rag_invoke end"),
         Err(err) => {
