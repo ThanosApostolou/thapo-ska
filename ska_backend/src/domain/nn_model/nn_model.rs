@@ -21,7 +21,7 @@ impl LlmModelTypeEnum {
 #[derive(Debug, Clone)]
 pub enum NnModelEnum {
     AllMiniLML6,
-    Llama27BChatGGUF,
+    Llama27BChat,
     TinyLlama1_1BChat,
     Opt350M,
     Gpt2,
@@ -41,14 +41,14 @@ impl NnModelEnum {
                 default_prompt: "".to_string(),
                 llm_model_type: None,
             },
-            NnModelEnum::Llama27BChatGGUF => NnModelData {
-                name: "Llama-2-7B-Chat-GGUF".to_string(),
+            NnModelEnum::Llama27BChat => NnModelData {
+                name: "llama2-7B".to_string(),
                 repo_id: "TheBloke/Llama-2-7B-Chat-GGUF".to_string(),
                 rel_path: "Llama-2-7B-Chat-GGUF".to_string(),
                 model_path: "Llama-2-7B-Chat-GGUF/llama-2-7b-chat.Q2_K.gguf".to_string(),
                 revision: "191239b3e26b2882fb562ffccdd1cf0f65402adb".to_string(),
-                allow_patterns: "llama-2-7b-chat.Q2_K.gguf".to_string(),
-                ignore_patterns: "".to_string(),
+                allow_patterns: "*.json,*.txt,*.md,*.model,llama-2-7b-chat.Q2_K.gguf".to_string(),
+                ignore_patterns: "*.bin,*.h5,*.msgpack,*.ot, *.safetensors".to_string(),
                 model_type: NnModelType::ModelLlm,
                 default_prompt: "[INST]
 <<SYS>>
@@ -60,7 +60,7 @@ Answer: [/INST]".to_string(),
                 llm_model_type: Some(LlmModelTypeEnum::LlamaCpp),
             },
             NnModelEnum::TinyLlama1_1BChat => NnModelData {
-                name: "TinyLlama-1.1B-intermediate-step".to_string(),
+                name: "tinyllama1_1B".to_string(),
                 repo_id: "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
                 rel_path: "TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
                 model_path: "TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
@@ -68,13 +68,7 @@ Answer: [/INST]".to_string(),
                 allow_patterns: "*".to_string(),
                 ignore_patterns: "*.bin".to_string(),
                 model_type: NnModelType::ModelLlm,
-                default_prompt: "[INST]
-<<SYS>>
-You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
-<</SYS>>
-Question: {question}
-Context: {context}
-Answer: [/INST]".to_string(),
+                default_prompt: "".to_string(),
                 llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
             },
             NnModelEnum::Opt350M => NnModelData {
@@ -86,11 +80,7 @@ Answer: [/INST]".to_string(),
                 allow_patterns: "*.json,*.txt,*.md,*.bin,*.model".to_string(),
                 ignore_patterns: "*.safetensors,*.h5,*.msgpack,*.ot".to_string(),
                 model_type: NnModelType::ModelLlm,
-                default_prompt: "
-You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
-Question: {question}
-Context: {context}
-Answer:".to_string(),
+                default_prompt: "".to_string(),
                 llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
             },
 
@@ -103,11 +93,7 @@ Answer:".to_string(),
                 allow_patterns: "*.json,*.txt,*.md,*.safetensors,*.model".to_string(),
                 ignore_patterns: "*.bin,*.h5,*.msgpack,*.ot".to_string(),
                 model_type: NnModelType::ModelLlm,
-                default_prompt: "
-You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
-Question: {question}
-Context: {context}
-Answer:".to_string(),
+                default_prompt: "".to_string(),
                 llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
             },
         }
@@ -116,7 +102,7 @@ Answer:".to_string(),
     pub fn get_data_list() -> Vec<NnModelData> {
         Vec::<NnModelData>::from([
             NnModelEnum::AllMiniLML6.get_data(),
-            NnModelEnum::Llama27BChatGGUF.get_data(),
+            NnModelEnum::Llama27BChat.get_data(),
             NnModelEnum::TinyLlama1_1BChat.get_data(),
             NnModelEnum::Opt350M.get_data(),
             NnModelEnum::Gpt2.get_data(),

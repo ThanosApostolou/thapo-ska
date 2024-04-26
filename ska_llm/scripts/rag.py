@@ -1,9 +1,12 @@
+import json
+from typing import Any, Self
 from langchain_community.document_loaders.directory import DirectoryLoader
 from langchain_community.document_loaders.text import TextLoader
 from langchain_community.document_loaders.pdf import UnstructuredPDFLoader
 # from langchain_community.document_loaders.epub import UnstructuredEPubLoader
 from langchain_community.document_loaders.html import UnstructuredHTMLLoader
 from langchain_community.document_loaders.xml import UnstructuredXMLLoader
+from langchain_core.documents import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings
 from langchain_community.vectorstores.faiss import FAISS
@@ -18,6 +21,66 @@ from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 from ska_llm.scripts import constants
+
+class InvokeOutput:
+    def __init__(self):
+        self.context: list[Document] = []
+        self.question: str = ''
+        self.answer: str = ''
+
+    @classmethod
+    def from_output_dict(cls, output_dict: dict[Any, Any]) -> Self:
+        invoke_output = cls()
+        invoke_output.context = output_dict['context']
+        assert isinstance(invoke_output.context, list)
+        assert isinstance(invoke_output.question, str)
+        assert isinstance(invoke_output.answer, str)
+        invoke_output.question = output_dict['question']
+        invoke_output.answer = output_dict['answer']
+        return invoke_output
+
+
+
+class DocumentDto(object):
+    def __init__(self, page_content: str, metadata: dict[Any, Any]):
+        self.page_content: str = page_content
+        self.metadata: dict[Any, Any] = metadata
+
+    def __repr__(self) -> str:
+        return self.__dict__.__repr__()
+
+    def to_json_obj(self) -> dict[Any, Any]:
+        return self.__dict__
+
+
+    @classmethod
+    def from_document(cls, document: Document) -> Self:
+        invoke_output = cls(document.page_content, document.metadata)
+        return invoke_output
+
+class InvokeOutputDto(object):
+    def __init__(self, context: list[DocumentDto], question: str, answer: str):
+        self.context: list[DocumentDto] = context
+        self.question: str = question
+        self.answer: str = answer
+
+    def __repr__(self) -> str:
+        return self.__dict__.__repr__()
+
+    def to_json_obj(self) -> dict:
+        return {
+            "context": [x.__dict__ for x in self.context],
+            "question": self.question,
+            "answer": self.answer
+        }
+
+
+    @classmethod
+    def from_invoke_output(cls, invoke_output: InvokeOutput) -> Self:
+        context_dtos = list(map(DocumentDto.from_document, invoke_output.context))
+        invoke_output_dto = cls(context_dtos, invoke_output.question, invoke_output.answer)
+        return invoke_output_dto
+
 
 def get_embeddings(embedding_model_path: str):
     print("get_embeddings start")
@@ -84,7 +147,7 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
 
 def create_llm(llm_model_path: str, model_type: str):
     context_length = 512
-    max_new_tokens = 64
+    max_tokens = 256
     top_p = 0.95
     temperature = 0.8
     batch_size = 8
@@ -97,7 +160,7 @@ def create_llm(llm_model_path: str, model_type: str):
         llm = LlamaCpp(
             model_path=llm_model_path,
             temperature=temperature,
-            max_tokens=max_new_tokens,
+            max_tokens=max_tokens,
             last_n_tokens_size=last_n_tokens,
             top_p=top_p,
             callback_manager=callback_manager,
@@ -121,7 +184,7 @@ def create_llm(llm_model_path: str, model_type: str):
     elif model_type == 'huggingface':
         tokenizer = AutoTokenizer.from_pretrained(llm_model_path)
         model = AutoModelForCausalLM.from_pretrained(llm_model_path, device_map='cpu')
-        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_length=512)
+        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_length=context_length)
         llm = HuggingFacePipeline(pipeline=pipe)
 
         # llm = HuggingFacePipeline.from_model_id(
@@ -182,8 +245,8 @@ def create_chain(vector_store_path: str, embedding_model_path: str, llm_model_pa
     return rag_chain_with_source
 
 
-def invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str):
+def invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str) -> InvokeOutput:
     qa_chain = create_chain(vector_store_path, embedding_model_path, llm_model_path, prompt_template, model_type)
     output = qa_chain.invoke(question)
-    (context, question, answer) = (output['context'], output['question'], output['answer'])
-    return (context, question, answer)
+    invoke_output = InvokeOutput.from_output_dict(output)
+    return invoke_output
