@@ -2,6 +2,8 @@ use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
+use super::{ErrorPacket, ErrorResponse};
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct DtoErrorResponse {
     pub status_code: u16,
@@ -23,6 +25,14 @@ impl DtoErrorResponse {
             status_code,
             is_unexpected_error,
             packets,
+        }
+    }
+
+    pub fn from_error_response(error_response: ErrorResponse) -> DtoErrorResponse {
+        DtoErrorResponse {
+            status_code: error_response.error_code.into_u16(),
+            is_unexpected_error: error_response.is_unexpected_error,
+            packets: DtoErrorPacket::vec_from_error_packets(error_response.packets),
         }
     }
 }
@@ -51,6 +61,21 @@ impl DtoErrorPacket {
 
     pub fn new(message: String) -> DtoErrorPacket {
         DtoErrorPacket { message }
+    }
+
+    pub fn from_error_packet(error_packet: ErrorPacket) -> DtoErrorPacket {
+        DtoErrorPacket {
+            message: error_packet.message,
+        }
+    }
+
+    pub fn vec_from_error_packets(error_packets: Vec<ErrorPacket>) -> Vec<DtoErrorPacket> {
+        error_packets
+            .into_iter()
+            .map(|error_packet| DtoErrorPacket {
+                message: error_packet.message,
+            })
+            .collect()
     }
 }
 

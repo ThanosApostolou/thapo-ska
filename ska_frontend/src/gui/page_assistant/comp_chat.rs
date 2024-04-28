@@ -76,6 +76,8 @@ fn on_submit(
 
         let request = AskAssistantQuestionRequest {
             question: question.get_untracked(),
+            llm_model: "llama2-7B".to_string(),
+            prompt_template: None,
         };
         let api_client = global_state.get_untracked().api_client.clone();
         let backend_url = global_state.get_untracked().env_config.backend_url.clone();

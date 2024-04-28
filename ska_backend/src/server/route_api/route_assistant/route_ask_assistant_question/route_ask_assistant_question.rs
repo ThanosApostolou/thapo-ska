@@ -4,21 +4,25 @@ use axum::{
 };
 use hyper::StatusCode;
 
-use crate::modules::global_state::GlobalState;
+use crate::modules::{error::DtoErrorResponse, global_state::GlobalState};
 
 use std::sync::Arc;
 
-use super::{AskAssistantQuestionRequest, AskAssistantQuestionResponse};
+use super::{do_ask_assistant_question, AskAssistantQuestionRequest, AskAssistantQuestionResponse};
 
-// basic handler that responds with a static string
 pub async fn handle_ask_assistant_question(
-    State(_): State<Arc<GlobalState>>,
+    State(global_state): State<Arc<GlobalState>>,
     Query(query): Query<AskAssistantQuestionRequest>,
-) -> (StatusCode, Json<AskAssistantQuestionResponse>) {
-    (
-        StatusCode::OK,
-        Json(AskAssistantQuestionResponse {
-            answer: query.question.clone() + "? - some random answer",
-        }),
-    )
+) -> Result<Json<AskAssistantQuestionResponse>, (StatusCode, Json<DtoErrorResponse>)> {
+    let ask_assistant_question_result = do_ask_assistant_question(&global_state, query).await;
+    match ask_assistant_question_result {
+        Ok(ask_assistant_question) => Ok(Json(AskAssistantQuestionResponse {
+            answer: ask_assistant_question.answer,
+            sources: ask_assistant_question.sources,
+        })),
+        Err(error_response) => Err((
+            error_response.error_code.into_status_code(),
+            Json(DtoErrorResponse::from_error_response(error_response)),
+        )),
+    }
 }
