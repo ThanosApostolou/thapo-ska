@@ -20,7 +20,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
-from ska_llm.scripts import constants
+from scripts import constants
 
 class InvokeOutput:
     def __init__(self):

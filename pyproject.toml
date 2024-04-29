@@ -18,14 +18,19 @@ unstructured = { extras = ["csv", "pdf", "image", "md"], version = "~0.13.2" }
 sentence-transformers = "~2.7.0"
 faiss-cpu = "~1.8.0"
 llama-cpp-python = "~0.2.63"
-torch = "~2.2.2"
 accelerate = "~0.29.3"
+torch = { version = "~2.3.0+cpu", source = "pytorch_cpu" }
 
 
 [tool.poetry.group.dev.dependencies]
 autopep8 = "~2.1.0"
 pytest = "~8.1.1"
 
+
+[[tool.poetry.source]]
+name = "pytorch_cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
 
 [build-system]
 requires = ["poetry-core"]

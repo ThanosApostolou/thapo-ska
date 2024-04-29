@@ -1,5 +1,5 @@
 import sys
-from ska_llm.scripts import download_llms, rag
+from scripts import download_llms, rag
 import json
 
 def download_llm_huggingface(downloadDir: str, repo_id: str, rel_path: str, revision: str, allow_patterns: str, ignore_patterns: str):

@@ -1,6 +1,6 @@
 import argparse
 import sys
-import ska_llm.lib as skalib
+import skalib
 
 def handle_download_llm_huggingface(downloadDir: str, repo_id: str, rel_path: str, revision: str, allow_patterns: str, ignore_patterns: str):
     skalib.download_llm_huggingface(downloadDir, repo_id, rel_path, revision, allow_patterns, ignore_patterns)

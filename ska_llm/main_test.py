@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-import ska_llm.lib as skalib
+import skalib
 
 HOME = os.environ['HOME']
 
