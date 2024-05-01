@@ -38,11 +38,11 @@ async fn initialize() -> (GlobalState, GlobalStore) {
     let (storage_refresh_token, storage_set_refresh_token, _) =
         auth_storage_service::use_storage_refresh_token();
     let result = service_auth::initial_check_login(
-        global_store,
+        &global_store.get_untracked(),
         storage_refresh_token,
         storage_set_refresh_token,
         &global_state.oidc_client,
-        global_state.api_client.clone(),
+        &global_state.api_client,
         global_state.env_config.backend_url.clone(),
     )
     .await;

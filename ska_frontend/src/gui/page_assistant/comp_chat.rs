@@ -79,12 +79,13 @@ fn on_submit(
             llm_model: "llama2-7B".to_string(),
             prompt_template: None,
         };
-        let api_client = global_state.get_untracked().api_client.clone();
-        let backend_url = global_state.get_untracked().env_config.backend_url.clone();
+        let global_state = &global_state.get_untracked();
+        let api_client = &global_state.api_client;
+        let backend_url = &global_state.env_config.backend_url;
         let result = service_assistant::ask_assistant_question(
-            global_store,
+            &global_store.get(),
             api_client,
-            &backend_url,
+            backend_url,
             &request,
         )
         .await;

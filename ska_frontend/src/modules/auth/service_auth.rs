@@ -172,7 +172,7 @@ async fn exchange_refresh_token(
 }
 
 fn store_token_response(
-    global_store: RwSignal<GlobalStore>,
+    global_store: &GlobalStore,
     token_response: &MyStandardTokenResponse,
     storage_set_refresh_token: WriteSignal<String>,
 ) -> anyhow::Result<()> {
@@ -185,43 +185,32 @@ fn store_token_response(
         .ok_or(anyhow!("id token missing"))?;
     let access_token = token_response.access_token();
     // let access_token = token_response.access_token().clone();
-    global_store
-        .get_untracked()
-        .refresh_token
-        .set(Some(refresh_token.clone()));
-    global_store
-        .get_untracked()
-        .id_token
-        .set(Some(id_token.clone()));
-    global_store
-        .get_untracked()
-        .access_token
-        .set(Some(access_token.clone()));
+    global_store.refresh_token.set(Some(refresh_token.clone()));
+    global_store.id_token.set(Some(id_token.clone()));
+    global_store.access_token.set(Some(access_token.clone()));
     storage_set_refresh_token(refresh_token.secret().clone());
     log::trace!("auth_service::store_token_response end");
     Ok(())
 }
 
 async fn app_login(
-    global_store: RwSignal<GlobalStore>,
-    api_client: Arc<reqwest::Client>,
+    global_store: &GlobalStore,
+    api_client: &reqwest::Client,
     backend_url: String,
 ) -> Result<DtoUserDetails, DtoErrorResponse> {
     let url_app_login = backend_url + PATH_API_AUTH + "/app_login";
     let request_builder = api_client.post(&url_app_login);
 
-    let result =
-        utils_web::send_request::<DtoUserDetails>(&global_store.get_untracked(), request_builder)
-            .await?;
+    let result = utils_web::send_request::<DtoUserDetails>(global_store, request_builder).await?;
     Ok(result)
 }
 
 pub async fn initial_check_login(
-    global_store: RwSignal<GlobalStore>,
+    global_store: &GlobalStore,
     storage_refresh_token: Signal<String>,
     storage_set_refresh_token: WriteSignal<String>,
     oidc_client: &MyOidcClient,
-    api_client: Arc<reqwest::Client>,
+    api_client: &reqwest::Client,
     backend_url: String,
 ) -> anyhow::Result<()> {
     log::trace!("auth_service::initial_check_login start");
@@ -232,9 +221,10 @@ pub async fn initial_check_login(
         match token_response {
             Ok(token_response) => {
                 store_token_response(global_store, &token_response, storage_set_refresh_token)?;
-                app_login(global_store, api_client, backend_url.clone())
+                let user_details = app_login(global_store, api_client, backend_url)
                     .await
                     .map_err(|err| anyhow!(err))?;
+                global_store.user_details.set(Some(user_details));
             }
             Err(_) => {
                 storage_set_refresh_token("".to_string());
@@ -254,7 +244,7 @@ pub async fn login(oidc_client: &MyOidcClient, session_set_pkce_verifier: WriteS
 }
 
 pub async fn after_login(
-    global_store: RwSignal<GlobalStore>,
+    global_store: &GlobalStore,
     oidc_client: &MyOidcClient,
     session_pkce_verifier: Signal<String>,
     session_set_pkce_verifier: WriteSignal<String>,
@@ -262,18 +252,11 @@ pub async fn after_login(
     iss: Option<String>,
     state: Option<String>,
     code: Option<String>,
-    api_client: Arc<reqwest::Client>,
+    api_client: &reqwest::Client,
     backend_url: String,
 ) -> anyhow::Result<()> {
     log::trace!("auth_service::after_login start");
-    if global_store
-        .get_untracked()
-        .refresh_token
-        .get_untracked()
-        .is_none()
-        && iss.is_some()
-        && state.is_some()
-    {
+    if global_store.refresh_token.get_untracked().is_none() && iss.is_some() && state.is_some() {
         if let Some(code) = code {
             let pkce_verifier = session_pkce_verifier.get_untracked();
 
@@ -282,9 +265,6 @@ pub async fn after_login(
             store_token_response(global_store, &token_response, storage_set_refresh_token)?;
 
             session_set_pkce_verifier("".to_string());
-            app_login(global_store, api_client, backend_url)
-                .await
-                .map_err(|err| anyhow!(err))?;
         }
     }
     log::trace!("auth_service::after_login end");

@@ -11,8 +11,3 @@ pub struct AskAssistantQuestionRequest {
 pub struct AskAssistantQuestionResponse {
     pub answer: String,
 }
-
-#[derive(Clone, Serialize, Deserialize)]
-pub struct AskAssistantQuestionResponseError {
-    pub message: String,
-}

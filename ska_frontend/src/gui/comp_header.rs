@@ -31,7 +31,16 @@ pub fn CompHeader() -> impl IntoView {
                 <span class="flex-1"></span>
                 <details class="dropdown dropdown-end">
                     <summary class="m-1 btn">
-                        <Show when=move || global_store.get().refresh_token.get().is_some()><p>user</p></Show>
+                        <Show when=move || global_store.get().refresh_token.get().is_some()>
+                            <p>
+                                { move ||
+                                    match global_store.get().user_details.get() {
+                                    Some(user_details) => user_details.username,
+                                    None => "unknown".to_string()
+                                }
+                            }
+                            </p>
+                        </Show>
                         <img src="assets/icons/user-circle.svg" width="24" />
                         <img src="assets/icons/chevron-down.svg" width="16" />
                     </summary>

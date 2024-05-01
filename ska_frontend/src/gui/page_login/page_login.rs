@@ -54,17 +54,19 @@ async fn check_login(
     storage_set_refresh_token: WriteSignal<String>,
 ) -> Result<(), anyhow::Error> {
     let query = query_res?;
+    let global_state = &global_state.get_untracked();
+    let global_store = &global_store.get_untracked();
     service_auth::after_login(
         global_store,
-        &global_state.get().oidc_client,
+        &global_state.oidc_client,
         session_pkce_verifier,
         session_set_pkce_verifier,
         storage_set_refresh_token,
         query.iss,
         query.state,
         query.code,
-        global_state.get_untracked().api_client,
-        global_state.get_untracked().env_config.backend_url.clone(),
+        &global_state.api_client,
+        global_state.env_config.backend_url.clone(),
     )
     .await?;
     check_login_complete.set(true);
