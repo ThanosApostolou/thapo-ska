@@ -34,8 +34,8 @@ pub fn CompHeader() -> impl IntoView {
                         <Show when=move || global_store.get().refresh_token.get().is_some()>
                             <p>
                                 { move ||
-                                    match global_store.get().user_details.get() {
-                                    Some(user_details) => user_details.username,
+                                    match &global_store.get().user_details.get() {
+                                    Some(user_details) => user_details.username.clone(),
                                     None => "unknown".to_string()
                                 }
                             }
