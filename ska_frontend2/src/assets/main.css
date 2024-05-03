@@ -3,36 +3,26 @@
 @tailwind components;
 @tailwind utilities;
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+html,
+body {
+    @apply min-w-96;
+    height: 100%;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+.ska-page-container {
+    @apply flex flex-row flex-auto min-h-0;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+.ska-page-column-flex {
+    @apply flex-auto overflow-x-hidden overflow-y-auto p-2
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+.ska-page-column {
+    @apply flex-none overflow-x-hidden overflow-y-auto p-2
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+.mydiv {
+    background-color: red;
+    height: 400px;
+    width: 400px;
 }

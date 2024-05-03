@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <main>
-    page home
-  </main>
+  <div>
+    page homes
+  </div>
 </template>
