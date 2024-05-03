@@ -5,8 +5,10 @@
   <div class="ska-page-container">
     <div class="ska-page-column-flex">
       <div>
-        "Home Page"
+        "Account Page"
       </div>
     </div>
   </div>
 </template>
+
+<style></style>

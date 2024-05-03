@@ -4,8 +4,5 @@ import CompDrawer from './CompDrawer.vue';
 </script>
 
 <template>
-  <main>
-    <CompDrawer />
-    <RouterView />
-  </main>
+  <CompDrawer />
 </template>

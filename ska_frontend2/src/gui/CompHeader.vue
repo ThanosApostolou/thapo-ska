@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { GlobalState } from '@/domain/global_state/global_state';
+
+const globalState = GlobalState.instance();
+
 </script>
 
 <template>
@@ -7,7 +11,10 @@
       <label for="my-drawer" class="btn drawer-button">
         <img src="/assets/icons/bors-3.svg" width="24" />
       </label>
-      <a href={PATH_HOME} class="btn btn-ghost text-neutral-content text-xl">Specific Knowledge Assistant</a>
+      <RouterLink :to="globalState.appRoutes.PAGE_HOME" class="btn btn-ghost text-neutral-content text-xl">
+        Specific Knowledge Assistant
+      </RouterLink>
+
       <span class="flex-1"></span>
       <details class="dropdown dropdown-end">
         <summary class="m-1 btn">

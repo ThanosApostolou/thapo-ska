@@ -1,8 +1,9 @@
+import type { AppRoutes } from '@/domain/global_state/app_routes';
 import type { RouteRecordRaw } from 'vue-router';
 
-export function createHomeRoutes(): RouteRecordRaw {
+export function createRouterHome(appRoutes: AppRoutes): RouteRecordRaw {
     const routes = {
-        path: '/home',
+        path: appRoutes.PAGE_HOME,
         name: 'home',
         component: () => import('./PageHome.vue')
     };
