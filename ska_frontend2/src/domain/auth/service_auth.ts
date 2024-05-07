@@ -1,11 +1,9 @@
-import { User, UserManager, type UserManagerSettings } from "oidc-client-ts";
-import type { EnvConfig } from "../global_state/env_config";
+import { User } from "oidc-client-ts";
 import { GlobalState } from "../global_state/global_state";
 import type { Router } from "vue-router";
-import type { Store } from "pinia";
 import type { GlobalStore } from "../global_state/global_store";
 import { DtoUserDetails } from "./dto_user_details";
-import { Ok, type Result } from "@/utils/core/result";
+import { type Result } from "@/utils/core/result";
 import type { DtoErrorResponse } from "@/utils/error/errors";
 import { UtilsHttp } from "@/utils/http/utils_http";
 
@@ -82,9 +80,9 @@ export class ServiceAuth {
 
     static async app_login(): Promise<Result<DtoUserDetails, DtoErrorResponse>> {
         const globalState = GlobalState.instance();
-        const urlAppLogin = `${globalState.envConfig.backendUrl}${this.PATH_API_AUTH}"/app_login`;
+        const urlAppLogin = `${globalState.envConfig.backendUrl}${this.PATH_API_AUTH}/app_login`;
 
-        return await UtilsHttp.getRequest<DtoUserDetails>(urlAppLogin);
+        return await UtilsHttp.postRequest<DtoUserDetails>(urlAppLogin);
     }
 
 }

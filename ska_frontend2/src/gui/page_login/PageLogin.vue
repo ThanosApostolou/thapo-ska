@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ServiceAuth } from '@/domain/auth/service_auth';
-import { GlobalState } from '@/domain/global_state/global_state';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 

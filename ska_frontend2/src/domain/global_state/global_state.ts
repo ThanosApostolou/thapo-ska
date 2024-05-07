@@ -1,6 +1,6 @@
 import { EnvConfig } from "./env_config";
 import { AppRoutes } from "./app_routes";
-import type { User, UserManager } from "oidc-client-ts";
+import type { UserManager } from "oidc-client-ts";
 import { createUserManager } from "../auth/create_user_manager";
 import type { AxiosInstance } from "axios";
 import { createHttpClient } from "./create_http_client";

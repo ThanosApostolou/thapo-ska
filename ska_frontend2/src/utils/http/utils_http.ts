@@ -5,18 +5,29 @@ import type { AxiosRequestConfig } from "axios";
 
 export class UtilsHttp {
 
-    static async getRequest<O>(url: string, config?: AxiosRequestConfig<any>): Promise<Result<O, DtoErrorResponse>> {
+    static async getRequest<R, D = unknown>(url: string, config?: AxiosRequestConfig<D>): Promise<Result<R, DtoErrorResponse>> {
         const httpClient = GlobalState.instance().httpClient;
         try {
-            const response = await httpClient.get<O>(url, config);
+            const response = await httpClient.get<R>(url, config);
             return Ok.new(response.data);
         } catch (error: any) {
-            return this.handleError<O>(error);
+            return this.handleError<R>(error);
         }
 
     }
 
-    private static handleError<O>(error: any): Err<O, DtoErrorResponse> {
+    static async postRequest<R, D = unknown>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<Result<R, DtoErrorResponse>> {
+        const httpClient = GlobalState.instance().httpClient;
+        try {
+            const response = await httpClient.post<R>(url, data, config);
+            return Ok.new(response.data);
+        } catch (error: any) {
+            return this.handleError<R>(error);
+        }
+
+    }
+
+    private static handleError<R>(error: any): Err<R, DtoErrorResponse> {
         if (error.response) {
             // The request was made and the server responded with a status code
             // that falls out of the range of 2xx
@@ -24,14 +35,14 @@ export class UtilsHttp {
             if (error.response.status == 422) {
                 // TODO
                 return Err.new(new DtoErrorResponse({
-                    status_code: 500,
+                    status_code: 422,
                     is_unexpected_error: true,
                     packets: [],
                 }));
 
             } else {
                 return Err.new(new DtoErrorResponse({
-                    status_code: 500,
+                    status_code: error.response.status,
                     is_unexpected_error: true,
                     packets: [],
                 }))

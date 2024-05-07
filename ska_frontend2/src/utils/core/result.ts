@@ -36,6 +36,7 @@ export class Ok<O, E> {
     /**
      * Maps a Result<O, E> to Result<O, I> by applying a function to a contained Err value, leaving an Ok value untouched.
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     mapErr<I>(_mapFunction: (error: E) => I): Result<O, I> {
         return new Ok(this._data);
     }
@@ -75,6 +76,7 @@ export class Err<O, E> {
     /**
      * Maps a Result<O, E> to Result<U, E> by applying a function to a contained Ok value, leaving an Err value untouched
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     map<U>(_mapFunction: (data: O) => U): Result<U, E> {
         return new Err(this._error);
     }
