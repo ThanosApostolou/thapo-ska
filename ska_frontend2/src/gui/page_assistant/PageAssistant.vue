@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import CompChat from './CompChat.vue';
 
 // hooks
 const chat_packets = ref<string[]>([])
@@ -20,7 +21,7 @@ const chat_packets = ref<string[]>([])
     </div>
 
     <div class="ska-page-column-flex flex">
-      <CompChat chat_packets=chat_packets />
+      <CompChat chat-packets=chat_packets />
     </div>
   </div>
 </template>

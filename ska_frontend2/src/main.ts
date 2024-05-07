@@ -9,8 +9,7 @@ import { myCreateRouter } from './gui/router'
 
 const globalState = GlobalState.initializeDefault();
 const app = createApp(App)
-
-app.use(createPinia())
-app.use(myCreateRouter(globalState))
+    .use(createPinia())
+    .use(myCreateRouter(globalState));
 
 app.mount('#app')

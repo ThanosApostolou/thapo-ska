@@ -1,8 +1,29 @@
 <script setup lang="ts">
+import { ServiceAuth } from '@/domain/auth/service_auth';
 import RootPage from './PageRoot.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useGlobalStore } from '@/domain/global_state/global_store';
 
-const isAppReady = ref(true);
+// hooks
+const isAppReady = ref(false);
+const globalStore = useGlobalStore();
+
+// lifecycles
+onMounted(async () => {
+  await initialize();
+});
+
+// functions
+async function initialize() {
+  ServiceAuth.initialAuth(globalStore.globalStore);
+  // globalStore.globalStore.access_token = 'test'
+  // globalStore.globalStore = globalStore.globalStore;
+  const user = await ServiceAuth.getUser();
+  console.log('user', user)
+
+  isAppReady.value = true;
+}
+
 </script>
 
 <template>
