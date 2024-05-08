@@ -4,10 +4,14 @@ import { ref } from 'vue';
 import { ChatPacketType, DtoChatPacket } from './dtos/dto_chat_packet';
 import { AskAssistantQuestionRequest } from './dtos/dto_ask_assistant_question';
 import { ServiceAssistant } from './service_assistant';
+import type { DtoLlmData } from './dtos/dto_fetch_assistant_options';
 
 // hooks
 const props = defineProps<{
-  chatPackets: DtoChatPacket[]
+  chatPackets: DtoChatPacket[],
+  selectedLlm: DtoLlmData,
+  prompt: string,
+  isEditPrompt: boolean,
 }>();
 // const chat_packets = ref<DtoChatPacket[]>([])
 const question = ref<string>('');
@@ -15,8 +19,8 @@ const question = ref<string>('');
 async function onSubmit() {
   const request = new AskAssistantQuestionRequest({
     question: question.value,
-    llm_model: "gpt2",
-    prompt_template: null,
+    llm_model: props.selectedLlm.name,
+    prompt_template: props.isEditPrompt ? props.prompt : null,
   });
 
   const newTimestamp = Date.now();

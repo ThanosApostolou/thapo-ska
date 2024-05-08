@@ -41,12 +41,12 @@ pub fn rag_invoke(
     if llm_name.len() > 96 {
         return Err(anyhow::anyhow!("llm_name length must be <= 96"));
     }
-    if question.len() > 192 {
-        return Err(anyhow::anyhow!("question length must be <= 192"));
+    if question.len() > 256 {
+        return Err(anyhow::anyhow!("question length must be <= 256"));
     }
     if let Some(prompt_template) = prompt_template {
-        if prompt_template.len() > 192 {
-            return Err(anyhow::anyhow!("prompt_template length must be <= 192"));
+        if prompt_template.len() > 384 {
+            return Err(anyhow::anyhow!("prompt_template length must be <= 384"));
         }
     }
 
