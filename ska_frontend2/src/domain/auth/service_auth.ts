@@ -8,7 +8,7 @@ import type { DtoErrorResponse } from "@/utils/error/errors";
 import { UtilsHttp } from "@/utils/http/utils_http";
 
 export class ServiceAuth {
-    static readonly PATH_API_AUTH: string = "api/auth";
+    private static readonly PATH_API_AUTH: string = "api/auth";
 
     static async getUser(): Promise<User | null> {
         const userManager = GlobalState.instance().userManager;
@@ -62,8 +62,9 @@ export class ServiceAuth {
     static async initialAuth(globalStore: GlobalStore): Promise<void> {
         const globalState = GlobalState.instance();
         console.log('globalState', globalState)
-        const user = await ServiceAuth.getUser();
+        let user = await ServiceAuth.getUser();
         if (user != null) {
+            user = await ServiceAuth.renewToken();
             const dtoUserDetailsResult = await this.app_login();
             const dtoUserDetails = dtoUserDetailsResult.unwrap();
             globalStore.userDetails = dtoUserDetails;
@@ -74,6 +75,8 @@ export class ServiceAuth {
             // globalStore.idToken = user.id_token ? user.id_token : null;
             // globalStore.accessToken = user.access_token ? user.access_token : null;
             // globalStore.refreshToken = user.refresh_token ? user.refresh_token : null;
+        } else {
+            //
         }
 
     }
@@ -82,7 +85,8 @@ export class ServiceAuth {
         const globalState = GlobalState.instance();
         const urlAppLogin = `${globalState.envConfig.backendUrl}${this.PATH_API_AUTH}/app_login`;
 
-        return await UtilsHttp.postRequest<DtoUserDetails>(urlAppLogin);
+        const result = await UtilsHttp.postRequest<unknown>(urlAppLogin);
+        return result.map((data) => DtoUserDetails.fromUnknown(data));
     }
 
 }

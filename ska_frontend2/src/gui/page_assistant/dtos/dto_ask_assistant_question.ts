@@ -1,3 +1,5 @@
+import { UtilsTypes } from "@/utils/core/utils_types";
+
 export class AskAssistantQuestionRequest {
     question: string;
     llm_model: string;
@@ -21,5 +23,12 @@ export class AskAssistantQuestionResponse {
         answer: string
     }) {
         this.answer = obj.answer;
+    }
+
+    static fromUnknown(value: unknown): AskAssistantQuestionResponse {
+        const obj = UtilsTypes.unknownToObject(value).unwrap();
+        return new AskAssistantQuestionResponse({
+            answer: UtilsTypes.unknownToString(obj.answer).unwrap()
+        })
     }
 }

@@ -5,8 +5,7 @@ import { ServiceAuth } from "../auth/service_auth";
 export function createHttpClient(envConfig: EnvConfig) {
     const httpClient = axios.create({
         baseURL: envConfig.backendUrl,
-        timeout: 1000,
-        headers: { 'X-Custom-Header': 'foobar' }
+        timeout: 210000,
     });
 
     httpClient.interceptors.request.use(requestIntereptor)
@@ -15,7 +14,10 @@ export function createHttpClient(envConfig: EnvConfig) {
 
 async function requestIntereptor(config: InternalAxiosRequestConfig<any>) {
     // Do something before request is sent
-    const user = await ServiceAuth.getUser();
+    let user = await ServiceAuth.getUser();
+    if (user?.expired) {
+        user = await ServiceAuth.renewToken();
+    }
     if (user?.access_token != null) {
         config.headers.Authorization = `Bearer ${user.access_token}`;
     }

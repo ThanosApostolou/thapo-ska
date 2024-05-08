@@ -15,12 +15,7 @@ onMounted(async () => {
 
 // functions
 async function initialize() {
-  ServiceAuth.initialAuth(globalStore.globalStore);
-  // globalStore.globalStore.access_token = 'test'
-  // globalStore.globalStore = globalStore.globalStore;
-  const user = await ServiceAuth.getUser();
-  console.log('user', user)
-
+  await ServiceAuth.initialAuth(globalStore.globalStore);
   isAppReady.value = true;
 }
 

@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import CompChat from './CompChat.vue';
+import { ChatPacketType, DtoChatPacket } from './dtos/dto_chat_packet';
 
 // hooks
-const chat_packets = ref<string[]>([])
-
+const chatPackets = ref<DtoChatPacket[]>([
+  new DtoChatPacket({
+    timestamp: Date.now(),
+    value: 'Please ask me anything related to this field',
+    packet_type: ChatPacketType.ANSWER
+  })
+])
 
 </script>
 
@@ -21,7 +27,7 @@ const chat_packets = ref<string[]>([])
     </div>
 
     <div class="ska-page-column-flex flex">
-      <CompChat chat-packets=chat_packets />
+      <CompChat :chat-packets="chatPackets" />
     </div>
   </div>
 </template>
