@@ -1,4 +1,6 @@
 llm_build:
+    #!/usr/bin/env bash
+    set -eu
     poetry build --format wheel
 
 backend_run_server:
