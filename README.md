@@ -21,3 +21,21 @@ trunk serve --open
 ```
 wasm-pack test --node
 ```
+
+## RAG
+
+### prod env
+1. copy data to /mnt/data/container-data/local-path-provisioner/thapo-ska/prod/data
+2. run
+```
+sudo chown -R 14000:14000 /mnt/data/container-data/local-path-provisioner/thapo-ska/prod/data
+```
+3. rag
+```
+sudo kubectl -n thapo-ska-prod exec --stdin --tty deployment.apps/deployment-skabackend -- /bin/bash
+```
+
+inside shell
+```
+./bin/run_cli.sh model download
+```
