@@ -36,7 +36,7 @@ backend_pack:
     rsync -av target/release/app-server dist/ska_backend/bin/app-server
     rsync -av target/release/app-cli dist/ska_backend/bin/app-cli
 
-    pip install --compile ./dist/thapo_ska-0.1.0-py3-none-any.whl -t dist/ska_backend/share/thapo_ska_py
+    pip install --compile ./dist/thapo_ska-0.1.0-py3-none-any.whl -t dist/ska_backend/share/thapo_ska_py --extra-index-url https://download.pytorch.org/whl/cpu
 
 frontend_run:
     #!/usr/bin/env bash

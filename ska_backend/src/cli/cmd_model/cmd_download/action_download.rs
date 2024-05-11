@@ -7,17 +7,12 @@ use crate::modules::myfs::my_paths;
 
 pub fn do_download(global_state: &GlobalState) -> anyhow::Result<()> {
     tracing::trace!("do_download start");
-    let contents = fs::read_to_string(global_state.env_config.ska_llm_dir.clone() + "/lib.py")
-        .expect("Should have been able to read the file");
-
     let download_dir = my_paths::get_models_download_dir(&global_state.env_config);
     let download_dir = download_dir.as_path();
     if download_dir.exists() {
         fs::remove_dir_all(download_dir)?;
     }
     fs::create_dir_all(download_dir)?;
-
-    println!("{}", contents);
 
     let nn_models = service_nn_model::get_nn_models_list();
     let python_main_path = my_paths::get_ska_llm_main_py(&global_state.env_config)

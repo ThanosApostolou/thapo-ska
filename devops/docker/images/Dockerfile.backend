@@ -50,9 +50,5 @@ RUN apt-get update && apt-get install --no-install-recommends -y libssl3 python3
     chown -R thaposka:thaposka /home/thaposka/.config/ska/${ARG_THAPO_SKA_ENV_PROFILE}
 WORKDIR /app
 COPY --from=builder4 /build/dist/ska_backend /app
-RUN ls -la
-RUN ls -la ./bin
-RUN ls -la ./etc
-RUN ls -la ./share
 USER thaposka
 CMD ./bin/app-server.sh
