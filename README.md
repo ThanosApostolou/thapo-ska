@@ -40,4 +40,5 @@ inside shell
 ./bin/app-cli.sh model download
 ./bin/app-cli.sh model insert
 ./bin/app-cli.sh model rag-prepare --emb-name all-MiniLM-L6-v2
+./bin/app-cli.sh model rag-invoke --emb-name all-MiniLM-L6-v2 --llm-name gpt2 --question "what is a database?"
 ```
