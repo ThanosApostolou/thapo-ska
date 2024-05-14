@@ -20,6 +20,7 @@ faiss-cpu = "1.8.0"
 llama-cpp-python = "0.2.73"
 accelerate = "0.30.0"
 torch = { version = "2.3.0+cpu", source = "pytorch_cpu" }
+nltk = "3.8.1"
 
 
 [tool.poetry.group.dev.dependencies]

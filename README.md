@@ -37,5 +37,7 @@ sudo kubectl -n thapo-ska-prod exec --stdin --tty deployment.apps/deployment-ska
 
 inside shell
 ```
-./bin/run_cli.sh model download
+./bin/app-cli.sh model download
+./bin/app-cli.sh model insert
+./bin/app-cli.sh model rag-prepare --emb-name all-MiniLM-L6-v2
 ```

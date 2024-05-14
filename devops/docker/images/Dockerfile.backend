@@ -40,15 +40,20 @@ COPY --from=builder3 /build/dist/*.whl /build/dist/
 COPY ./ska_backend/distribution /build/ska_backend/distribution
 ENV THAPO_SKA_ENV_PROFILE=${ARG_THAPO_SKA_ENV_PROFILE}
 RUN just backend_pack
+ENV NLTK_DATA="/build/dist/ska_backend/share/nltk_data"
+ENV PYTHONPATH="/build/dist/ska_backend/share/thapo_ska_py"
+RUN mkdir -p ${NLTK_DATA} && python -m nltk.downloader popular punkt
 
 
 FROM docker.io/debian:bookworm-20231120 as runner
 ARG ARG_THAPO_SKA_ENV_PROFILE
-RUN apt-get update && apt-get install --no-install-recommends -y libssl3 python3 python-is-python3 && apt-get clean && rm -rf /var/lib/apt/lists/* && \
+RUN apt-get update && apt-get install --no-install-recommends -y libssl3 python3 python-is-python3 libgl1-mesa-glx libopencv-dev poppler-utils tesseract-ocr && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     useradd -m -u 14000 -U thaposka && \
     mkdir -p /home/thaposka/.config/ska/${ARG_THAPO_SKA_ENV_PROFILE} && \
     chown -R thaposka:thaposka /home/thaposka/.config/ska/${ARG_THAPO_SKA_ENV_PROFILE}
 WORKDIR /app
+ENV NLTK_DATA="/app/share/nltk_data"
+ENV PYTHONPATH="/app/share/thapo_ska_py"
 COPY --from=builder4 /build/dist/ska_backend /app
 USER thaposka
 CMD ./bin/app-server.sh
