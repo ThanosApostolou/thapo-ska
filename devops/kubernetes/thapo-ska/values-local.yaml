@@ -37,11 +37,11 @@ skabackend:
 
   resources:
     limits:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 3000m
+      memory: 3Gi
     requests:
-      cpu: 100m
-      memory: 64Mi
+      cpu: 200m
+      memory: 256Mi
 
   autoscaling:
     enabled: false
@@ -60,7 +60,7 @@ skaiam:
 
   resources:
     limits:
-      cpu: 300m
+      cpu: 400m
       memory: 1024Mi
     requests:
       cpu: 200m

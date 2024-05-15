@@ -37,7 +37,7 @@ skabackend:
 
   resources:
     limits:
-      cpu: 2000m
+      cpu: 3000m
       memory: 3Gi
     requests:
       cpu: 200m
