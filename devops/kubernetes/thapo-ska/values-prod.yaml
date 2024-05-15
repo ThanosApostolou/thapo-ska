@@ -71,9 +71,9 @@ ingress:
   className: "nginx"
   annotations:
     nginx.ingress.kubernetes.io/app-root: /app
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "420"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "420"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "420"
   host: thapo-ska.thapo.org
 
 # PV

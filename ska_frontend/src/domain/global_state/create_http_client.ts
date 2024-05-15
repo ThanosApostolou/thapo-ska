@@ -5,7 +5,7 @@ import { ServiceAuth } from "../auth/service_auth";
 export function createHttpClient(envConfig: EnvConfig) {
     const httpClient = axios.create({
         baseURL: envConfig.backendUrl,
-        timeout: 210000,
+        timeout: 420000,
     });
 
     httpClient.interceptors.request.use(requestIntereptor)
