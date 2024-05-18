@@ -4,9 +4,10 @@ import sys
 import skalib
 
 HOME = os.environ['HOME']
+data_path = f"{os.environ['HOME']}/.config/ska/local/data"
+
 
 def rag_prepare():
-    data_path = f"{os.environ['HOME']}/.config/ska/local/data"
     vectore_store_path = f"{os.environ['HOME']}/.config/ska/local/vector_store"
     embedding_model_path = f"{os.environ['HOME']}/.config/ska/local/llms/all-MiniLM-L6-v2"
     print(f"rag {vectore_store_path}")
@@ -32,6 +33,9 @@ Answer: [/INST]
     print("answer")
     print(answer)
 
+def create_thapollm():
+    skalib.create_thapollm(data_path)
+
 def main():
     parser = argparse.ArgumentParser(
                     prog='ska_llm_main',
@@ -44,6 +48,8 @@ def main():
         rag_prepare()
     elif args.action == 'rag_invoke':
         rag_invoke()
+    elif args.action == 'create_thapollm':
+        create_thapollm()
 
 
 

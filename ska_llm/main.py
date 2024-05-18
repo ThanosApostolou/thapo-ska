@@ -13,6 +13,8 @@ def handle_rag_prepare(data_path: str, vector_store_path: str, embedding_model_p
 def handle_rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str):
     skalib.rag_invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type)
 
+def handle_create_thapollm(data_path: str):
+    skalib.create_thapollm(data_path)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -40,6 +42,10 @@ def main():
     parser_rag_invoke.add_argument('prompt_template', type=str)
     parser_rag_invoke.add_argument('question', type=str)
     parser_rag_invoke.add_argument('model_type', type=str)
+
+    parser_create_thapollm = subparsers.add_parser("create_thapollm")
+    parser_create_thapollm.add_argument('data_path', type=str)
+
     args = parser.parse_args()
 
     if args.cmd == 'download_llm':
@@ -48,6 +54,8 @@ def main():
         handle_rag_prepare(args.data_path, args.vector_store_path, args.embedding_model_path)
     elif args.cmd == 'rag_invoke':
         handle_rag_invoke(args.vector_store_path, args.embedding_model_path, args.llm_model_path, args.prompt_template, args.question, args.model_type)
+    elif args.cmd == 'create_thapollm':
+        handle_create_thapollm(args.data_path)
     else:
         raise Exception(f"unknown cmd {args.cmd}")
 

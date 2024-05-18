@@ -93,11 +93,7 @@ def get_embeddings(embedding_model_path: str):
     return emb
 
 
-def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
-    """
-    Retrieval Augmented Generation (RAG) prepare
-    """
-
+def read_docs(data_path: str) -> list[Document]:
     print("DirectoryLoader txt")
     txt_loader = DirectoryLoader(data_path, glob="**/*.txt", loader_cls=TextLoader, silent_errors=True, show_progress=True, use_multithreading=True)
     txt_docs = txt_loader.load()
@@ -124,6 +120,17 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
 
     docs = txt_docs + md_docs + pdf_docs + html_docs + xml_docs
     print(f"len(docs): {len(docs)}")
+    return docs
+
+
+
+
+def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
+    """
+    Retrieval Augmented Generation (RAG) prepare
+    """
+
+    docs = read_docs(data_path)
 
     # transformation: split the documents into chunks
     splitter = RecursiveCharacterTextSplitter(

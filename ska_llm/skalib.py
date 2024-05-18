@@ -1,5 +1,5 @@
 import sys
-from scripts import download_llms, rag
+from scripts import download_llms, rag, llm
 import json
 
 def download_llm_huggingface(downloadDir: str, repo_id: str, rel_path: str, revision: str, allow_patterns: str, ignore_patterns: str):
@@ -20,6 +20,10 @@ def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path
     output_json = json.dumps(output_dto.to_json_obj())
     print("rag_invoke_output:\n", output_json)
     return output_json
+
+
+def create_thapollm(data_path: str):
+    llm.create_thapollm(data_path)
 
 
 if __name__ == '__main__':
