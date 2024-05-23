@@ -8,6 +8,7 @@ import torch
 
 from scripts import rag
 from scripts import constants
+from ska_llm.scripts.skallm.skallm_lstm import train_skallm_lstm
 
 def tokenize_text(text: str, method: str) -> list[str]:
     tokens: list[str] = []
@@ -91,3 +92,7 @@ def create_thapollm(data_path: str):
     y = torch.tensor(dataY)
     print(X.shape, y.shape)
     dataX_len = len(dataX)
+
+
+    print("train char_model")
+    train_skallm_lstm(vocab_len, X, y)
