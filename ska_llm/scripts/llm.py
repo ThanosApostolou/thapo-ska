@@ -23,8 +23,6 @@ def tokenize_text(text: str, method: str) -> list[str]:
     return tokens
 
 
-
-
 def read_docs(data_path: str):
     raw_text_pickle = "raw_text.pkl"
     raw_text: str = ""
@@ -48,9 +46,9 @@ def read_docs(data_path: str):
     vocab = sorted(list(set(text_tokens)))
     vocab_len = len(vocab)
 
-    print('text_tokens[:100]', text_tokens[:10])
+    print('text_tokens', text_tokens[:20])
     print('text_tokens_len', text_tokens_len)
-    print('vocab[:100]', vocab[:10])
+    print('vocab', vocab[:20])
     print('vocab_len', vocab_len)
     return text_tokens, text_tokens_len, vocab, vocab_len
 
@@ -62,8 +60,8 @@ def create_vocab_dicts(vocab: list[str]):
         char_to_int_dict[c] = i
         int_to_char_dict[i] = c
 
-    print('char_to_int_dict', list(char_to_int_dict.items()), 5)
-    print('int_to_char_dict', list(int_to_char_dict.items()), 5)
+    print('char_to_int_dict', list(char_to_int_dict.items())[:20])
+    print('int_to_char_dict', list(int_to_char_dict.items())[:20])
     return (char_to_int_dict, int_to_char_dict)
 
 
@@ -81,8 +79,8 @@ def create_thapollm(data_path: str):
         dataX.append([char_to_int_dict[char] for char in seq_in])
         dataY.append(char_to_int_dict[seq_out])
 
-    print('dataX[:10]', list(map(lambda row: row[:10], dataX[:10])))
-    print('dataY[:10]', dataY[:10])
+    print('dataX', list(map(lambda row: row[:20], dataX[:20])))
+    print('dataY', dataY[:20])
 
     n_patterns = len(dataX)
     X = torch.tensor(dataX, dtype=torch.float32)
@@ -92,3 +90,4 @@ def create_thapollm(data_path: str):
     X = X / float(vocab_len)
     y = torch.tensor(dataY)
     print(X.shape, y.shape)
+    dataX_len = len(dataX)

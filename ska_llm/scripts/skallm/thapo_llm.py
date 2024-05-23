@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from char_model import train_char_model
+from ska_llm.scripts.skallm.skallm_lstm import train_skallm_lstm
 
 def thapo_llm_flow():
     # load ascii text and covert to lowercase
@@ -53,4 +53,4 @@ def thapo_llm_flow():
 
     # train char_model
     print("train char_model")
-    train_char_model(n_vocab, char_to_int, X, y)
+    train_skallm_lstm(n_vocab, char_to_int, X, y)
