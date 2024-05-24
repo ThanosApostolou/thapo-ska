@@ -1,14 +1,16 @@
 from langchain_community.vectorstores.faiss import FAISS
 from langchain_core.documents import Document
-from nltk.tokenize import word_tokenize, sent_tokenize
 import pickle
 import os
+from nltk.tokenize import word_tokenize, sent_tokenize
 
 import torch
 
 from scripts import rag
 from scripts import constants
-from ska_llm.scripts.skallm.skallm_lstm import train_skallm_lstm
+from scripts.skalm.skalm import Skalm, train_skallm_lstm
+from scripts.skalm.skalm_config import SkalmConfig
+from ska_llm.scripts.skalm.ska_encoder import SkaEncoder
 
 def tokenize_text(text: str, method: str) -> list[str]:
     tokens: list[str] = []
@@ -42,43 +44,29 @@ def read_docs(data_path: str):
         with open(raw_text_pickle, 'wb') as f:
             pickle.dump(raw_text, f)
 
-    text_tokens = tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
-    text_tokens_len = len(text_tokens)
-    vocab = sorted(list(set(text_tokens)))
-    vocab_len = len(vocab)
-
-    print('text_tokens', text_tokens[:20])
-    print('text_tokens_len', text_tokens_len)
-    print('vocab', vocab[:20])
-    print('vocab_len', vocab_len)
-    return text_tokens, text_tokens_len, vocab, vocab_len
-
-
-def create_vocab_dicts(vocab: list[str]):
-    char_to_int_dict: dict[str, int] = {}
-    int_to_char_dict: dict[int, str] = {}
-    for i, c in enumerate(vocab):
-        char_to_int_dict[c] = i
-        int_to_char_dict[i] = c
-
-    print('char_to_int_dict', list(char_to_int_dict.items())[:20])
-    print('int_to_char_dict', list(int_to_char_dict.items())[:20])
-    return (char_to_int_dict, int_to_char_dict)
+    return raw_text
 
 
 def create_thapollm(data_path: str):
     print("create_thapollm start")
-    (text_tokens, text_tokens_len, vocab, vocab_len) = read_docs(data_path)
-    (char_to_int_dict, int_to_char_dict) = create_vocab_dicts(vocab)
+    skalm_config = SkalmConfig()
+    raw_text = read_docs(data_path)
 
-    seq_length = 100
+    text_tokens = tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
+
+    ska_encoder = SkaEncoder.from_text_tokens(text_tokens)
+
+    encoded_tokens = ska_encoder.encode_list(text_tokens)
+    encoded_tokens_len = len(encoded_tokens)
+
+    seq_len = skalm_config.seq_len
     dataX: list[list[int]] = []
     dataY: list[int] = []
-    for i in range(0, text_tokens_len - seq_length, 1):
-        seq_in = text_tokens[i:i + seq_length]
-        seq_out = text_tokens[i + seq_length]
-        dataX.append([char_to_int_dict[char] for char in seq_in])
-        dataY.append(char_to_int_dict[seq_out])
+    for i in range(0, encoded_tokens_len - seq_len, 1):
+        seq_in = encoded_tokens[i:i + seq_len]
+        seq_out = encoded_tokens[i + seq_len]
+        dataX.append(seq_in)
+        dataY.append(seq_out)
 
     print('dataX', list(map(lambda row: row[:20], dataX[:20])))
     print('dataY', dataY[:20])
@@ -86,13 +74,16 @@ def create_thapollm(data_path: str):
     n_patterns = len(dataX)
     X = torch.tensor(dataX, dtype=torch.float32)
     print('X.shape', X.shape)
-    X = X.reshape(n_patterns, seq_length, 1)
+    X = X.reshape(n_patterns, seq_len, 1)
     print('X.shape', X.shape)
-    X = X / float(vocab_len)
+    X = X / float(ska_encoder.vocab_len)
     y = torch.tensor(dataY)
     print(X.shape, y.shape)
     dataX_len = len(dataX)
 
 
-    print("train char_model")
-    train_skallm_lstm(vocab_len, X, y)
+
+    model = Skalm(skalm_config, n_vocab=ska_encoder.vocab_len)
+    best_model_state_dict = train_skallm_lstm(model, skalm_config, X, y)
+
+    torch.save(best_model_state_dict, "single-char.pth")

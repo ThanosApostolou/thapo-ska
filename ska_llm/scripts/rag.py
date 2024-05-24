@@ -8,7 +8,7 @@ from langchain_community.document_loaders.html import UnstructuredHTMLLoader
 from langchain_community.document_loaders.xml import UnstructuredXMLLoader
 from langchain_core.documents import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings
+from langchain_community.embeddings.huggingface import HuggingFaceBgeEmbeddings, HuggingFaceEmbeddings
 from langchain_community.vectorstores.faiss import FAISS
 
 from langchain_community.llms.llamacpp import LlamaCpp
@@ -84,7 +84,7 @@ class InvokeOutputDto(object):
 
 def get_embeddings(embedding_model_path: str):
     print("get_embeddings start")
-    emb =  HuggingFaceBgeEmbeddings(
+    emb =  HuggingFaceEmbeddings(
         model_name=embedding_model_path,
         model_kwargs={'device': 'cpu'},
         encode_kwargs = {'normalize_embeddings': True}
