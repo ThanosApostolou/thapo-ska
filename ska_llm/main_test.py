@@ -34,7 +34,11 @@ Answer: [/INST]
     print(answer)
 
 def create_thapollm():
-    skalib.create_thapollm(data_path)
+    skalib.create_skalm(data_path)
+
+def invoke_skalm():
+    question = "what is object oriented programming"
+    skalib.invoke_skalm(question, data_path)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -50,6 +54,8 @@ def main():
         rag_invoke()
     elif args.action == 'create_thapollm':
         create_thapollm()
+    elif args.action == 'invoke_skalm':
+        invoke_skalm()
 
 
 

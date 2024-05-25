@@ -22,8 +22,13 @@ def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path
     return output_json
 
 
-def create_thapollm(data_path: str):
-    llm.create_thapollm(data_path)
+def create_skalm(data_path: str):
+    llm.create_skalm(data_path)
+
+
+def invoke_skalm(question: str, data_path: str):
+    llm.invoke_skalm(question, data_path)
+
 
 
 if __name__ == '__main__':
