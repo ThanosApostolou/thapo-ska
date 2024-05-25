@@ -61,13 +61,13 @@ def train_one_epoch(model: Skalm, loader: DataLoader, optimizer: optim.Adam, los
     return avg_epoch_loss
 
 
-def plot_losses(skalm_dir_path: str, train_losses: list[float], suffix: str):
+def plot_losses(skalm_dir_path: str, train_losses: list[float], title: str):
     epoch_list = [i for i in range(len(train_losses))]
     plt.clf()
     plt.cla()
+    plt.close()
     plt.plot(epoch_list, train_losses, '-r', label='Cross-Entropy Loss')
 
-    title = f"skalm_train_loss{suffix}"
     plt.xlabel("Epoch")
     plt.ylabel("Cross-Entropy Loss")
     plt.legend(loc='upper left')
@@ -77,10 +77,13 @@ def plot_losses(skalm_dir_path: str, train_losses: list[float], suffix: str):
     plt.savefig(f"{skalm_dir_path}/{title}.png")
 
 
-def save_model(skalm_dir_path: str, best_model_state_dict: dict[str, Any] | None, train_losses: list[float], epoch: int | None):
+def save_model(skalm_dir_path: str, best_model_state_dict: dict[str, Any] | None, train_losses: list[float], test_losses: list[float], epoch: int | None):
     suffix = f"_{epoch}" if epoch is not None else ""
     model_path = f"{skalm_dir_path}/skalm{suffix}.pth"
-    plot_losses(skalm_dir_path, train_losses, suffix)
+    train_title = f"skalm_train_loss{suffix}"
+    plot_losses(skalm_dir_path, train_losses, train_title)
+    test_title = f"skalm_train_loss{suffix}"
+    plot_losses(skalm_dir_path, test_losses, test_title)
     torch.save(best_model_state_dict, model_path)
 
 
@@ -89,7 +92,7 @@ def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: s
     n_epochs = skalm_config.n_epochs
     batch_size = skalm_config.batch_size
 
-    optimizer = optim.Adam(model.parameters())
+    optimizer = optim.Adam(model.parameters(), lr=skalm_config.lr)
     loss_fn = nn.CrossEntropyLoss(reduction="mean")
     dataset = TensorDataset(X, y)
     dataset_train, dataset_test = random_split(dataset, [0.8, 0.2])
@@ -102,32 +105,34 @@ def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: s
     best_model_state_dict = None
     best_loss = np.inf
     train_losses: list[float] = []
+    test_losses: list[float] = []
     for epoch in range(n_epochs):
         model.train(True)
         print(f"train_one_epoch epoch: {epoch}")
-        train_loss = train_one_epoch(model, loader_train, optimizer, loss_fn)
-        train_losses.append(train_loss)
-        print("Epoch %d: train_loss: %.4f" % (epoch, train_loss))
+        train_avg_loss = train_one_epoch(model, loader_train, optimizer, loss_fn)
+        train_losses.append(train_avg_loss)
+        print("Epoch %d: train_loss: %.4f" % (epoch, train_avg_loss))
 
         # Validation
-        print(f"validate mode epoch: {epoch}")
+        print("Epoch %d: validate model" % (epoch,))
         model.eval()
-        test_loss = 0
         with torch.no_grad():
+            test_total_loss = 0
             for X_batch, y_batch in loader_test:
                 y_pred = model(X_batch)
-                test_loss += loss_fn(y_pred, y_batch)
+                test_loss = loss_fn(y_pred, y_batch)
+                test_total_loss += test_loss.item()
 
-            test_loss = test_loss / len(loader_test)
-            if test_loss < best_loss:
-                best_loss = test_loss
+            test_avg_loss = test_total_loss / len(loader_test)
+            if test_avg_loss <= best_loss:
+                best_loss = test_avg_loss
                 best_model_state_dict = model.state_dict()
-                save_model(skalm_dir_path, best_model_state_dict, train_losses, epoch)
+                save_model(skalm_dir_path, best_model_state_dict, train_losses, test_losses, epoch)
 
             print("Epoch %d: test_loss: %.4f" % (epoch, test_loss))
 
 
-    save_model(skalm_dir_path, best_model_state_dict, train_losses, None)
+    save_model(skalm_dir_path, best_model_state_dict, train_losses, test_losses, None)
     print("train_skallm_lstm end")
     return best_model_state_dict, train_losses
 

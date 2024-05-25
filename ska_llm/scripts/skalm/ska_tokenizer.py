@@ -3,6 +3,8 @@ import json
 from scripts import constants
 from nltk.tokenize import word_tokenize, sent_tokenize
 
+from ska_llm.scripts.skalm.skalm_config import SkalmConfig
+
 
 class SkaTokenizer:
     token_pad = "<!@#$%^&*_SKA_PAD_*&^%$#@!>"
@@ -45,15 +47,22 @@ class SkaTokenizer:
     def decode_list(self, encoded_tokens: list[int]) -> list[str]:
         return list(map(self.decode, encoded_tokens))
 
-    def tokenize_raw_text(self, raw_text: str) -> list[str]:
+    def tokenize_raw_text(self, raw_text: str, skalm_config: SkalmConfig) -> list[str]:
         sentences: list[str] = self.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_SENT)
 
+        max_words=0
         tokens: list[str] = []
         for sentence in sentences:
             words: list[str] = self.tokenize_text(sentence, constants.TOKENIZE_METHOD_NLTK_WORD)
-            words.append(self.token_eos)
-            tokens.extend(words)
+            words_len = len(words)
+            if words_len > max_words:
+                max_words = len(words)
 
+            if words_len >= skalm_config.filter_sentence_len_geq and words_len <= skalm_config.filter_sentence_len_leq:
+                words.append(self.token_eos)
+                tokens.extend(words)
+
+        print('max_words', max_words)
         return tokens
 
 
@@ -85,13 +94,13 @@ class SkaTokenizer:
 
         return tokens
 
-    @classmethod
-    def from_raw_text(cls, raw_text: str) -> 'SkaTokenizer':
-        text_tokens = cls.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
+    @staticmethod
+    def from_raw_text(raw_text: str) -> 'SkaTokenizer':
+        text_tokens = SkaTokenizer.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
         text_vocab = sorted(list(set(text_tokens)))
-        vocab = [cls.token_pad, cls.token_unk, cls.token_eos]
+        vocab = [SkaTokenizer.token_pad, SkaTokenizer.token_unk, SkaTokenizer.token_eos]
         vocab.extend(text_vocab)
-        return cls(vocab=vocab)
+        return SkaTokenizer(vocab=vocab)
 
 
     @staticmethod

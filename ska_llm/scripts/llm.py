@@ -47,7 +47,7 @@ def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, sk
 
     ska_tokenizer = SkaTokenizer.from_raw_text(raw_text)
     seq_len = skalm_config.seq_len
-    tokens  = ska_tokenizer.tokenize_raw_text(raw_text)
+    tokens = ska_tokenizer.tokenize_raw_text(raw_text, skalm_config)
     encoded_tokens = ska_tokenizer.encode_list(tokens)
     encoded_tokens_len = len(encoded_tokens)
 
@@ -86,7 +86,7 @@ def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> 
     model.eval()
 
 
-    text_tokens = ska_tokenizer.tokenize_raw_text(question)
+    text_tokens = ska_tokenizer.tokenize_raw_text(question, skalm_config)
     encoded_tokens = ska_tokenizer.encode_list(text_tokens)
     seq_len = skalm_config.seq_len
     encoded_tokens = encoded_tokens[-seq_len:]
