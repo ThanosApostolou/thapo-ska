@@ -82,7 +82,7 @@ def save_model(skalm_dir_path: str, best_model_state_dict: dict[str, Any] | None
     model_path = f"{skalm_dir_path}/skalm{suffix}.pth"
     train_title = f"skalm_train_loss{suffix}"
     plot_losses(skalm_dir_path, train_losses, train_title)
-    test_title = f"skalm_train_loss{suffix}"
+    test_title = f"skalm_test_loss{suffix}"
     plot_losses(skalm_dir_path, test_losses, test_title)
     torch.save(best_model_state_dict, model_path)
 
