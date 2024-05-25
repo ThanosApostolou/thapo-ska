@@ -15,6 +15,7 @@ class Skalm(nn.Module):
         self.embedding = nn.Embedding(
             num_embeddings=n_vocab,
             embedding_dim=skalm_config.embedding_dim,
+            padding_idx=0
         )
         self.lstm = nn.LSTM(input_size=skalm_config.embedding_dim, hidden_size=skalm_config.lstm_hidden_size, num_layers=skalm_config.lstm_num_layers, batch_first=True)
         self.dropout = nn.Dropout(skalm_config.dropout)
