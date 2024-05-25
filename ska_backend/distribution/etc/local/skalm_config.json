@@ -1,13 +1,11 @@
 {
     "seq_len": 100,
-    "embedding_dim": 64,
-    "lstm_hidden_size": 128,
+    "embedding_dim": 128,
+    "lstm_hidden_size": 256,
     "lstm_num_layers": 1,
     "dropout": 0.1,
-    "n_epochs": 4,
-    "batch_size": 16,
+    "n_epochs": 120,
+    "batch_size": 256,
     "max_tokens": 40,
     "max_eos": 5
 }
-
-

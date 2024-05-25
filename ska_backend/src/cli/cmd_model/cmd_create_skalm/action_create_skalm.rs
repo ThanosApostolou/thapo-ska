@@ -1,4 +1,4 @@
-use std::process;
+use std::{fs, process};
 
 use crate::domain::nn_model::service_nn_model;
 use crate::modules::global_state::GlobalState;
@@ -30,6 +30,9 @@ pub fn do_create_skalm(global_state: &GlobalState) -> anyhow::Result<()> {
         .to_str()
         .ok_or(anyhow::anyhow!("path not string"))?
         .to_string();
+
+    fs::create_dir_all(&skalm_dir_path)?;
+    fs::create_dir_all(&ska_tmp_dir)?;
 
     py_create_skalm(
         python_main_path,
