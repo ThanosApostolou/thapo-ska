@@ -5,7 +5,9 @@ import skalib
 
 HOME = os.environ['HOME']
 data_path = f"{os.environ['HOME']}/.config/ska/local/data"
-
+skalm_dir_path: str = f"{os.environ['HOME']}/.config/ska/local/llms/skalm"
+skalm_config_path: str = f"{os.path.dirname(__file__)}/../ska_backend/distribution/etc/local/skalm_config.json"
+ska_tmp_dir="/tmp/ska/local"
 
 def rag_prepare():
     vectore_store_path = f"{os.environ['HOME']}/.config/ska/local/vector_store"
@@ -33,27 +35,27 @@ Answer: [/INST]
     print("answer")
     print(answer)
 
-def create_thapollm():
-    skalib.create_skalm(data_path)
+def create_skalm():
+    skalib.create_skalm(data_path, skalm_dir_path, skalm_config_path, ska_tmp_dir)
 
 def invoke_skalm():
     question = "what is object oriented programming"
-    skalib.invoke_skalm(question, data_path)
+    skalib.invoke_skalm(question, skalm_dir_path, skalm_config_path)
 
 def main():
     parser = argparse.ArgumentParser(
                     prog='ska_llm_main',
                     description='ska_llm_main',
                     epilog='ska_llm_main')
-    parser.add_argument('action', action='store', choices=['rag_prepare', 'rag_invoke'])
+    parser.add_argument('action', action='store', choices=['rag_prepare', 'rag_invoke', 'create_skalm', 'invoke_skalm'])
     args = parser.parse_args()
 
     if args.action == 'rag_prepare':
         rag_prepare()
     elif args.action == 'rag_invoke':
         rag_invoke()
-    elif args.action == 'create_thapollm':
-        create_thapollm()
+    elif args.action == 'create_skalm':
+        create_skalm()
     elif args.action == 'invoke_skalm':
         invoke_skalm()
 
@@ -66,5 +68,4 @@ def hello(args: list[tuple[str, str, str]]):
 
 
 if __name__ == "__main__":
-    args = sys.argv
-    globals()[args[1]](*args[2:])
+    main()

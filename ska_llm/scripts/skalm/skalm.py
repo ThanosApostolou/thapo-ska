@@ -1,4 +1,5 @@
 from typing import Any
+from matplotlib import pyplot as plt
 import numpy as np
 from torch import Tensor
 import torch
@@ -60,13 +61,36 @@ def train_one_epoch(model: Skalm, loader: DataLoader, optimizer: optim.Adam, los
     return avg_epoch_loss
 
 
-def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, X: Tensor, y: Tensor) -> dict[str, Any] | None:
+def plot_losses(skalm_dir_path: str, train_losses: list[float], suffix: str):
+    epoch_list = [i for i in range(len(train_losses))]
+    plt.clf()
+    plt.cla()
+    plt.plot(epoch_list, train_losses, '-r', label='Cross-Entropy Loss')
+
+    title = f"skalm_train_loss{suffix}"
+    plt.xlabel("Epoch")
+    plt.ylabel("Cross-Entropy Loss")
+    plt.legend(loc='upper left')
+    plt.title(title)
+
+    # save image
+    plt.savefig(f"{skalm_dir_path}/{title}.png")
+
+
+def save_model(skalm_dir_path: str, best_model_state_dict: dict[str, Any] | None, train_losses: list[float], epoch: int | None):
+    suffix = f"_{epoch}" if epoch is not None else ""
+    model_path = f"{skalm_dir_path}/skalm{suffix}.pth"
+    plot_losses(skalm_dir_path, train_losses, suffix)
+    torch.save(best_model_state_dict, model_path)
+
+
+def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: str, X: Tensor, y: Tensor) -> tuple[dict[str, Any] | None, list[float]]:
     print("train_skallm_lstm start")
     n_epochs = skalm_config.n_epochs
     batch_size = skalm_config.batch_size
 
     optimizer = optim.Adam(model.parameters())
-    loss_fn = nn.CrossEntropyLoss(reduction="sum")
+    loss_fn = nn.CrossEntropyLoss(reduction="mean")
     dataset = TensorDataset(X, y)
     dataset_train, dataset_test = random_split(dataset, [0.8, 0.2])
     print('len(dataset_train)', len(dataset_train))
@@ -77,10 +101,13 @@ def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, X: Tensor, y: Ten
 
     best_model_state_dict = None
     best_loss = np.inf
+    train_losses: list[float] = []
     for epoch in range(n_epochs):
         model.train(True)
         print(f"train_one_epoch epoch: {epoch}")
         train_loss = train_one_epoch(model, loader_train, optimizer, loss_fn)
+        train_losses.append(train_loss)
+        print("Epoch %d: train_loss: %.4f" % (epoch, train_loss))
 
         # Validation
         print(f"validate mode epoch: {epoch}")
@@ -90,14 +117,19 @@ def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, X: Tensor, y: Ten
             for X_batch, y_batch in loader_test:
                 y_pred = model(X_batch)
                 test_loss += loss_fn(y_pred, y_batch)
+
+            test_loss = test_loss / len(loader_test)
             if test_loss < best_loss:
                 best_loss = test_loss
                 best_model_state_dict = model.state_dict()
-            print("Epoch %d: Cross-entropy: %.4f" % (epoch, test_loss))
+                save_model(skalm_dir_path, best_model_state_dict, train_losses, epoch)
+
+            print("Epoch %d: test_loss: %.4f" % (epoch, test_loss))
 
 
+    save_model(skalm_dir_path, best_model_state_dict, train_losses, None)
     print("train_skallm_lstm end")
-    return best_model_state_dict
+    return best_model_state_dict, train_losses
 
 
 def predict(model: Skalm, encoded_tokens: Tensor) -> Tensor:

@@ -22,12 +22,12 @@ def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path
     return output_json
 
 
-def create_skalm(data_path: str):
-    llm.create_skalm(data_path)
+def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, ska_tmp_dir: str):
+    llm.create_skalm(data_path, skalm_dir_path, skalm_config_path, ska_tmp_dir)
 
 
-def invoke_skalm(question: str, data_path: str):
-    llm.invoke_skalm(question, data_path)
+def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str):
+    llm.invoke_skalm(question, skalm_dir_path, skalm_config_path)
 
 
 

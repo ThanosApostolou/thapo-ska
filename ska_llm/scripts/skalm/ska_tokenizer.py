@@ -64,6 +64,13 @@ class SkaTokenizer:
         return json.dumps(json_obj)
 
 
+
+    def save_json_file(self, skalm_dir_path: str):
+        with open(f"{skalm_dir_path}/ska_tokenizer.json", "w") as f:
+            skalm_tokenizer_json = self.to_json()
+            json.dump(skalm_tokenizer_json, f, indent=4)
+
+
     @staticmethod
     def tokenize_text(text: str, method: str) -> list[str]:
         tokens: list[str] = []
@@ -92,3 +99,9 @@ class SkaTokenizer:
         json_obj = json.loads(json_str)
         vocab = json_obj['vocab']
         return SkaTokenizer(vocab=vocab)
+
+    @staticmethod
+    def from_json_file(skalm_dir_path: str) -> 'SkaTokenizer':
+        with open(f"{skalm_dir_path}/ska_tokenizer.json", "r") as f:
+            skalm_tokenizer_json = json.load(f)
+            return SkaTokenizer.from_json(skalm_tokenizer_json)

@@ -14,8 +14,8 @@ from ska_llm.scripts.skalm.ska_tokenizer import SkaTokenizer
 
 
 
-def read_docs(data_path: str):
-    raw_text_pickle = "raw_text.pkl"
+def read_docs(data_path: str, ska_tmp_dir: str):
+    raw_text_pickle = f"{ska_tmp_dir}/raw_text.pkl"
     raw_text: str = ""
 
     if os.path.isfile(raw_text_pickle):
@@ -35,10 +35,13 @@ def read_docs(data_path: str):
     return raw_text
 
 
-def create_skalm(data_path: str):
+def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, ska_tmp_dir: str):
     print("create_thapollm start")
-    skalm_config = SkalmConfig()
-    raw_text = read_docs(data_path)
+    if not os.path.exists(ska_tmp_dir):
+        os.makedirs(ska_tmp_dir, exist_ok=True)
+
+    skalm_config = SkalmConfig.from_json_file(skalm_config_path)
+    raw_text = read_docs(data_path, ska_tmp_dir)
 
     # text_tokens = tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
 
@@ -69,16 +72,15 @@ def create_skalm(data_path: str):
     y = torch.tensor(dataY)
     print(X.shape, y.shape)
 
+    ska_tokenizer.save_json_file(skalm_dir_path)
     model = Skalm(skalm_config, n_vocab=ska_tokenizer.vocab_len)
-    best_model_state_dict = train_skallm_lstm(model, skalm_config, X, y)
+    best_model_state_dict, train_losses = train_skallm_lstm(model, skalm_config, skalm_dir_path, X, y)
 
-    torch.save(best_model_state_dict, "single-char.pth")
 
-def invoke_skalm(question: str, data_path: str) -> str:
-    skalm_config = SkalmConfig()
-    # TODO
-    raw_text = read_docs(data_path)
-    ska_tokenizer = SkaTokenizer.from_raw_text(raw_text)
+
+def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> str:
+    skalm_config = SkalmConfig.from_json_file(skalm_config_path)
+    ska_tokenizer = SkaTokenizer.from_json_file(skalm_dir_path)
     model = Skalm(skalm_config, n_vocab=ska_tokenizer.vocab_len)
     model.load_state_dict(torch.load("single-char.pth"))
     model.eval()
@@ -116,6 +118,9 @@ def invoke_skalm(question: str, data_path: str) -> str:
         final_encoded_tokens.append(predicted_encoded_token)
 
         total_tokens += 1
+        if predicted_encoded_token == ska_tokenizer.encoded_token_eos:
+            total_eos += 1
+
 
     print('predicted_encoded_tokens', predicted_encoded_tokens)
     predicted_tokens = ska_tokenizer.decode_list(predicted_encoded_tokens)
