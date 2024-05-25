@@ -49,3 +49,7 @@ pub fn get_models_data_dir(env_config: &EnvConfig) -> PathBuf {
 pub fn get_vector_store_dir(env_config: &EnvConfig) -> PathBuf {
     get_ska_user_conf_dir(env_config).join("vector_store")
 }
+
+pub fn get_skalm_config_file(env_config: &EnvConfig) -> PathBuf {
+    get_ska_conf_dir(env_config).join("skalm_config.json")
+}

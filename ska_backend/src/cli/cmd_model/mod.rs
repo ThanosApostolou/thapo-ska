@@ -1,3 +1,4 @@
+pub mod cmd_create_skalm;
 pub mod cmd_download;
 pub mod cmd_insert;
 mod cmd_model;

@@ -166,3 +166,18 @@ fn py_rag_invoke(
 
     Ok(invoke_output_dto)
 }
+
+pub fn get_skalm_data() -> NnModelData {
+    NnModelData {
+        name: "skalm".to_string(),
+        repo_id: "".to_string(),
+        rel_path: "skalm".to_string(),
+        model_path: "skalm".to_string(),
+        revision: "".to_string(),
+        allow_patterns: "*".to_string(),
+        ignore_patterns: "".to_string(),
+        model_type: NnModelType::ModelLlm,
+        default_prompt: "".to_string(),
+        llm_model_type: None,
+    }
+}

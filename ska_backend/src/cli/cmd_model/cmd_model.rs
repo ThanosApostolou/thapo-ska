@@ -2,8 +2,9 @@ use clap::{Args, Subcommand};
 
 use crate::{
     cli::cmd_model::{
-        cmd_download::handle_download, cmd_insert::handle_insert,
-        cmd_rag_invoke::handle_rag_invoke, cmd_rag_prepare::handle_rag_prepare,
+        cmd_create_skalm::handle_create_skalm, cmd_download::handle_download,
+        cmd_insert::handle_insert, cmd_rag_invoke::handle_rag_invoke,
+        cmd_rag_prepare::handle_rag_prepare,
     },
     modules::global_state::GlobalState,
 };
@@ -23,6 +24,7 @@ pub enum ModelSubcommands {
     Insert,
     RagPrepare(CmdRagPrepareArgs),
     RagInvoke(CmdRagInvokeArgs),
+    CreateSkalm,
 }
 
 pub fn handle_model(global_state: &GlobalState, cmd_model: &CmdModelArgs) {
@@ -40,6 +42,7 @@ pub fn handle_model(global_state: &GlobalState, cmd_model: &CmdModelArgs) {
             &cmd_rag_invoke_args.question,
             &cmd_rag_invoke_args.prompt_template,
         ),
+        ModelSubcommands::CreateSkalm => handle_create_skalm(global_state),
     }
     tracing::debug!("handle_model end");
 }

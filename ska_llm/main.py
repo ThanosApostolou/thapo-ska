@@ -13,8 +13,8 @@ def handle_rag_prepare(data_path: str, vector_store_path: str, embedding_model_p
 def handle_rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str):
     skalib.rag_invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type)
 
-def handle_create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str):
-    skalib.create_skalm(data_path, skalm_dir_path, skalm_config_path)
+def handle_create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, ska_tmp_dir: str):
+    skalib.create_skalm(data_path, skalm_dir_path, skalm_config_path, ska_tmp_dir)
 
 
 def handle_invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str):
@@ -51,6 +51,7 @@ def main():
     parser_create_thapollm.add_argument('data_path', type=str)
     parser_create_thapollm.add_argument('skalm_dir_path', type=str)
     parser_create_thapollm.add_argument('skalm_config_path', type=str)
+    parser_create_thapollm.add_argument('ska_tmp_dir', type=str)
 
     parser_invoke_skalm = subparsers.add_parser("invoke_skalm")
     parser_invoke_skalm.add_argument('question', type=str)
@@ -66,7 +67,7 @@ def main():
     elif args.cmd == 'rag_invoke':
         handle_rag_invoke(args.vector_store_path, args.embedding_model_path, args.llm_model_path, args.prompt_template, args.question, args.model_type)
     elif args.cmd == 'create_skalm':
-        handle_create_skalm(args.data_path, args.skalm_dir_path, args.skalm_config_path)
+        handle_create_skalm(args.data_path, args.skalm_dir_path, args.skalm_config_path, args.ska_tmp_dir)
     elif args.cmd == 'invoke_skalm':
         handle_invoke_skalm(args.question, args.skalm_dir_path, args.skalm_config_path)
     else:
