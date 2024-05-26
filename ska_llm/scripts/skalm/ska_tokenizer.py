@@ -47,8 +47,7 @@ class SkaTokenizer:
     def decode_list(self, encoded_tokens: list[int]) -> list[str]:
         return list(map(self.decode, encoded_tokens))
 
-    def tokenize_raw_text(self, raw_text: str, skalm_config: SkalmConfig) -> list[str]:
-        sentences: list[str] = self.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_SENT)
+    def tokenize_sentences(self, sentences: list[str], skalm_config: SkalmConfig) -> list[str]:
 
         max_words=0
         tokens: list[str] = []

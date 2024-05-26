@@ -88,15 +88,17 @@ def save_model(skalm_dir_path: str, best_model_state_dict: dict[str, Any] | None
     torch.save(best_model_state_dict, model_path)
 
 
-def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: str, X: Tensor, y: Tensor) -> tuple[dict[str, Any] | None, list[float]]:
+def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: str, Xtrain: Tensor, Ytrain: Tensor, Xtest: Tensor, Ytest: Tensor) -> tuple[dict[str, Any] | None, list[float], list[float]]:
     print("train_skallm_lstm start")
     n_epochs = skalm_config.n_epochs
     batch_size = skalm_config.batch_size
 
     optimizer = optim.Adam(model.parameters(), lr=skalm_config.lr)
     loss_fn = nn.CrossEntropyLoss(reduction="mean")
-    dataset = TensorDataset(X, y)
-    dataset_train, dataset_test = random_split(dataset, [0.8, 0.2])
+    # dataset = TensorDataset(X, y)
+    # dataset_train, dataset_test = random_split(dataset, [0.8, 0.2])
+    dataset_train = TensorDataset(Xtrain, Ytrain)
+    dataset_test = TensorDataset(Xtest, Ytest)
     print('len(dataset_train)', len(dataset_train))
     print('len(dataset_test)', len(dataset_test))
 
@@ -109,7 +111,7 @@ def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: s
     test_losses: list[float] = []
     for epoch in range(n_epochs):
         model.train(True)
-        print(f"train_one_epoch epoch: {epoch}")
+        print(f"Epoch {epoch}: train_one_epoch")
         train_avg_loss = train_one_epoch(model, loader_train, optimizer, loss_fn)
         train_losses.append(train_avg_loss)
         print("Epoch %d: train_loss: %.4f" % (epoch, train_avg_loss))
@@ -125,17 +127,18 @@ def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: s
                 test_total_loss += test_loss.item()
 
             test_avg_loss = test_total_loss / len(loader_test)
+            test_losses.append(test_avg_loss)
             if test_avg_loss <= best_loss:
                 best_loss = test_avg_loss
                 best_model_state_dict = model.state_dict()
                 save_model(skalm_dir_path, best_model_state_dict, train_losses, test_losses, epoch)
 
-            print("Epoch %d: test_loss: %.4f" % (epoch, test_loss))
+            print("Epoch %d: test_loss: %.4f" % (epoch, test_avg_loss))
 
 
     save_model(skalm_dir_path, best_model_state_dict, train_losses, test_losses, None)
     print("train_skallm_lstm end")
-    return best_model_state_dict, train_losses
+    return best_model_state_dict, train_losses, test_losses
 
 
 def predict(model: Skalm, encoded_tokens: Tensor) -> Tensor:

@@ -1,8 +1,9 @@
+import math
 from langchain_community.vectorstores.faiss import FAISS
 from langchain_core.documents import Document
 import pickle
 import os
-
+import random
 import torch
 
 from scripts import rag
@@ -35,6 +36,26 @@ def read_docs(data_path: str, ska_tmp_dir: str):
     return raw_text
 
 
+def create_data_X_Y(ska_tokenizer: SkaTokenizer, skalm_config: SkalmConfig, sentences: list[str]) -> tuple[list[list[int]], list[int]]:
+    seq_len = skalm_config.seq_len
+    tokens: list[str] = ska_tokenizer.tokenize_sentences(sentences, skalm_config)
+    encoded_tokens: list[int] = ska_tokenizer.encode_list(tokens)
+    encoded_tokens_len = len(encoded_tokens)
+
+    dataX: list[list[int]] = []
+    dataY: list[int] = []
+    for i in range(0, encoded_tokens_len - seq_len, 1):
+        seq_in = encoded_tokens[i:i + seq_len]
+        seq_out = encoded_tokens[i + seq_len]
+        dataX.append(seq_in)
+        dataY.append(seq_out)
+
+
+    assert len(seq_in) == seq_len
+
+    return dataX, dataY
+
+
 def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, ska_tmp_dir: str):
     print("create_thapollm start")
     if not os.path.exists(ska_tmp_dir):
@@ -47,34 +68,42 @@ def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, sk
 
     ska_tokenizer = SkaTokenizer.from_raw_text(raw_text)
     seq_len = skalm_config.seq_len
-    tokens = ska_tokenizer.tokenize_raw_text(raw_text, skalm_config)
-    encoded_tokens = ska_tokenizer.encode_list(tokens)
-    encoded_tokens_len = len(encoded_tokens)
+    sentences: list[str] = ska_tokenizer.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_SENT)
+    # we use all the sentences for train data, since we don't want to lose any information
+    dataXtrain, dataYtrain = create_data_X_Y(ska_tokenizer, skalm_config, sentences)
 
-    dataX: list[list[int]] = []
-    dataY: list[int] = []
-    for i in range(0, encoded_tokens_len - seq_len, 1):
-        seq_in = encoded_tokens[i:i + seq_len]
-        seq_out = encoded_tokens[i + seq_len]
-        dataX.append(seq_in)
-        dataY.append(seq_out)
+    # we use 20% of sentences for test data.
+    # Test data exists in train data as well but we don't mind overtraining much because
+    # we want skalm to answer only knowledge found in provided documents and not be a general purpose LLM
+    K: int = math.floor(0.2 * len(sentences))
+    test_indices = random.sample(range(len(sentences)), K)
+    test_stences: list[str] = [sentences[i] for i in sorted(test_indices)]
+    dataXtest, dataYtest = create_data_X_Y(ska_tokenizer, skalm_config, test_stences)
 
-    print('seq_in, seq_len',len(seq_in), seq_len)
-    print('dataX', list(map(lambda row: row[:20], dataX[:20])))
-    print('dataY', dataY[:20])
 
-    n_patterns = len(dataX)
-    X = torch.tensor(dataX, dtype=torch.int64)
-    print('X.shape', X.shape)
-    X = X.reshape(n_patterns, seq_len)
-    print('X.shape', X.shape)
+    print('Xtrain', list(map(lambda row: row[:20], dataXtrain[:20])))
+    print('Xtrain', dataYtrain[:20])
+
+    n_patterns_train = len(dataXtrain)
+    Xtrain = torch.tensor(dataXtrain, dtype=torch.int64)
+    print('X.shape', Xtrain.shape)
+    Xtrain = Xtrain.reshape(n_patterns_train, seq_len)
+    print('X.shape', Xtrain.shape)
     # X = X / float(ska_tokenizer.vocab_len)
-    y = torch.tensor(dataY)
-    print(X.shape, y.shape)
+    Ytrain = torch.tensor(dataYtrain)
+    print(Xtrain.shape, Ytrain.shape)
+
+    n_patterns_test = len(dataXtest)
+    Xtest = torch.tensor(dataXtest, dtype=torch.int64)
+    print('Xtest.shape', Xtest.shape)
+    Xtest = Xtest.reshape(n_patterns_test, seq_len)
+    print('Xtest.shape', Xtest.shape)
+    Ytest = torch.tensor(dataYtest)
+    print(Xtest.shape, Ytest.shape)
 
     ska_tokenizer.save_json_file(skalm_dir_path)
     model = Skalm(skalm_config, n_vocab=ska_tokenizer.vocab_len)
-    best_model_state_dict, train_losses = train_skallm_lstm(model, skalm_config, skalm_dir_path, X, y)
+    best_model_state_dict, train_losses, test_losses = train_skallm_lstm(model, skalm_config, skalm_dir_path, Xtrain, Ytrain, Xtest, Ytest)
 
 
 
@@ -85,8 +114,8 @@ def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> 
     model.load_state_dict(torch.load("single-char.pth"))
     model.eval()
 
-
-    text_tokens = ska_tokenizer.tokenize_raw_text(question, skalm_config)
+    sentences: list[str] = ska_tokenizer.tokenize_text(question, constants.TOKENIZE_METHOD_NLTK_SENT)
+    text_tokens = ska_tokenizer.tokenize_sentences(sentences, skalm_config)
     encoded_tokens = ska_tokenizer.encode_list(text_tokens)
     seq_len = skalm_config.seq_len
     encoded_tokens = encoded_tokens[-seq_len:]
