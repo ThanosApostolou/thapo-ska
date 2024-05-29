@@ -17,8 +17,12 @@ class Skalm(nn.Module):
             embedding_dim=skalm_config.embedding_dim,
             padding_idx=0
         )
-        self.lstm = nn.LSTM(input_size=skalm_config.embedding_dim, hidden_size=skalm_config.lstm_hidden_size, num_layers=skalm_config.lstm_num_layers, batch_first=True)
-        self.dropout = nn.Dropout(skalm_config.dropout)
+        self.lstm = nn.LSTM(input_size=skalm_config.embedding_dim,
+                            hidden_size=skalm_config.lstm_hidden_size,
+                            num_layers=skalm_config.lstm_num_layers,
+                            batch_first=True,
+                            dropout=skalm_config.dropout)
+        # self.dropout = nn.Dropout(skalm_config.dropout)
         self.linear = nn.Linear(skalm_config.lstm_hidden_size, n_vocab)
 
 
@@ -33,7 +37,7 @@ class Skalm(nn.Module):
         x = x[:, -1, :]
 
         # dropout
-        x = self.dropout(x)
+        # x = self.dropout(x)
 
         # produce output
         x = self.linear(x)

@@ -111,7 +111,7 @@ def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> 
     skalm_config = SkalmConfig.from_json_file(skalm_config_path)
     ska_tokenizer = SkaTokenizer.from_json_file(skalm_dir_path)
     model = Skalm(skalm_config, n_vocab=ska_tokenizer.vocab_len)
-    model.load_state_dict(torch.load("single-char.pth"))
+    model.load_state_dict(torch.load(f"{skalm_dir_path}/skalm.pth"))
     model.eval()
 
     sentences: list[str] = ska_tokenizer.tokenize_text(question, constants.TOKENIZE_METHOD_NLTK_SENT)
