@@ -59,7 +59,8 @@ class SkaTokenizer:
 
             if words_len >= skalm_config.filter_sentence_len_geq and words_len <= skalm_config.filter_sentence_len_leq:
                 words.append(self.token_eos)
-                tokens.extend(words)
+                words_filtered = list(filter(lambda word: len(word) <= skalm_config.filter_word_len_leq, words))
+                tokens.extend(words_filtered)
 
         print('max_words', max_words)
         return tokens
@@ -94,11 +95,20 @@ class SkaTokenizer:
         return tokens
 
     @staticmethod
-    def from_raw_text(raw_text: str) -> 'SkaTokenizer':
-        text_tokens = SkaTokenizer.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
+    def from_raw_text(raw_text: str, skalm_config: SkalmConfig) -> 'SkaTokenizer':
+        sentences: list[str] = SkaTokenizer.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_SENT)
+        sentences_tokens: list[list[str]] = list(map(lambda sentence: SkaTokenizer.tokenize_text(sentence, constants.TOKENIZE_METHOD_NLTK_WORD), sentences))
+        sentences_tokens = list(filter(lambda sentence: len(sentence) >= skalm_config.filter_sentence_len_geq and len(sentence) <= skalm_config.filter_sentence_len_leq, sentences_tokens))
+        # text_tokens = SkaTokenizer.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
+        text_tokens: set[str] = set()
+        for sentence_tokens in sentences_tokens:
+            sentence_tokens_filtered = list(filter(lambda token: len(token) <= skalm_config.filter_word_len_leq, sentence_tokens))
+            text_tokens = text_tokens.union(sentence_tokens_filtered)
+
         text_vocab = sorted(list(set(text_tokens)))
         vocab = [SkaTokenizer.token_pad, SkaTokenizer.token_unk, SkaTokenizer.token_eos]
         vocab.extend(text_vocab)
+        print('len(vocab)', len(vocab))
         return SkaTokenizer(vocab=vocab)
 
 

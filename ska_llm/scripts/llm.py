@@ -26,7 +26,7 @@ def read_docs(data_path: str, ska_tmp_dir: str):
         docs: list[Document] = rag.read_docs(data_path)
         # vocab_set: set[str] = set()
         for doc in docs:
-            raw_text = raw_text + doc.page_content.strip().lower()
+            raw_text += " \n " + doc.page_content.strip().lower()
             # doc_chars = set(doc.page_content.lower())
             # vocab_set = vocab_set.union(doc_chars)
 
@@ -66,7 +66,7 @@ def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, sk
 
     # text_tokens = tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
 
-    ska_tokenizer = SkaTokenizer.from_raw_text(raw_text)
+    ska_tokenizer = SkaTokenizer.from_raw_text(raw_text, skalm_config)
     seq_len = skalm_config.seq_len
     sentences: list[str] = ska_tokenizer.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_SENT)
     # we use all the sentences for train data, since we don't want to lose any information
@@ -107,7 +107,7 @@ def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, sk
 
 
 
-def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> str:
+def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> rag.InvokeOutput:
     skalm_config = SkalmConfig.from_json_file(skalm_config_path)
     ska_tokenizer = SkaTokenizer.from_json_file(skalm_dir_path)
     model = Skalm(skalm_config, n_vocab=ska_tokenizer.vocab_len)
@@ -160,4 +160,7 @@ def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> 
     predicted_tokens = list(map(lambda x: x if x != ska_tokenizer.token_eos else "\n", predicted_tokens))
     answer = " ".join(predicted_tokens)
     print('answer', answer)
-    return answer
+    invoke_output = rag.InvokeOutput()
+    invoke_output.question = question
+    invoke_output.answer = answer
+    return invoke_output

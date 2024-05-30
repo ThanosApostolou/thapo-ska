@@ -11,7 +11,7 @@ def rag_prepare(data_path: str, vector_store_path: str, embedding_model_path: st
     rag.prepare(data_path, vector_store_path, embedding_model_path)
 
 
-def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str):
+def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str) -> str:
     output = rag.invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type)
     # print('rag_invoke_context:', output.context)
     # print('rag_invoke_question:', output.question)
@@ -26,8 +26,12 @@ def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, sk
     llm.create_skalm(data_path, skalm_dir_path, skalm_config_path, ska_tmp_dir)
 
 
-def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str):
-    llm.invoke_skalm(question, skalm_dir_path, skalm_config_path)
+def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> str:
+    output = llm.invoke_skalm(question, skalm_dir_path, skalm_config_path)
+    output_dto = rag.InvokeOutputDto.from_invoke_output(output)
+    output_json = json.dumps(output_dto.to_json_obj())
+    print("rag_invoke_output:\n", output_json)
+    return output_json
 
 
 

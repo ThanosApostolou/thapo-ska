@@ -3,7 +3,7 @@ from typing import Any
 
 class SkalmConfig:
     def __init__(self, seq_len: int = 100, embedding_dim: int = 64, lstm_hidden_size: int = 128, lstm_num_layers: int = 1, dropout: float = 0.1,
-                 n_epochs: int = 4, batch_size: int = 16, lr: float = 0.001, filter_sentence_len_geq: int = 3, filter_sentence_len_leq: int = 3000,
+                 n_epochs: int = 4, batch_size: int = 16, lr: float = 0.001, filter_sentence_len_geq: int = 3, filter_sentence_len_leq: int = 3000, filter_word_len_leq: int = 500,
                  max_tokens: int = 40, max_eos: int = 5) -> None:
         self.seq_len = seq_len
         self.embedding_dim = embedding_dim
@@ -17,6 +17,7 @@ class SkalmConfig:
         self.lr = lr
         self.filter_sentence_len_geq = filter_sentence_len_geq
         self.filter_sentence_len_leq = filter_sentence_len_leq
+        self.filter_word_len_leq = filter_word_len_leq
 
         # invoke
         self.max_tokens = max_tokens
@@ -36,6 +37,7 @@ class SkalmConfig:
                             lr=skalm_config_json["lr"],
                             filter_sentence_len_geq=skalm_config_json["filter_sentence_len_geq"],
                             filter_sentence_len_leq=skalm_config_json["filter_sentence_len_leq"],
+                            filter_word_len_leq=skalm_config_json["filter_word_len_leq"],
                             max_tokens=skalm_config_json["max_tokens"],
                             max_eos=skalm_config_json["max_eos"])
 
