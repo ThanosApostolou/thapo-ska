@@ -64,7 +64,7 @@ def train_one_epoch(model: Skalm, loader: DataLoader, optimizer: optim.Adam, los
         # calculate
         train_epoch_total_loss += loss.item()
         winners = y_pred.argmax(dim=1)
-        train_epoch_total_correct += (y_batch == winners).sum().item()
+        train_epoch_total_correct += (y_batch == winners).sum().item() / len(y_batch)
 
     train_epoch_loss = train_epoch_total_loss / len(loader)
     train_epoch_accuracy = train_epoch_total_correct / len(loader)
@@ -79,7 +79,7 @@ def validate_one_epoch(model: Skalm, loader_test: DataLoader, loss_fn: nn.CrossE
         test_loss = loss_fn(y_pred, y_batch)
         test_epoch_total_loss += test_loss.item()
         winners = y_pred.argmax(dim=1)
-        test_epoch_total_correct += (y_batch == winners).sum().item()
+        test_epoch_total_correct += (y_batch == winners).sum().item() / len(y_batch)
 
     test_epoch_loss = test_epoch_total_loss / len(loader_test)
     test_epoch_accuracy = test_epoch_total_correct / len(loader_test)
