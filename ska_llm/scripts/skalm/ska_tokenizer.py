@@ -1,5 +1,6 @@
 
 import json
+from typing import Any
 from scripts import constants
 from nltk.tokenize import word_tokenize, sent_tokenize
 
@@ -66,17 +67,17 @@ class SkaTokenizer:
         return tokens
 
 
-    def to_json(self) -> str:
+    def to_json_obj(self) -> dict[str, Any]:
         json_obj = {
             "vocab": self.vocab
         }
-        return json.dumps(json_obj)
+        return json_obj
 
 
 
     def save_json_file(self, skalm_dir_path: str):
         with open(f"{skalm_dir_path}/ska_tokenizer.json", "w") as f:
-            skalm_tokenizer_json = self.to_json()
+            skalm_tokenizer_json = self.to_json_obj()
             json.dump(skalm_tokenizer_json, f, indent=4)
 
 
@@ -113,8 +114,8 @@ class SkaTokenizer:
 
 
     @staticmethod
-    def from_json(json_str: str) -> 'SkaTokenizer':
-        json_obj = json.loads(json_str)
+    def from_json(json_obj: dict[str, Any]) -> 'SkaTokenizer':
+        # json_obj = json.loads(json_str)
         vocab = json_obj['vocab']
         return SkaTokenizer(vocab=vocab)
 

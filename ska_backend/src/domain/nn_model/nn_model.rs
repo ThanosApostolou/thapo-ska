@@ -6,6 +6,7 @@ pub enum LlmModelTypeEnum {
     CtransformersLlama,
     LlamaCpp,
     HuggingFace,
+    Skalm,
 }
 
 impl LlmModelTypeEnum {
@@ -14,6 +15,7 @@ impl LlmModelTypeEnum {
             LlmModelTypeEnum::CtransformersLlama => "ctransformers_llama",
             LlmModelTypeEnum::LlamaCpp => "llamacpp",
             LlmModelTypeEnum::HuggingFace => "huggingface",
+            LlmModelTypeEnum::Skalm => "skalm",
         }
     }
 }
@@ -132,6 +134,21 @@ impl NnModelData {
             self.revision.clone(),
             self.allow_patterns.clone(),
         )
+    }
+
+    pub fn get_skalm_data() -> NnModelData {
+        NnModelData {
+            name: "skalm".to_string(),
+            repo_id: "".to_string(),
+            rel_path: "skalm".to_string(),
+            model_path: "skalm".to_string(),
+            revision: "".to_string(),
+            allow_patterns: "".to_string(),
+            ignore_patterns: "".to_string(),
+            model_type: NnModelType::ModelLlm,
+            default_prompt: "".to_string(),
+            llm_model_type: Some(LlmModelTypeEnum::Skalm),
+        }
     }
 }
 

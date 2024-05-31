@@ -1,7 +1,7 @@
 use std::{path::PathBuf, process};
 
 use crate::{
-    domain::nn_model::{InvokeOutputDto, NnModelType},
+    domain::nn_model::{InvokeOutputDto, LlmModelTypeEnum, NnModelType},
     modules::{
         global_state::{EnvConfig, GlobalState},
         myfs::my_paths,
@@ -41,11 +41,11 @@ pub fn rag_invoke(
     if llm_name.len() > 96 {
         return Err(anyhow::anyhow!("llm_name length must be <= 96"));
     }
-    if question.len() > 256 {
+    if question.len() > 384 {
         return Err(anyhow::anyhow!("question length must be <= 256"));
     }
     if let Some(prompt_template) = prompt_template {
-        if prompt_template.len() > 384 {
+        if prompt_template.len() > 512 {
             return Err(anyhow::anyhow!("prompt_template length must be <= 384"));
         }
     }
@@ -68,14 +68,19 @@ pub fn rag_invoke(
         ));
     }
     // llm
-    let llm_model_data = nn_models
-        .iter()
-        .filter(|nn_model| nn_model.name == *llm_name)
-        .next()
-        .ok_or(anyhow::anyhow!(
-            "could not find nn_model with name {}",
-            llm_name
-        ))?;
+
+    let llm_model_data = if NnModelData::get_skalm_data().name.eq(llm_name) {
+        &NnModelData::get_skalm_data()
+    } else {
+        nn_models
+            .iter()
+            .filter(|nn_model| nn_model.name == *llm_name)
+            .next()
+            .ok_or(anyhow::anyhow!(
+                "could not find nn_model with name {}",
+                llm_name
+            ))?
+    };
 
     if !matches!(llm_model_data.model_type, NnModelType::ModelLlm) {
         return Err(anyhow::anyhow!(
@@ -113,6 +118,12 @@ pub fn rag_invoke(
         Some(llm_model_type) => llm_model_type.get_value(),
         None => "",
     };
+
+    let skalm_config_path = my_paths::get_skalm_config_file(&global_state.env_config)
+        .to_str()
+        .ok_or(anyhow::anyhow!("path not string"))?
+        .to_string();
+
     let invoke_output_dto = py_rag_invoke(
         python_lib_path,
         vector_store_path,
@@ -121,6 +132,7 @@ pub fn rag_invoke(
         prompt_template,
         question.clone(),
         llm_model_type.to_string(),
+        skalm_config_path,
     )?;
     tracing::trace!("action_rag_invoke end");
     Ok(invoke_output_dto)
@@ -134,19 +146,52 @@ fn py_rag_invoke(
     prompt_template: String,
     question: String,
     llm_model_type: String,
+    skalm_config_path: String,
 ) -> anyhow::Result<InvokeOutputDto> {
-    let output = process::Command::new("python3")
-        .args([
-            python_lib_path,
-            "rag_invoke".to_string(),
-            vector_store_path,
-            embedding_model_path,
-            llm_model_path,
-            prompt_template,
-            question,
-            llm_model_type,
-        ])
-        .output()?;
+    // let output = process::Command::new("python3")
+    //     .args([
+    //         python_lib_path,
+    //         "rag_invoke".to_string(),
+    //         vector_store_path,
+    //         embedding_model_path,
+    //         llm_model_path,
+    //         prompt_template,
+    //         question,
+    //         llm_model_type,
+    //     ])
+    //     .output()?;
+
+    let output = if NnModelData::get_skalm_data()
+        .llm_model_type
+        .unwrap_or(LlmModelTypeEnum::Skalm)
+        .get_value()
+        .to_string()
+        .eq(&llm_model_type)
+    {
+        process::Command::new("python3")
+            .args([
+                &python_lib_path,
+                &"invoke_skalm".to_string(),
+                &question,
+                &llm_model_path,
+                &skalm_config_path,
+            ])
+            .output()?
+    } else {
+        process::Command::new("python3")
+            .args([
+                &python_lib_path,
+                &"rag_invoke".to_string(),
+                &vector_store_path,
+                &embedding_model_path,
+                &llm_model_path,
+                &prompt_template,
+                &question,
+                &llm_model_type,
+            ])
+            .output()?
+    };
+
     if !output.status.success() {
         let error_str = String::from_utf8_lossy(&output.stderr).to_string();
         return Err(anyhow::anyhow!(error_str));

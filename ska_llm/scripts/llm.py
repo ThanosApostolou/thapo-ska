@@ -9,7 +9,7 @@ import torch
 from scripts import rag
 from scripts import constants
 from scripts.skalm.skalm import Skalm, predict, train_skallm_lstm
-from scripts.skalm.skalm_config import SkalmConfig
+from scripts.skalm.skalm_config import SkalmConfig, SkalmProps
 from ska_llm.scripts.skalm.ska_tokenizer import SkaTokenizer
 
 
@@ -37,7 +37,7 @@ def read_docs(data_path: str, ska_tmp_dir: str):
 
 
 def create_data_X_Y(ska_tokenizer: SkaTokenizer, skalm_config: SkalmConfig, sentences: list[str]) -> tuple[list[list[int]], list[int]]:
-    seq_len = skalm_config.seq_len
+    seq_len = skalm_config.skalm_props.seq_len
     tokens: list[str] = ska_tokenizer.tokenize_sentences(sentences, skalm_config)
     encoded_tokens: list[int] = ska_tokenizer.encode_list(tokens)
     encoded_tokens_len = len(encoded_tokens)
@@ -67,7 +67,7 @@ def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, sk
     # text_tokens = tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_WORD)
 
     ska_tokenizer = SkaTokenizer.from_raw_text(raw_text, skalm_config)
-    seq_len = skalm_config.seq_len
+    seq_len = skalm_config.skalm_props.seq_len
     sentences: list[str] = ska_tokenizer.tokenize_text(raw_text, constants.TOKENIZE_METHOD_NLTK_SENT)
     # we use all the sentences for train data, since we don't want to lose any information
     dataXtrain, dataYtrain = create_data_X_Y(ska_tokenizer, skalm_config, sentences)
@@ -101,23 +101,26 @@ def create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, sk
     Ytest = torch.tensor(dataYtest)
     print(Xtest.shape, Ytest.shape)
 
+    skalm_config.skalm_props.save_json_file(skalm_dir_path)
     ska_tokenizer.save_json_file(skalm_dir_path)
-    model = Skalm(skalm_config, n_vocab=ska_tokenizer.vocab_len)
+    model = Skalm(skalm_config.skalm_props, n_vocab=ska_tokenizer.vocab_len)
     best_model_state_dict, train_losses, test_losses = train_skallm_lstm(model, skalm_config, skalm_dir_path, Xtrain, Ytrain, Xtest, Ytest)
 
 
 
 def invoke_skalm(question: str, skalm_dir_path: str, skalm_config_path: str) -> rag.InvokeOutput:
     skalm_config = SkalmConfig.from_json_file(skalm_config_path)
+    skalm_props = SkalmProps.from_json_file(f"{skalm_dir_path}/skalm_props.json")
     ska_tokenizer = SkaTokenizer.from_json_file(skalm_dir_path)
-    model = Skalm(skalm_config, n_vocab=ska_tokenizer.vocab_len)
-    model.load_state_dict(torch.load(f"{skalm_dir_path}/skalm.pth"))
+    model = Skalm(skalm_props, n_vocab=ska_tokenizer.vocab_len)
+    # TODO use skalm.pth
+    model.load_state_dict(torch.load(f"{skalm_dir_path}/skalm_1.pth"))
     model.eval()
 
     sentences: list[str] = ska_tokenizer.tokenize_text(question, constants.TOKENIZE_METHOD_NLTK_SENT)
     text_tokens = ska_tokenizer.tokenize_sentences(sentences, skalm_config)
     encoded_tokens = ska_tokenizer.encode_list(text_tokens)
-    seq_len = skalm_config.seq_len
+    seq_len = skalm_props.seq_len
     encoded_tokens = encoded_tokens[-seq_len:]
     encoded_tokens_len = len(encoded_tokens)
     final_encoded_tokens: list[int] = []

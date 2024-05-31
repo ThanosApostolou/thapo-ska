@@ -7,22 +7,22 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import TensorDataset, DataLoader, random_split
 
-from ska_llm.scripts.skalm.skalm_config import SkalmConfig
+from ska_llm.scripts.skalm.skalm_config import SkalmConfig, SkalmProps
 
 class Skalm(nn.Module):
-    def __init__(self, skalm_config: SkalmConfig, n_vocab: int):
+    def __init__(self, skalm_props: SkalmProps, n_vocab: int):
         super(Skalm, self).__init__()
         self.embedding = nn.Embedding(
             num_embeddings=n_vocab,
-            embedding_dim=skalm_config.embedding_dim,
+            embedding_dim=skalm_props.embedding_dim,
             padding_idx=0
         )
-        self.lstm = nn.LSTM(input_size=skalm_config.embedding_dim,
-                            hidden_size=skalm_config.lstm_hidden_size,
-                            num_layers=skalm_config.lstm_num_layers,
+        self.lstm = nn.LSTM(input_size=skalm_props.embedding_dim,
+                            hidden_size=skalm_props.lstm_hidden_size,
+                            num_layers=skalm_props.lstm_num_layers,
                             batch_first=True)
-        self.dropout = nn.Dropout(skalm_config.dropout)
-        self.linear = nn.Linear(skalm_config.lstm_hidden_size, n_vocab)
+        self.dropout = nn.Dropout(skalm_props.dropout)
+        self.linear = nn.Linear(skalm_props.lstm_hidden_size, n_vocab)
 
 
     def forward(self, x):
