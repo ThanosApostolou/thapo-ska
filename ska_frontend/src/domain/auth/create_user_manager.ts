@@ -6,7 +6,7 @@ export function createUserManager(envConfig: EnvConfig): UserManager {
     const settings: UserManagerSettings = {
         authority: `${envConfig.authIssuerUrl}`,
         client_id: envConfig.authClientId,
-        redirect_uri: `${envConfig.frontendUrl}login`,
+        redirect_uri: `${envConfig.frontendUrl}`,
         silent_redirect_uri: `${envConfig.frontendUrl}`,
         post_logout_redirect_uri: `${envConfig.frontendUrl}`,
         scope: 'openid',

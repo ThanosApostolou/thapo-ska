@@ -4,17 +4,18 @@
 @tailwind utilities;
 
 html,
-body, #app {
+body,
+#app {
     @apply min-w-96;
     height: 100%;
 }
 
 .ska-page-container {
-    @apply flex flex-row flex-auto min-h-0;
+    @apply flex flex-row flex-auto min-h-0 prose max-w-none;
 }
 
 .ska-page-column-flex {
-    @apply flex-auto overflow-x-hidden overflow-y-auto p-2
+    @apply flex-grow overflow-x-hidden overflow-y-auto p-2
 }
 
 .ska-page-column {

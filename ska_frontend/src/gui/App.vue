@@ -3,8 +3,10 @@ import { ServiceAuth } from '@/domain/auth/service_auth';
 import RootPage from './PageRoot.vue';
 import { onMounted, ref } from 'vue';
 import { useGlobalStore } from '@/domain/global_state/global_store';
+import { useRouter } from 'vue-router';
 
 // hooks
+const router = useRouter();
 const isAppReady = ref(false);
 const globalStore = useGlobalStore();
 
@@ -15,7 +17,7 @@ onMounted(async () => {
 
 // functions
 async function initialize() {
-  await ServiceAuth.initialAuth(globalStore.globalStore);
+  await ServiceAuth.initialAuth(globalStore.globalStore, router);
   isAppReady.value = true;
 }
 

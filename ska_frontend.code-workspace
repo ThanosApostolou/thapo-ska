@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			".git/": true,
+			".venv/": true,
+			"devops/": true,
+			"dist/": true,
+			"docs/": true,
+			"ska_backend/": true,
+			"ska_gateway/": true,
+			"ska_iam/": true,
+			"ska_llm/": true,
+			"ska_migration/": true,
+			"target/": true,
+			".dockerignore": true,
+			".gitignore": true,
+			"Cargo.lock": true,
+			"Cargo.toml": true,
+			"poetry.lock": true,
+			"poetry.toml": true,
+			"pyproject.toml": true,
+			"run_cli.sh": true,
+			"rust-toolchain.toml": true,
+		}
+	}
+}

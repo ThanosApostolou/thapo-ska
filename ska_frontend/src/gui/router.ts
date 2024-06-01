@@ -4,7 +4,7 @@ import { createRouterAccount } from './page_acount/router_account';
 import { GlobalState } from '@/domain/global_state/global_state';
 import { BuildEnv } from '@/domain/global_state/build_env';
 import { createRouterAssistant } from './page_assistant/router_assistant';
-import { createRouterLogin } from './page_login/router_login';
+// import { createRouterLogin } from './page_login/router_login';
 
 export function myCreateRouter(global_state: GlobalState) {
     const envConfig = global_state.envConfig;
@@ -21,7 +21,7 @@ export function myCreateRouter(global_state: GlobalState) {
             createRouterHome(appRoutes),
             createRouterAccount(appRoutes),
             createRouterAssistant(appRoutes),
-            createRouterLogin(appRoutes),
+            // createRouterLogin(appRoutes),
             {
                 path: '/:pathMatch(.*)*',
                 name: 'not_found',

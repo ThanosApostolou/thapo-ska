@@ -1,0 +1,17 @@
+{
+    "skalm_props": {
+        "seq_len": 100,
+        "embedding_dim": 384,
+        "lstm_hidden_size": 384,
+        "lstm_num_layers": 1,
+        "dropout": 0.5
+    },
+    "n_epochs": 80,
+    "batch_size": 512,
+    "lr": 0.004,
+    "filter_sentence_len_geq": 4,
+    "filter_sentence_len_leq": 1000,
+    "filter_word_len_leq": 120,
+    "max_tokens": 160,
+    "max_eos": 6
+}

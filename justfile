@@ -42,8 +42,7 @@ frontend_run:
     #!/usr/bin/env bash
     set -eu
     cd ska_frontend
-    export THAPO_SKA_ENV_FILE=".env.local"
-    trunk serve --no-autoreload --address 0.0.0.0 --port 14081 --public-url /app
+    npm run dev
 
 iam_gateway_run:
     #!/usr/bin/env bash

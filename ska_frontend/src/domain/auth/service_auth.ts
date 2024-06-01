@@ -59,7 +59,7 @@ export class ServiceAuth {
     }
 
 
-    static async initialAuth(globalStore: GlobalStore): Promise<void> {
+    static async initialAuth(globalStore: GlobalStore, router: Router): Promise<void> {
         const globalState = GlobalState.instance();
         console.log('globalState', globalState)
         let user = await ServiceAuth.getUser();
@@ -77,6 +77,19 @@ export class ServiceAuth {
             // globalStore.refreshToken = user.refresh_token ? user.refresh_token : null;
         } else {
             //
+            try {
+                user = await ServiceAuth.signinCallback() || null;
+            } catch (e) {
+                // ignore
+            }
+            console.log('else user', user)
+            if (user != null) {
+                await ServiceAuth.storeUser(user);
+                const dtoUserDetailsResult = await this.app_login();
+                const dtoUserDetails = dtoUserDetailsResult.unwrap();
+                globalStore.userDetails = dtoUserDetails;
+                await router.push({ path: globalState.appRoutes.PAGE_HOME, replace: true });
+            }
         }
 
     }
