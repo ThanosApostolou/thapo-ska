@@ -52,12 +52,17 @@ impl ErrorResponse {
 
 impl fmt::Display for ErrorResponse {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let packets_str: String = self
+            .packets
+            .iter()
+            .map(|packet| packet.backend_message.clone())
+            .collect::<Vec<String>>()
+            .join(",");
+        let error_packets_str = format!("[{}]", packets_str);
         write!(
             f,
-            "status_code={}, is_unexpected_error={}, #packets={}",
-            self.error_code,
-            self.is_unexpected_error,
-            self.packets.len()
+            "status_code={}, is_unexpected_error={}, packets={}",
+            self.error_code, self.is_unexpected_error, error_packets_str
         )
     }
 }

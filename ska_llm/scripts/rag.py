@@ -153,12 +153,12 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
 
 
 def create_llm(llm_model_path: str, model_type: str):
-    context_length = 384
-    max_tokens = 128
-    top_p = 0.95
-    temperature = 0.8
-    batch_size = 8
-    last_n_tokens = 32
+    context_length = 512
+    max_tokens = 160
+    top_p = 0
+    temperature = 0
+    batch_size = 256
+    last_n_tokens = 16
     repetition_penalty = 1.1
 
     if model_type == 'llamacpp':
