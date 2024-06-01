@@ -45,7 +45,7 @@ async function logout() {
           </li>
           <li>
             <button class="btn btn-ghost" @click="logout">
-              <img src="/assets/icons/arrow-right-start-on-rectangle.svg" width="24" />logout
+              <img src="/assets/icons/arrow-left-end-on-rectangle.svg" width="24" />logout
             </button>
           </li>
         </ul>

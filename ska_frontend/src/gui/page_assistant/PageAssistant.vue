@@ -54,6 +54,9 @@ function onSelectChange() {
   </div>
   <div v-else-if="assistantOptions != null" class="flex flex-row flex-auto min-h-0">
     <div class="ska-page-column bg-base-300 max-w-64 break-words">
+      <button class="btn">
+        <img src="/assets/icons/plus.svg" width="24" />Add Chat
+      </button>
 
       <label for="llms" class="form-control">Choose a LLM:</label>
       <select v-model="selectedLlm" name="llms" id="llms" class="select" @change="onSelectChange()">
