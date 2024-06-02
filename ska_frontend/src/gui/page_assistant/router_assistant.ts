@@ -5,7 +5,8 @@ export function createRouterAssistant(appRoutes: AppRoutes): RouteRecordRaw {
     const routes = {
         path: appRoutes.PAGE_ASSISTANT,
         name: 'assistant',
-        component: () => import('./PageAssistant.vue')
+        component: () => import('./PageAssistant.vue'),
+        meta: { requiresAuth: true }
     };
     return routes;
 }

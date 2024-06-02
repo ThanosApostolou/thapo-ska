@@ -61,37 +61,30 @@ export class ServiceAuth {
 
     static async initialAuth(globalStore: GlobalStore, router: Router): Promise<void> {
         const globalState = GlobalState.instance();
-        console.log('globalState', globalState)
         let user = await ServiceAuth.getUser();
         if (user != null) {
             user = await ServiceAuth.renewToken();
             const dtoUserDetailsResult = await this.app_login();
             const dtoUserDetails = dtoUserDetailsResult.unwrap();
             globalStore.userDetails = dtoUserDetails;
-
-            // globalStore.userDetails = new DtoUserDetails(
-            // globalStore
-
-            // globalStore.idToken = user.id_token ? user.id_token : null;
-            // globalStore.accessToken = user.access_token ? user.access_token : null;
-            // globalStore.refreshToken = user.refresh_token ? user.refresh_token : null;
+            globalStore.isAppReady = true;
         } else {
-            //
             try {
                 user = await ServiceAuth.signinCallback() || null;
             } catch (e) {
                 // ignore
             }
-            console.log('else user', user)
             if (user != null) {
                 await ServiceAuth.storeUser(user);
                 const dtoUserDetailsResult = await this.app_login();
                 const dtoUserDetails = dtoUserDetailsResult.unwrap();
                 globalStore.userDetails = dtoUserDetails;
+                globalStore.isAppReady = true;
                 await router.push({ path: globalState.appRoutes.PAGE_HOME, replace: true });
+            } else {
+                globalStore.isAppReady = true;
             }
         }
-
     }
 
     static async app_login(): Promise<Result<DtoUserDetails, DtoErrorResponse>> {

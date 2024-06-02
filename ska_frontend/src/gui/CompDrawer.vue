@@ -3,8 +3,10 @@ import { ref } from 'vue';
 import CompFooter from './CompFooter.vue';
 import CompHeader from './CompHeader.vue';
 import { GlobalState } from '@/domain/global_state/global_state';
+import { useGlobalStore } from '@/domain/global_state/global_store';
 
 const globalState = GlobalState.instance();
+const globalStore = useGlobalStore();
 
 // hooks
 const isChecked = ref(false);
@@ -22,7 +24,7 @@ const isChecked = ref(false);
             <img src="/assets/icons/home.svg" width="24" />Home
           </RouterLink>
         </li>
-        <li>
+        <li i v-if="globalStore.globalStore.userDetails != null">
           <RouterLink @click="() => isChecked = false" :to="globalState.appRoutes.PAGE_ASSISTANT" activeClass="active">
             <img src="/assets/icons/chat-bubble-left-right.svg" width="24" />Assistant
           </RouterLink>
