@@ -4,6 +4,8 @@ import type { DtoErrorResponse } from "@/utils/error/errors";
 import { UtilsHttp } from "@/utils/http/utils_http";
 import { AskAssistantQuestionRequest, AskAssistantQuestionResponse } from "./dtos/dto_ask_assistant_question";
 import { DtoAssistantOptions } from "./dtos/dto_fetch_assistant_options";
+import { UtilsTypes } from "@/utils/core/utils_types";
+import { DtoCreateUpdateChatResponse, type DtoChatDetails } from "./dtos/dto_chat_details";
 
 export class ServiceAssistant {
     private static readonly PATH_API_ASSISTANT: string = "api/assistant";
@@ -24,5 +26,13 @@ export class ServiceAssistant {
 
         const result = await UtilsHttp.getRequest<unknown>(url);
         return result.map((data) => DtoAssistantOptions.fromUnknown(data));
+    }
+
+    static async createChat(chatDetails: DtoChatDetails): Promise<Result<DtoCreateUpdateChatResponse, DtoErrorResponse>> {
+        const globalState = GlobalState.instance();
+        const url = `${globalState.envConfig.backendUrl}${this.PATH_API_ASSISTANT}/create_chat`;
+
+        const result = await UtilsHttp.postRequest<unknown>(url, chatDetails);
+        return result.map((data) => DtoCreateUpdateChatResponse.fromUnknown(data));
     }
 }

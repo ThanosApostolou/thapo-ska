@@ -5,8 +5,10 @@ use axum::routing::{get, post, MethodRouter};
 use const_format::formatcp;
 
 use crate::server::handle_root;
-use crate::server::route_api::route_assistant::handle_fetch_assistant_options;
 use crate::server::route_api::route_assistant::route_ask_assistant_question::handle_ask_assistant_question;
+use crate::server::route_api::route_assistant::{
+    handle_create_chat, handle_fetch_assistant_options,
+};
 use crate::{
     modules::{auth::auth_models::AuthTypes, global_state::GlobalState},
     server::route_api::route_auth::route_app_login::handle_app_login,
@@ -105,6 +107,14 @@ impl Routes {
                     auth_type: AuthTypes::Authentication,
                     method_router: get(handle_fetch_assistant_options),
                 },
+                EndpointInfo {
+                    path: RoutePath {
+                        parent_path: formatcp!("{API_STR}{ASSISTANT_STR}"),
+                        self_path: "/create_chat",
+                    },
+                    auth_type: AuthTypes::Authentication,
+                    method_router: post(handle_create_chat),
+                },
             ],
         };
 
@@ -184,7 +194,7 @@ pub struct RouteAuth {
 #[derive(Clone, Debug)]
 pub struct RouteAssistant {
     pub path: RoutePath,
-    pub endpoints: [EndpointInfo; 2],
+    pub endpoints: [EndpointInfo; 3],
 }
 
 // const fn concat(str1: &'static str)

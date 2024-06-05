@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import CompChat from './CompChat.vue';
+import ChatDialog from './ChatDialog.vue';
 import { ChatPacketType, DtoChatPacket } from './dtos/dto_chat_packet';
 import { ServiceAssistant } from './service_assistant';
 import { DtoAssistantOptions, DtoLlmData } from './dtos/dto_fetch_assistant_options';
@@ -19,6 +20,8 @@ const assistantOptions = ref<DtoAssistantOptions | null>(null);
 const selectedLlm = ref<DtoLlmData | null>(null);
 const prompt = ref<string>('');
 const isEditPrompt = ref<boolean>(false);
+const chatDialog = ref<HTMLDialogElement | null>(null)
+
 
 // lifecycles
 onMounted(async () => {
@@ -54,9 +57,13 @@ function onSelectChange() {
   </div>
   <div v-else-if="assistantOptions != null" class="flex flex-row flex-auto min-h-0">
     <div class="ska-page-column bg-base-300 max-w-64 break-words">
-      <button class="btn">
+      <button class="btn" @click="chatDialog?.showModal()">
         <img src="/assets/icons/plus.svg" width="24" />Add Chat
       </button>
+
+      <ChatDialog ref="chatDialog" :assistantOptions="assistantOptions" :chat-details="null" />
+
+
 
       <label for="llms" class="form-control">Choose a LLM:</label>
       <select v-model="selectedLlm" name="llms" id="llms" class="select" @change="onSelectChange()">
