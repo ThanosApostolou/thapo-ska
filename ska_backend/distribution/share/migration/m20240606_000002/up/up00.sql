@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS thapo_ska_schema.user_chat_message;

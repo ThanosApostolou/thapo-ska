@@ -7,6 +7,7 @@ backend_run_server:
     #!/usr/bin/env bash
     set -eu
     export THAPO_SKA_CONF_DIR="ska_backend/distribution/etc/local"
+    export THAPO_SKA_DATA_DIR="ska_backend/distribution/share"
     export THAPO_SKA_SECRET_FILE="ska_backend/.secret"
     source .venv/bin/activate
     cargo watch -p ska_backend -w "./ska_backend/src" -x 'run --bin app-server'
@@ -15,6 +16,7 @@ backend_run_cli:
     #!/usr/bin/env bash
     set -eu
     export THAPO_SKA_CONF_DIR="ska_backend/distribution/etc/local"
+    export THAPO_SKA_DATA_DIR="ska_backend/distribution/share"
     export THAPO_SKA_SECRET_FILE="ska_backend/.secret"
     source .venv/bin/activate
     cargo run --bin app-cli -- "$@"

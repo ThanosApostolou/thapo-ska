@@ -1,3 +1,5 @@
+use std::env;
+
 #[derive(Clone, PartialEq, PartialOrd, Eq, Ord, Debug, Hash)]
 pub struct EnvConfig {
     pub rust_log: String,
