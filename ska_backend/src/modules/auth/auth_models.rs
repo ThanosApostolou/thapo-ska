@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use strum_macros::{AsRefStr, Display, EnumString, IntoStaticStr};
 
@@ -52,6 +53,6 @@ pub struct UserAuthenticationDetails {
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct UserDetails {
     pub user_authentication_details: UserAuthenticationDetails,
-    pub user_id: u64,
-    pub last_login: u64,
+    pub user_id: i64,
+    pub last_login: NaiveDateTime,
 }

@@ -14,6 +14,8 @@ pub struct Model {
     pub temperature: Option<Decimal>,
     #[sea_orm(column_type = "Decimal(Some((3, 2)))", nullable)]
     pub top_p: Option<Decimal>,
+    pub created_at: DateTime,
+    pub updated_at: DateTime,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

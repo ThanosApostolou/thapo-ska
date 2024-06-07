@@ -9,9 +9,13 @@ use oauth2::{
 
 use serde::{Deserialize, Serialize};
 
-use crate::modules::{
-    error::{ErrorCode, ErrorResponse},
-    global_state::{EnvConfig, GlobalState, SecretConfig},
+use crate::{
+    domain::repos::repo_users,
+    modules::{
+        auth::auth_models::UserDetails,
+        error::{ErrorCode, ErrorResponse},
+        global_state::{EnvConfig, GlobalState, SecretConfig},
+    },
 };
 use std::{collections::HashSet, str::FromStr};
 
@@ -148,8 +152,100 @@ pub async fn perform_auth_user(
                 }
             }
         }
-        AuthTypes::AuthorizationNoRoles => todo!(),
-        AuthTypes::Authorization(_) => todo!(),
+        AuthTypes::AuthorizationNoRoles => {
+            let response_result = authenticate_user(global_state, headers).await;
+            match response_result {
+                Ok(user_authentication_details) => {
+                    let user = repo_users::find_by_sub(
+                        &global_state.db_connection,
+                        &user_authentication_details.sub,
+                    )
+                    .await;
+
+                    if let Ok(user) = user {
+                        if let Some(user) = user {
+                            let user_details = UserDetails {
+                                user_authentication_details,
+                                user_id: user.user_id,
+                                last_login: user.last_login,
+                            };
+                            tracing::debug!(
+                                "service_auth::perform_auth_user AuthorizationNoRoles ok"
+                            );
+                            return Ok(AuthUser::Authorized(user_details));
+                        }
+                    }
+                    return Err(ErrorResponse {
+                        error_code: ErrorCode::Unauthorized401,
+                        is_unexpected_error: true,
+                        packets: vec![],
+                    });
+                }
+                Err(e) => {
+                    tracing::error!(
+                        "service_auth::perform_auth_user AuthorizationNoRoles error: {}",
+                        e
+                    );
+                    return Err(ErrorResponse {
+                        error_code: ErrorCode::Unauthorized401,
+                        is_unexpected_error: true,
+                        packets: vec![],
+                    });
+                }
+            }
+        }
+        AuthTypes::Authorization(roles) => {
+            let response_result = authenticate_user(global_state, headers).await;
+            match response_result {
+                Ok(user_authentication_details) => {
+                    let mut hasRoles = false;
+                    for role in &user_authentication_details.roles {
+                        if roles.contains(role) {
+                            hasRoles = true;
+                            break;
+                        }
+                    }
+                    if !hasRoles {
+                        return Err(ErrorResponse {
+                            error_code: ErrorCode::Unauthorized401,
+                            is_unexpected_error: true,
+                            packets: vec![],
+                        });
+                    }
+
+                    let user = repo_users::find_by_sub(
+                        &global_state.db_connection,
+                        &user_authentication_details.sub,
+                    )
+                    .await;
+
+                    if let Ok(user) = user {
+                        if let Some(user) = user {
+                            let user_details = UserDetails {
+                                user_authentication_details,
+                                user_id: user.user_id,
+                                last_login: user.last_login,
+                            };
+                            tracing::debug!("service_auth::perform_auth_user Authorization ok");
+                            return Ok(AuthUser::Authorized(user_details));
+                        }
+                    }
+                    return Err(ErrorResponse {
+                        error_code: ErrorCode::Unauthorized401,
+                        is_unexpected_error: true,
+                        packets: vec![],
+                    });
+                }
+                Err(e) => {
+                    tracing::error!("service_auth::perform_auth_user Authorization error: {}", e);
+                    return Err(ErrorResponse {
+                        error_code: ErrorCode::Unauthorized401,
+                        is_unexpected_error: true,
+                        packets: vec![],
+                    });
+                }
+            }
+        }
     }
 }
 

@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS thapo_ska_schema.chat_message(
     message_body VARCHAR(1000) NOT NULL,
     created_at timestamp without time zone NOT NULL,
     FOREIGN KEY (chat_id_fk) REFERENCES thapo_ska_schema.user_chat (chat_id)
-)
+);

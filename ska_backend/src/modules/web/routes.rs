@@ -1,9 +1,10 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
 use axum::routing::{get, post, MethodRouter};
 use const_format::formatcp;
 
+use crate::modules::auth::auth_models::AuthRoles;
 use crate::server::handle_root;
 use crate::server::route_api::route_assistant::route_ask_assistant_question::handle_ask_assistant_question;
 use crate::server::route_api::route_assistant::{
@@ -96,7 +97,10 @@ impl Routes {
                         parent_path: formatcp!("{API_STR}{ASSISTANT_STR}"),
                         self_path: "/ask_assistant_question",
                     },
-                    auth_type: AuthTypes::Authentication,
+                    auth_type: AuthTypes::Authorization(HashSet::from([
+                        AuthRoles::SkaAdmin,
+                        AuthRoles::SkaUser,
+                    ])),
                     method_router: get(handle_ask_assistant_question),
                 },
                 EndpointInfo {
@@ -104,7 +108,10 @@ impl Routes {
                         parent_path: formatcp!("{API_STR}{ASSISTANT_STR}"),
                         self_path: "/fetch_assistant_options",
                     },
-                    auth_type: AuthTypes::Authentication,
+                    auth_type: AuthTypes::Authorization(HashSet::from([
+                        AuthRoles::SkaAdmin,
+                        AuthRoles::SkaUser,
+                    ])),
                     method_router: get(handle_fetch_assistant_options),
                 },
                 EndpointInfo {
@@ -112,7 +119,10 @@ impl Routes {
                         parent_path: formatcp!("{API_STR}{ASSISTANT_STR}"),
                         self_path: "/create_chat",
                     },
-                    auth_type: AuthTypes::Authentication,
+                    auth_type: AuthTypes::Authorization(HashSet::from([
+                        AuthRoles::SkaAdmin,
+                        AuthRoles::SkaUser,
+                    ])),
                     method_router: post(handle_create_chat),
                 },
             ],
