@@ -15,6 +15,12 @@ const props = defineProps<{
     assistantOptions: DtoAssistantOptions | null,
 }>();
 
+// outputs
+const emit = defineEmits<{
+    (e: 'success', chat_id: number): void
+}>();
+
+
 // hooks
 const globalStore = useGlobalStore();
 const isLoading = ref<boolean>(false);
@@ -32,6 +38,12 @@ const errorPackets = ref<DtoErrorPacket[]>([]);
 function showModal(): void {
     chatDialog.value?.showModal();
 }
+
+function close(): void {
+    chatDialog.value?.close();
+}
+
+
 
 function onSelectChange() {
     isEditPrompt.value = false;
@@ -59,6 +71,7 @@ async function onSubmit() {
     if (result.isOk()) {
         const data = result.data;
         isLoading.value = false;
+        emit('success', data.chat_id);
     } else {
         const error = result.error;
         console.log('error', error)
@@ -69,7 +82,8 @@ async function onSubmit() {
 
 
 defineExpose({
-    showModal
+    showModal,
+    close
 });
 
 </script>
@@ -134,7 +148,7 @@ defineExpose({
                 </div>
 
                 <div v-if="errorPackets.length > 0" role="alert" class="alert alert-error">
-                    <p v-for="(errorPacket, index) in errorPackets" :key="index">{{errorPacket.message}}</p>
+                    <p v-for="(errorPacket, index) in errorPackets" :key="index">{{ errorPacket.message }}</p>
                 </div>
 
                 <div class="modal-action">

@@ -5,7 +5,10 @@ use crate::{
     domain::{
         entities::user_chat,
         repos::repo_user_chat,
-        user::validator_user_chat::{self, ValidDataCreateUpdateUserChat},
+        user::{
+            dto_chat_details::{DtoChatDetails, DtoCreateUpdateChatResponse},
+            validator_user_chat::{self, ValidDataCreateUpdateUserChat},
+        },
     },
     modules::{
         auth::auth_models::UserDetails,
@@ -13,8 +16,6 @@ use crate::{
         global_state::GlobalState,
     },
 };
-
-use super::{DtoChatDetails, DtoCreateUpdateChatResponse};
 
 pub async fn do_create_chat(
     global_state: &GlobalState,
@@ -76,6 +77,7 @@ async fn create_user_chat(
         chat_id: NotSet,
         user_id_fk: Set(user_details.user_id),
         chat_name: Set(valid_data.chat_name.clone()),
+        llm_model: Set(valid_data.llm_model.name.clone()),
         prompt: Set(valid_data.prompt.clone()),
         temperature: Set(valid_data.temperature.clone()),
         top_p: Set(valid_data.top_p.clone()),

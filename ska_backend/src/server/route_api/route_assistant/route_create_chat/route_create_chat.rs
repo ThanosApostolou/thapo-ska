@@ -1,16 +1,14 @@
-use axum::{
-    extract::{Query, State},
-    Extension, Json,
-};
+use axum::{extract::State, Extension, Json};
 use hyper::StatusCode;
 
-use crate::modules::{
-    auth::auth_models::UserDetails, error::DtoErrorResponse, global_state::GlobalState,
+use crate::{
+    domain::user::dto_chat_details::{DtoChatDetails, DtoCreateUpdateChatResponse},
+    modules::{auth::auth_models::UserDetails, error::DtoErrorResponse, global_state::GlobalState},
 };
 
 use std::sync::Arc;
 
-use super::{do_create_chat, DtoChatDetails, DtoCreateUpdateChatResponse};
+use super::do_create_chat;
 
 pub async fn handle_create_chat(
     State(global_state): State<Arc<GlobalState>>,

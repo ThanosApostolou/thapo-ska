@@ -1,23 +1,20 @@
-use clap::builder::Str;
-use sea_orm::prelude::Decimal;
-use tracing_subscriber::fmt::format;
-
 use crate::{
     domain::{
         entities::user_chat,
         nn_model::{service_nn_model, NnModelData},
     },
     modules::{auth::auth_models::UserDetails, error::ErrorPacket, global_state::GlobalState},
-    server::route_api::route_assistant::DtoChatDetails,
 };
+
+use super::dto_chat_details::DtoChatDetails;
 
 pub struct ValidDataCreateUpdateUserChat {
     pub chat_id: Option<i64>,
     pub user_id: i64,
     pub chat_name: String,
     pub prompt: Option<String>,
-    pub temperature: Option<Decimal>,
-    pub top_p: Option<Decimal>,
+    pub temperature: Option<f64>,
+    pub top_p: Option<f64>,
     pub llm_model: NnModelData,
     pub existing_user_chat: Option<user_chat::Model>,
 }
@@ -50,12 +47,12 @@ pub async fn validate_create_update_user_chat(
         errors.push(error.clone());
     }
 
-    let result_temperature = syntax_temperature(&dto_chat_details.temperature);
+    let result_temperature = syntax_temperature(dto_chat_details.temperature);
     if let Err(error) = &result_temperature {
         errors.push(error.clone());
     }
 
-    let result_top_p = syntax_top_p(&dto_chat_details.top_p);
+    let result_top_p = syntax_top_p(dto_chat_details.top_p);
     if let Err(error) = &result_top_p {
         errors.push(error.clone());
     }
@@ -145,9 +142,9 @@ pub fn syntax_prompt(prompt: &Option<String>) -> Result<(), ErrorPacket> {
     return Ok(());
 }
 
-pub fn syntax_temperature(temperature: &Option<Decimal>) -> Result<(), ErrorPacket> {
+pub fn syntax_temperature(temperature: Option<f64>) -> Result<(), ErrorPacket> {
     if let Some(temperature) = temperature {
-        if temperature < &Decimal::new(0, 0) || temperature > &Decimal::new(1, 0) {
+        if temperature < 0.0 || temperature > 1.0 {
             return Err(ErrorPacket {
                 message: "temperature must be between 0 and 1".to_string(),
                 backend_message: "temperature must be between 0 and 1".to_string(),
@@ -157,9 +154,9 @@ pub fn syntax_temperature(temperature: &Option<Decimal>) -> Result<(), ErrorPack
     return Ok(());
 }
 
-pub fn syntax_top_p(top_p: &Option<Decimal>) -> Result<(), ErrorPacket> {
+pub fn syntax_top_p(top_p: Option<f64>) -> Result<(), ErrorPacket> {
     if let Some(top_p) = top_p {
-        if top_p < &Decimal::new(0, 0) || top_p > &Decimal::new(1, 0) {
+        if top_p < 0.0 || top_p > 1.0 {
             return Err(ErrorPacket {
                 message: "temperature must be between 0 and 1".to_string(),
                 backend_message: "temperature must be between 0 and 1".to_string(),
