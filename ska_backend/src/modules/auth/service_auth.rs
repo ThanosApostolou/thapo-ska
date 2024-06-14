@@ -198,14 +198,14 @@ pub async fn perform_auth_user(
             let response_result = authenticate_user(global_state, headers).await;
             match response_result {
                 Ok(user_authentication_details) => {
-                    let mut hasRoles = false;
+                    let mut has_roles = false;
                     for role in &user_authentication_details.roles {
                         if roles.contains(role) {
-                            hasRoles = true;
+                            has_roles = true;
                             break;
                         }
                     }
-                    if !hasRoles {
+                    if !has_roles {
                         return Err(ErrorResponse {
                             error_code: ErrorCode::Unauthorized401,
                             is_unexpected_error: true,

@@ -27,7 +27,7 @@ pub async fn do_create_chat(
         Ok(valid_data) => {
             let chat = create_user_chat(global_state, &user_details, &valid_data)
                 .await
-                .map_err(|e| {
+                .map_err(|_| {
                     return ErrorResponse {
                         error_code: ErrorCode::UnprocessableEntity422,
                         is_unexpected_error: true,

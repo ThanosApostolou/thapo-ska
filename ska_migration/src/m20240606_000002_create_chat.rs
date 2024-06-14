@@ -1,6 +1,5 @@
 use std::fs;
 
-use sea_orm::Statement;
 use sea_orm_migration::prelude::*;
 
 use crate::utils_migration;

@@ -7,7 +7,10 @@ use axum::{
 use hyper::{HeaderMap, StatusCode};
 use std::sync::Arc;
 
-use crate::modules::{auth::{auth_models::AuthUser, service_auth}, global_state::GlobalState};
+use crate::modules::{
+    auth::{auth_models::AuthUser, service_auth},
+    global_state::GlobalState,
+};
 
 pub async fn middleware_auth(
     State(global_state): State<Arc<GlobalState>>,
@@ -38,9 +41,7 @@ pub async fn middleware_auth(
                         AuthUser::None => {
                             tracing::debug!("middleware_auth auth_user AuthUser::None ok");
                         }
-                        AuthUser::Authenticated(
-                            user_authentication_details,
-                        ) => {
+                        AuthUser::Authenticated(user_authentication_details) => {
                             tracing::debug!(
                                 "middleware_auth auth_user AuthUser::Authenticated start"
                             );

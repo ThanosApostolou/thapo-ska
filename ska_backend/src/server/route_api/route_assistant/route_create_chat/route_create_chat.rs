@@ -15,7 +15,7 @@ pub async fn handle_create_chat(
     Extension(user_details): Extension<UserDetails>,
     Json(body): Json<DtoChatDetails>,
 ) -> Result<Json<DtoCreateUpdateChatResponse>, (StatusCode, Json<DtoErrorResponse>)> {
-    let query_json = serde_json::to_string(&body).map_err(|e| {
+    let query_json = serde_json::to_string(&body).map_err(|_| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
             Json(DtoErrorResponse {

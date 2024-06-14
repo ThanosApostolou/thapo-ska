@@ -38,4 +38,3 @@ pub fn do_insert(global_state: &GlobalState) -> anyhow::Result<()> {
     tracing::trace!("do_insert end");
     Ok(())
 }
-

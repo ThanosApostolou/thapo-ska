@@ -15,7 +15,7 @@ pub struct DtoChatDetails {
 }
 
 impl DtoChatDetails {
-    pub fn fromUserChat(chat: user_chat::Model) -> DtoChatDetails {
+    pub fn from_user_chat(chat: user_chat::Model) -> DtoChatDetails {
         let llm_models = service_nn_model::get_nn_models_list();
         let llm_model = llm_models
             .into_iter()

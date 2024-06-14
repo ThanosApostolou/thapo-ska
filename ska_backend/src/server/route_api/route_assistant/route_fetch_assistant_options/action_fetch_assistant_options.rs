@@ -7,7 +7,7 @@ use crate::{
     modules::{
         auth::auth_models::UserDetails,
         error::{ErrorCode, ErrorResponse},
-        global_state::{self, GlobalState},
+        global_state::GlobalState,
     },
 };
 
@@ -36,7 +36,7 @@ pub async fn do_fetch_assistant_options(
     let user_chats =
         repo_user_chat::find_by_user_id(&global_state.db_connection, user_details.user_id)
             .await
-            .map_err(|e| ErrorResponse {
+            .map_err(|_| ErrorResponse {
                 error_code: ErrorCode::UnprocessableEntity422,
                 is_unexpected_error: true,
                 packets: vec![],
@@ -44,7 +44,7 @@ pub async fn do_fetch_assistant_options(
 
     let dto_user_chats = user_chats
         .into_iter()
-        .map(|chat| DtoChatDetails::fromUserChat(chat))
+        .map(|chat| DtoChatDetails::from_user_chat(chat))
         .collect();
 
     Ok(DtoAssistantOptions {

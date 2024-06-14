@@ -174,7 +174,7 @@ pub fn br1_edited_chat_model_details(dto_chat_details: &DtoChatDetails) -> Resul
         || dto_chat_details.temperature.is_none()
         || dto_chat_details.top_p.is_none();
 
-    if (some_null && !all_null) {
+    if some_null && !all_null {
         return Err(ErrorPacket::new_backend(
             "chat llm details should all be null or none null",
         ));

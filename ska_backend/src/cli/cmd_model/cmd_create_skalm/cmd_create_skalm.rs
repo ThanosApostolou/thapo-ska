@@ -1,10 +1,6 @@
-use clap::Args;
-
 use crate::modules::global_state::GlobalState;
 
 use super::do_create_skalm;
-
-
 
 pub fn handle_create_skalm(global_state: &GlobalState) {
     tracing::debug!("handle_create_skalm start");
