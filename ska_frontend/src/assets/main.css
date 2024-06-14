@@ -8,6 +8,8 @@ body,
 #app {
     @apply min-w-96;
     height: 100%;
+    min-width: 30rem;
+    min-height: 30rem;
 }
 
 .ska-page-container {

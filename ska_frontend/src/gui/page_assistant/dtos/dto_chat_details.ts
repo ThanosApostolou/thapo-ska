@@ -3,6 +3,7 @@ import { UtilsTypes } from "@/utils/core/utils_types";
 export class DtoChatDetails {
     chat_id: number | null;
     user_id: number;
+    chat_name: string;
     llm_model: string;
     prompt_template: string | null;
     temperature: number | null;
@@ -12,6 +13,7 @@ export class DtoChatDetails {
     constructor(obj: {
         chat_id: number | null,
         user_id: number,
+        chat_name: string,
         llm_model: string,
         prompt_template: string | null,
         temperature: number | null,
@@ -20,6 +22,7 @@ export class DtoChatDetails {
     }) {
         this.chat_id = obj.chat_id;
         this.user_id = obj.user_id;
+        this.chat_name = obj.chat_name;
         this.llm_model = obj.llm_model;
         this.prompt_template = obj.prompt_template;
         this.temperature = obj.temperature;
@@ -32,6 +35,7 @@ export class DtoChatDetails {
         return new DtoChatDetails({
             chat_id: UtilsTypes.unknownToNumberNullable(obj.chat_id).unwrap(),
             user_id: UtilsTypes.unknownToNumber(obj.user_id).unwrap(),
+            chat_name: UtilsTypes.unknownToString(obj.chat_name).unwrap(),
             llm_model: UtilsTypes.unknownToString(obj.llm_model).unwrap(),
             prompt_template: UtilsTypes.unknownToStringNullable(obj.prompt_template).unwrap(),
             temperature: UtilsTypes.unknownToNumberNullable(obj.temperature).unwrap(),

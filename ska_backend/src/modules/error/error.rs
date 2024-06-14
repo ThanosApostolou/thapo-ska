@@ -89,6 +89,15 @@ impl ErrorPacket {
             backend_message,
         }
     }
+
+    pub fn new_backend(backend_message: &str) -> ErrorPacket {
+        let message = "".to_string();
+        let backend_message = backend_message.to_string();
+        ErrorPacket {
+            message,
+            backend_message,
+        }
+    }
 }
 
 impl fmt::Display for ErrorPacket {
@@ -116,7 +125,7 @@ impl ErrorCode {
             ErrorCode::BadRequest400 => http::StatusCode::BAD_REQUEST,
             ErrorCode::Unauthorized401 => http::StatusCode::UNAUTHORIZED,
             ErrorCode::Forbidden403 => http::StatusCode::FORBIDDEN,
-            ErrorCode::UnprocessableEntity422 => http::StatusCode::BAD_REQUEST,
+            ErrorCode::UnprocessableEntity422 => http::StatusCode::UNPROCESSABLE_ENTITY,
             ErrorCode::InternalServerError500 => http::StatusCode::INTERNAL_SERVER_ERROR,
         }
     }

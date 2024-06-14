@@ -31,7 +31,7 @@ async function login() {
 
       <template v-if="globalStore.globalStore.userDetails == null">
         <div>
-          <p>Please <a @click="login">Login</a> in order to use SKA</p>
+          <p>Please <RouterLink @click.prevent="login" to="">Login</RouterLink> in order to use SKA</p>
         </div>
       </template>
       <template v-else>

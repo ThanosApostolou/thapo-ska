@@ -29,10 +29,15 @@ impl DtoErrorResponse {
     }
 
     pub fn from_error_response(error_response: ErrorResponse) -> DtoErrorResponse {
+        let front_packets: Vec<ErrorPacket> = error_response
+            .packets
+            .into_iter()
+            .filter(|packet| !packet.message.is_empty())
+            .collect();
         DtoErrorResponse {
             status_code: error_response.error_code.into_u16(),
             is_unexpected_error: error_response.is_unexpected_error,
-            packets: DtoErrorPacket::vec_from_error_packets(error_response.packets),
+            packets: DtoErrorPacket::vec_from_error_packets(front_packets),
         }
     }
 }

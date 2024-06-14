@@ -33,11 +33,10 @@ export class UtilsHttp {
             // that falls out of the range of 2xx
             console.error('axios error.response', error.response);
             if (error.response.status == 422) {
-                // TODO
                 return Err.new(new DtoErrorResponse({
-                    status_code: 422,
+                    status_code: error.response.status,
                     is_unexpected_error: true,
-                    packets: [],
+                    packets: error.response.data.packets,
                 }));
 
             } else {

@@ -9,6 +9,7 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub chat_id: i64,
     pub user_id_fk: i64,
+    pub chat_name: String,
     pub prompt: Option<String>,
     #[sea_orm(column_type = "Decimal(Some((3, 2)))", nullable)]
     pub temperature: Option<Decimal>,

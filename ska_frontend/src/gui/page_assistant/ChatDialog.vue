@@ -7,6 +7,7 @@ import { ServiceAssistant } from './service_assistant';
 import { DtoAssistantOptions, type DtoLlmData } from './dtos/dto_fetch_assistant_options';
 import { DtoChatDetails } from './dtos/dto_chat_details';
 import { useGlobalStore } from '@/domain/global_state/global_store';
+import { DtoErrorPacket } from '@/utils/error/errors';
 
 // props
 const props = defineProps<{
@@ -25,6 +26,7 @@ const prompt = ref<string>('');
 const temperature = ref<number>(0);
 const top_p = ref<number>(0);
 const isEditPrompt = ref<boolean>(false);
+const errorPackets = ref<DtoErrorPacket[]>([]);
 
 // functions
 function showModal(): void {
@@ -43,6 +45,7 @@ async function onSubmit() {
     const chatDetails = new DtoChatDetails({
         chat_id: null,
         user_id: globalStore.globalStore.userDetails?.user_id || -1,
+        chat_name: chat_name.value,
         llm_model: selectedLlm.value?.name || '',
         prompt_template: isEditPrompt.value ? prompt.value : null,
         temperature: isEditPrompt.value ? temperature.value : null,
@@ -51,12 +54,15 @@ async function onSubmit() {
     });
 
     isLoading.value = true;
+    errorPackets.value = [];
     const result = await ServiceAssistant.createChat(chatDetails);
     if (result.isOk()) {
         const data = result.data;
         isLoading.value = false;
     } else {
         const error = result.error;
+        console.log('error', error)
+        errorPackets.value = error.packets;
         isLoading.value = false;
     }
 }
@@ -127,8 +133,8 @@ defineExpose({
 
                 </div>
 
-                <div role="alert" class="alert alert-error">
-                    <p>Error! Task failed successfully.</p>
+                <div v-if="errorPackets.length > 0" role="alert" class="alert alert-error">
+                    <p v-for="(errorPacket, index) in errorPackets" :key="index">{{errorPacket.message}}</p>
                 </div>
 
                 <div class="modal-action">

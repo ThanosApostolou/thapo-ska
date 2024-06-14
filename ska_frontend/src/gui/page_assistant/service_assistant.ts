@@ -4,7 +4,6 @@ import type { DtoErrorResponse } from "@/utils/error/errors";
 import { UtilsHttp } from "@/utils/http/utils_http";
 import { AskAssistantQuestionRequest, AskAssistantQuestionResponse } from "./dtos/dto_ask_assistant_question";
 import { DtoAssistantOptions } from "./dtos/dto_fetch_assistant_options";
-import { UtilsTypes } from "@/utils/core/utils_types";
 import { DtoCreateUpdateChatResponse, type DtoChatDetails } from "./dtos/dto_chat_details";
 
 export class ServiceAssistant {
