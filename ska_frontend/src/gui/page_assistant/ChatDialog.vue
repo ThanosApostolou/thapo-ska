@@ -1,8 +1,6 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <script setup lang="ts">
-import { ref } from 'vue';
-import { ChatPacketType, DtoChatPacket } from './dtos/dto_chat_packet';
-import { AskAssistantQuestionRequest } from './dtos/dto_ask_assistant_question';
+import { ref, watch } from 'vue';
 import { ServiceAssistant } from './service_assistant';
 import { DtoAssistantOptions, type DtoLlmData } from './dtos/dto_fetch_assistant_options';
 import { DtoChatDetails } from './dtos/dto_chat_details';
@@ -11,7 +9,7 @@ import { DtoErrorPacket } from '@/utils/error/errors';
 
 // props
 const props = defineProps<{
-    chatDetails: DtoChatDetails | null,
+    userChatUpdate: DtoChatDetails | null,
     assistantOptions: DtoAssistantOptions | null,
 }>();
 
@@ -33,6 +31,20 @@ const temperature = ref<number>(0);
 const top_p = ref<number>(0);
 const isEditPrompt = ref<boolean>(false);
 const errorPackets = ref<DtoErrorPacket[]>([]);
+
+watch(props, (newProps) => {
+    const foundLlm = newProps.assistantOptions?.llms.find(llm => llm.name === newProps.userChatUpdate?.llm_model) || null;
+    console.log('newProps.userChatUpdate', newProps.userChatUpdate);
+    console.log('props.userChatUpdate', props.userChatUpdate);
+    isLoading.value = false;
+    selectedLlm.value = foundLlm;
+    chat_name.value = newProps.userChatUpdate?.chat_name || '';
+    prompt.value = newProps.userChatUpdate?.prompt_template || '';
+    temperature.value = newProps.userChatUpdate?.temperature || 0;
+    top_p.value = newProps.userChatUpdate?.top_p || 0;
+    isEditPrompt.value = newProps.userChatUpdate?.prompt_template != null;
+    errorPackets.value = [];
+});
 
 // functions
 function showModal(): void {
@@ -67,16 +79,31 @@ async function onSubmit() {
 
     isLoading.value = true;
     errorPackets.value = [];
-    const result = await ServiceAssistant.createChat(chatDetails);
-    if (result.isOk()) {
-        const data = result.data;
-        isLoading.value = false;
-        emit('success', data.chat_id);
+    if (props.userChatUpdate != null) {
+        const result = await ServiceAssistant.createChat(chatDetails);
+        if (result.isOk()) {
+            const data = result.data;
+            isLoading.value = false;
+            emit('success', data.chat_id);
+        } else {
+            const error = result.error;
+            console.log('error', error)
+            errorPackets.value = error.packets;
+            isLoading.value = false;
+        }
+
     } else {
-        const error = result.error;
-        console.log('error', error)
-        errorPackets.value = error.packets;
-        isLoading.value = false;
+        const result = await ServiceAssistant.createChat(chatDetails);
+        if (result.isOk()) {
+            const data = result.data;
+            isLoading.value = false;
+            emit('success', data.chat_id);
+        } else {
+            const error = result.error;
+            console.log('error', error)
+            errorPackets.value = error.packets;
+            isLoading.value = false;
+        }
     }
 }
 
@@ -91,8 +118,8 @@ defineExpose({
 <template>
     <dialog ref="chatDialog" id="chatDialog" class="modal">
         <div class="modal-box">
-            <h3 class="font-bold text-lg">Edit Chat
-                <template v-if="props.chatDetails == null">Add Chat</template>
+            <h3 class="font-bold text-lg">
+                <template v-if="props.userChatUpdate == null">Add Chat</template>
                 <template v-else>Edit Chat</template>
             </h3>
             <form v-if="props?.assistantOptions != null" @submit.prevent="onSubmit">
@@ -157,7 +184,9 @@ defineExpose({
                         <button class="btn" :disabled="isLoading">Cancel</button>
                     </form>
                     <button class="btn" type="submit" :disabled="isLoading">
-                        <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>Add
+                        <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
+                        <template v-if="props.userChatUpdate != null">Edit</template>
+                        <template v-else>Add</template>
                     </button>
                 </div>
             </form>

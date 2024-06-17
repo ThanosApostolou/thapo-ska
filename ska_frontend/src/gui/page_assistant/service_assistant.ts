@@ -34,4 +34,24 @@ export class ServiceAssistant {
         const result = await UtilsHttp.postRequest<unknown>(url, chatDetails);
         return result.map((data) => DtoCreateUpdateChatResponse.fromUnknown(data));
     }
+
+    static async updateChat(chatDetails: DtoChatDetails): Promise<Result<DtoCreateUpdateChatResponse, DtoErrorResponse>> {
+        const globalState = GlobalState.instance();
+        const url = `${globalState.envConfig.backendUrl}${this.PATH_API_ASSISTANT}/update_chat`;
+
+        const result = await UtilsHttp.putRequest<unknown>(url, chatDetails);
+        return result.map((data) => DtoCreateUpdateChatResponse.fromUnknown(data));
+    }
+
+    static async deleteChat(chat_id: number): Promise<Result<DtoCreateUpdateChatResponse, DtoErrorResponse>> {
+        const globalState = GlobalState.instance();
+        const url = `${globalState.envConfig.backendUrl}${this.PATH_API_ASSISTANT}/delete_chat`;
+
+        const result = await UtilsHttp.deleteRequest<unknown>(url, {
+            params: {
+                chat_id: chat_id
+            }
+        });
+        return result.map((data) => DtoCreateUpdateChatResponse.fromUnknown(data));
+    }
 }

@@ -2,8 +2,13 @@ use crate::{
     domain::{
         entities::user_chat,
         nn_model::{service_nn_model, NnModelData},
+        repos::repo_user_chat,
     },
-    modules::{auth::auth_models::UserDetails, error::ErrorPacket, global_state::GlobalState},
+    modules::{
+        auth::auth_models::UserDetails,
+        error::ErrorPacket,
+        global_state::{self, GlobalState},
+    },
 };
 
 use super::dto_chat_details::DtoChatDetails;
@@ -20,7 +25,7 @@ pub struct ValidDataCreateUpdateUserChat {
 }
 
 pub async fn validate_create_update_user_chat(
-    _global_state: &GlobalState,
+    global_state: &GlobalState,
     user_details: &UserDetails,
     dto_chat_details: DtoChatDetails,
     is_update: bool,
@@ -72,9 +77,42 @@ pub async fn validate_create_update_user_chat(
     }
 
     if is_update {
-        let chat_id = dto_chat_details
-            .chat_id
-            .ok_or(vec![ErrorPacket::new_backend("chat_id shouldn't be null")])?;
+        let result_chat_id = mandatory_chat_id(dto_chat_details.chat_id);
+        if let Err(error) = &result_chat_id {
+            errors.push(error.clone());
+        };
+
+        if let Ok(chat_id) = result_chat_id {
+            let result_br3_existing_chat = br3_existing_chat(global_state, chat_id).await;
+            if let Err(error) = &result_br3_existing_chat {
+                errors.push(error.clone());
+            };
+            if let Ok(chat) = result_br3_existing_chat {
+                let result_br4_user_can_update_chat = br4_user_can_update_chat(&chat, user_details);
+                if let Err(error) = &result_br4_user_can_update_chat {
+                    errors.push(error.clone());
+                };
+
+                if let (true, Ok(llm), Ok(())) = (
+                    errors.is_empty(),
+                    result_br2,
+                    result_br4_user_can_update_chat,
+                ) {
+                    return Ok(ValidDataCreateUpdateUserChat {
+                        chat_id: Some(chat.chat_id),
+                        user_id: user_details.user_id,
+                        chat_name: dto_chat_details.chat_name.clone(),
+                        prompt: dto_chat_details.prompt_template,
+                        temperature: dto_chat_details.temperature,
+                        top_p: dto_chat_details.top_p,
+                        llm_model: llm,
+                        existing_user_chat: Some(chat),
+                    });
+                } else {
+                    return Err(errors);
+                }
+            }
+        }
     } else {
         if let Ok(llm) = result_br2 {
             return Ok(ValidDataCreateUpdateUserChat {
@@ -204,9 +242,54 @@ pub fn br2_llm_model(dto_chat_details: &DtoChatDetails) -> Result<NnModelData, E
     }
 }
 
+pub async fn br3_existing_chat(
+    global_state: &GlobalState,
+    chat_id: i64,
+) -> Result<user_chat::Model, ErrorPacket> {
+    let chat = repo_user_chat::find_by_chat_id(&global_state.db_connection, chat_id)
+        .await
+        .map_err(|e| ErrorPacket::new_backend(format!("{}", e).as_str()))?;
+
+    let error_message = format!("could not find chat with id {}", chat_id);
+    let chat = chat.ok_or(ErrorPacket {
+        backend_message: error_message.clone(),
+        message: error_message,
+    })?;
+
+    Ok(chat)
+}
+
+pub fn br4_user_can_update_chat(
+    chat: &user_chat::Model,
+    user_details: &UserDetails,
+) -> Result<(), ErrorPacket> {
+    let mut can_update = false;
+    if user_details.user_id == chat.user_id_fk {
+        can_update = false;
+    }
+
+    match can_update {
+        true => Ok(()),
+        false => Err(ErrorPacket::new_backend(
+            format!(
+                "user_id: {} cannot update chat_id {}",
+                user_details.user_id, chat.chat_id
+            )
+            .as_str(),
+        )),
+    }
+}
+
 pub fn mandatory_user_id(user_id: Option<i64>) -> Result<i64, ErrorPacket> {
     match user_id {
         Some(user_id) => Ok(user_id),
         None => Err(ErrorPacket::new_backend("user_id is mandatory")),
+    }
+}
+
+pub fn mandatory_chat_id(chat_id: Option<i64>) -> Result<i64, ErrorPacket> {
+    match chat_id {
+        Some(chat_id) => Ok(chat_id),
+        None => Err(ErrorPacket::new_backend("chat_id is mandatory")),
     }
 }

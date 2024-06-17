@@ -27,6 +27,28 @@ export class UtilsHttp {
 
     }
 
+    static async putRequest<R, D = unknown>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<Result<R, DtoErrorResponse>> {
+        const httpClient = GlobalState.instance().httpClient;
+        try {
+            const response = await httpClient.put<R>(url, data, config);
+            return Ok.new(response.data);
+        } catch (error: any) {
+            return this.handleError<R>(error);
+        }
+
+    }
+
+    static async deleteRequest<R, D = unknown>(url: string, config?: AxiosRequestConfig<D>): Promise<Result<R, DtoErrorResponse>> {
+        const httpClient = GlobalState.instance().httpClient;
+        try {
+            const response = await httpClient.delete<R>(url, config);
+            return Ok.new(response.data);
+        } catch (error: any) {
+            return this.handleError<R>(error);
+        }
+
+    }
+
     private static handleError<R>(error: any): Err<R, DtoErrorResponse> {
         if (error.response) {
             // The request was made and the server responded with a status code
