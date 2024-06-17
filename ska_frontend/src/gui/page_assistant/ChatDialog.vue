@@ -66,21 +66,21 @@ function onSelectChange() {
 }
 
 async function onSubmit() {
-    const chatDetails = new DtoChatDetails({
-        chat_id: null,
-        user_id: globalStore.globalStore.userDetails?.user_id || -1,
-        chat_name: chat_name.value,
-        llm_model: selectedLlm.value?.name || '',
-        prompt_template: isEditPrompt.value ? prompt.value : null,
-        temperature: isEditPrompt.value ? temperature.value : null,
-        top_p: isEditPrompt.value ? top_p.value : null,
-        default_prompt: selectedLlm.value?.default_prompt || '',
-    });
 
     isLoading.value = true;
     errorPackets.value = [];
     if (props.userChatUpdate != null) {
-        const result = await ServiceAssistant.createChat(chatDetails);
+        const chatDetails = new DtoChatDetails({
+            chat_id: props.userChatUpdate.chat_id,
+            user_id: props.userChatUpdate.user_id,
+            chat_name: chat_name.value,
+            llm_model: selectedLlm.value?.name || '',
+            prompt_template: isEditPrompt.value ? prompt.value : null,
+            temperature: isEditPrompt.value ? temperature.value : null,
+            top_p: isEditPrompt.value ? top_p.value : null,
+            default_prompt: selectedLlm.value?.default_prompt || '',
+        });
+        const result = await ServiceAssistant.updateChat(chatDetails);
         if (result.isOk()) {
             const data = result.data;
             isLoading.value = false;
@@ -93,6 +93,16 @@ async function onSubmit() {
         }
 
     } else {
+        const chatDetails = new DtoChatDetails({
+            chat_id: null,
+            user_id: globalStore.globalStore.userDetails?.user_id || -1,
+            chat_name: chat_name.value,
+            llm_model: selectedLlm.value?.name || '',
+            prompt_template: isEditPrompt.value ? prompt.value : null,
+            temperature: isEditPrompt.value ? temperature.value : null,
+            top_p: isEditPrompt.value ? top_p.value : null,
+            default_prompt: selectedLlm.value?.default_prompt || '',
+        });
         const result = await ServiceAssistant.createChat(chatDetails);
         if (result.isOk()) {
             const data = result.data;

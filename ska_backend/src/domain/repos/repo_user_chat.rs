@@ -1,4 +1,7 @@
-use sea_orm::{entity::prelude::*, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
+use sea_orm::{
+    entity::prelude::*, ColumnTrait, DatabaseConnection, EntityTrait, Order, QueryFilter,
+    QueryOrder,
+};
 
 use crate::domain::entities::user_chat;
 
@@ -9,6 +12,7 @@ pub async fn find_by_user_id(
     tracing::trace!("select_by_user_id start user_id={}", user_id);
     let user_chats = user_chat::Entity::find()
         .filter(user_chat::Column::UserIdFk.eq(user_id))
+        .order_by(user_chat::Column::CreatedAt, Order::Asc)
         .all(db_connection)
         .await?;
     tracing::trace!("select_by_user_id end user_id={}", user_id);

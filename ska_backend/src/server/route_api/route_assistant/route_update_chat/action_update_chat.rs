@@ -83,7 +83,7 @@ async fn update_user_chat(
             prompt: Set(valid_data.prompt.clone()),
             temperature: Set(valid_data.temperature.clone()),
             top_p: Set(valid_data.top_p.clone()),
-            created_at: Set(current_date),
+            created_at: NotSet,
             updated_at: Set(current_date),
         };
 

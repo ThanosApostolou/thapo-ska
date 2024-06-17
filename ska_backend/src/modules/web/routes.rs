@@ -1,14 +1,14 @@
 use std::collections::{HashMap, HashSet};
 use std::sync::Arc;
 
-use axum::routing::{get, post, MethodRouter};
+use axum::routing::{get, post, put, MethodRouter};
 use const_format::formatcp;
 
 use crate::modules::auth::auth_models::AuthRoles;
 use crate::server::handle_root;
 use crate::server::route_api::route_assistant::route_ask_assistant_question::handle_ask_assistant_question;
 use crate::server::route_api::route_assistant::{
-    handle_create_chat, handle_fetch_assistant_options,
+    handle_create_chat, handle_fetch_assistant_options, handle_update_chat,
 };
 use crate::{
     modules::{auth::auth_models::AuthTypes, global_state::GlobalState},
@@ -125,6 +125,17 @@ impl Routes {
                     ])),
                     method_router: post(handle_create_chat),
                 },
+                EndpointInfo {
+                    path: RoutePath {
+                        parent_path: formatcp!("{API_STR}{ASSISTANT_STR}"),
+                        self_path: "/update_chat",
+                    },
+                    auth_type: AuthTypes::Authorization(HashSet::from([
+                        AuthRoles::SkaAdmin,
+                        AuthRoles::SkaUser,
+                    ])),
+                    method_router: put(handle_update_chat),
+                },
             ],
         };
 
@@ -204,7 +215,7 @@ pub struct RouteAuth {
 #[derive(Clone, Debug)]
 pub struct RouteAssistant {
     pub path: RoutePath,
-    pub endpoints: [EndpointInfo; 3],
+    pub endpoints: [EndpointInfo; 4],
 }
 
 // const fn concat(str1: &'static str)

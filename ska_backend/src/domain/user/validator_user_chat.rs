@@ -265,14 +265,14 @@ pub fn br4_user_can_update_chat(
 ) -> Result<(), ErrorPacket> {
     let mut can_update = false;
     if user_details.user_id == chat.user_id_fk {
-        can_update = false;
+        can_update = true;
     }
 
     match can_update {
         true => Ok(()),
         false => Err(ErrorPacket::new_backend(
             format!(
-                "user_id: {} cannot update chat_id {}",
+                "user_id: {} does not own chat_id {}",
                 user_details.user_id, chat.chat_id
             )
             .as_str(),
