@@ -88,7 +88,8 @@ pub async fn validate_create_update_user_chat(
                 errors.push(error.clone());
             };
             if let Ok(chat) = result_br3_existing_chat {
-                let result_br4_user_can_update_chat = br4_user_can_update_chat(&chat, user_details);
+                let result_br4_user_can_update_chat =
+                    br4_user_can_update_delete_chat(&chat, user_details);
                 if let Err(error) = &result_br4_user_can_update_chat {
                     errors.push(error.clone());
                 };
@@ -124,6 +125,39 @@ pub async fn validate_create_update_user_chat(
                 top_p: dto_chat_details.top_p,
                 llm_model: llm,
                 existing_user_chat: None,
+            });
+        }
+    }
+
+    return Err(errors);
+}
+
+pub struct ValidDataDeleteUserChat {
+    pub existing_user_chat: user_chat::Model,
+}
+
+pub async fn validate_delete_user_chat(
+    global_state: &GlobalState,
+    user_details: &UserDetails,
+    chat_id: i64,
+) -> Result<ValidDataDeleteUserChat, Vec<ErrorPacket>> {
+    let mut errors: Vec<ErrorPacket> = vec![];
+
+    let result_existing_chat = br3_existing_chat(global_state, chat_id).await;
+    if let Err(error) = &result_existing_chat {
+        errors.push(error.clone());
+    }
+
+    if let Ok(existing_chat) = result_existing_chat {
+        let result_br4_user_can_update_delete_chat =
+            br4_user_can_update_delete_chat(&existing_chat, user_details);
+        if let Err(error) = &result_br4_user_can_update_delete_chat {
+            errors.push(error.clone());
+        }
+
+        if errors.len() == 0 {
+            return Ok(ValidDataDeleteUserChat {
+                existing_user_chat: existing_chat,
             });
         }
     }
@@ -259,7 +293,7 @@ pub async fn br3_existing_chat(
     Ok(chat)
 }
 
-pub fn br4_user_can_update_chat(
+pub fn br4_user_can_update_delete_chat(
     chat: &user_chat::Model,
     user_details: &UserDetails,
 ) -> Result<(), ErrorPacket> {

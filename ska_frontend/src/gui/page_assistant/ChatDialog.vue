@@ -193,7 +193,7 @@ defineExpose({
                         <!-- if there is a button in form, it will close the modal -->
                         <button class="btn" :disabled="isLoading">Cancel</button>
                     </form>
-                    <button class="btn" type="submit" :disabled="isLoading">
+                    <button class="btn btn-primary" type="submit" :disabled="isLoading">
                         <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
                         <template v-if="props.userChatUpdate != null">Edit</template>
                         <template v-else>Add</template>

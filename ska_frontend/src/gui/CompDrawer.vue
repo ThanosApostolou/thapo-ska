@@ -4,7 +4,6 @@ import CompFooter from './CompFooter.vue';
 import CompHeader from './CompHeader.vue';
 import { GlobalState } from '@/domain/global_state/global_state';
 import { useGlobalStore } from '@/domain/global_state/global_store';
-
 const globalState = GlobalState.instance();
 const globalStore = useGlobalStore();
 

@@ -6,6 +6,8 @@ import { ChatPacketType, DtoChatPacket } from './dtos/dto_chat_packet';
 import { ServiceAssistant } from './service_assistant';
 import { DtoAssistantOptions, DtoLlmData } from './dtos/dto_fetch_assistant_options';
 import type { DtoChatDetails } from './dtos/dto_chat_details';
+import CompConfirmationDialog from '@/utils/ui/CompConfirmationDialog.vue';
+
 
 // hooks
 const chatPackets = ref<DtoChatPacket[]>([
@@ -21,10 +23,11 @@ const pageErrors = ref<string[]>([]);
 const assistantOptions = ref<DtoAssistantOptions | null>(null);
 const selectedLlm = ref<DtoLlmData | null>(null);
 const selectedUserChat = ref<DtoChatDetails | null>(null);
-const userChatUpdate = ref<DtoChatDetails | null>(null);
+const userChatForAction = ref<DtoChatDetails | null>(null);
 const prompt = ref<string>('');
 const isEditPrompt = ref<boolean>(false);
 const chatDialog = ref<InstanceType<typeof ChatDialog> | null>(null)
+const deleteDialogOpen = ref<boolean>(false);
 
 
 // lifecycles
@@ -57,14 +60,19 @@ async function fetchAssistantOptions() {
 }
 
 function onAddClicked() {
-  userChatUpdate.value = null;
+  userChatForAction.value = null;
   chatDialog.value?.showModal();
 }
 
 function onUpdateClicked(userChat: DtoChatDetails) {
   // selectedUserChat.value = userChat;
-  userChatUpdate.value = userChat;
+  userChatForAction.value = userChat;
   chatDialog.value?.showModal();
+}
+
+function onDeleteClicked(userChat: DtoChatDetails) {
+  userChatForAction.value = userChat;
+  deleteDialogOpen.value = true;
 }
 
 function onSelectChange() {
@@ -77,6 +85,18 @@ function onCreateUpdate(chat_id: number) {
   console.log('success chat_id', chat_id);
   chatDialog.value?.close();
   fetchAssistantOptions();
+}
+
+async function onDeleteDialogAction(isConfirm: boolean) {
+  if (!isConfirm) {
+    deleteDialogOpen.value = false;
+  } else {
+    if (userChatForAction.value?.chat_id != null) {
+      await ServiceAssistant.deleteChat(userChatForAction.value.chat_id);
+      await fetchAssistantOptions();
+    }
+    deleteDialogOpen.value = false;
+  }
 }
 
 </script>
@@ -96,7 +116,7 @@ function onCreateUpdate(chat_id: number) {
           <img src="/assets/icons/plus.svg" width="24" />Add Chat
         </button>
 
-        <ChatDialog ref="chatDialog" :assistantOptions="assistantOptions" :user-chat-update="userChatUpdate"
+        <ChatDialog ref="chatDialog" :assistantOptions="assistantOptions" :user-chat-update="userChatForAction"
           @success="onCreateUpdate" />
 
 
@@ -131,7 +151,9 @@ function onCreateUpdate(chat_id: number) {
                 <li @click="onUpdateClicked(userChat)">
                   <span><img src="/assets/icons/pencil.svg" width="24">Edit</span>
                 </li>
-                <li><a>Item 2</a></li>
+                <li @click="onDeleteClicked(userChat)">
+                  <span><img src="/assets/icons/trash.svg" width="24">Delete</span>
+                </li>
               </ul>
             </details>
           </label>
@@ -146,4 +168,11 @@ function onCreateUpdate(chat_id: number) {
 
   </template>
 
+
+  <CompConfirmationDialog v-if="deleteDialogOpen" :open="deleteDialogOpen" title="Delete Chat"
+    @action="onDeleteDialogAction($event)">
+    <div>
+      <p>Are you sure you want to delete chat {{ userChatForAction?.chat_name }}?</p>
+    </div>
+  </CompConfirmationDialog>
 </template>

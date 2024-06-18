@@ -1,6 +1,6 @@
 use sea_orm::{
-    entity::prelude::*, ColumnTrait, DatabaseConnection, EntityTrait, Order, QueryFilter,
-    QueryOrder,
+    entity::prelude::*, ColumnTrait, DatabaseConnection, DeleteResult, EntityTrait, Order,
+    QueryFilter, QueryOrder,
 };
 
 use crate::domain::entities::user_chat;
@@ -50,4 +50,17 @@ pub async fn update(
     let user_chat = user_chat_am.update(db_connection).await?;
     tracing::trace!("update end chat_id={:?}", &user_chat.chat_id);
     Ok(user_chat)
+}
+
+pub async fn delete(
+    db_connection: &DatabaseConnection,
+    user_chat_am: user_chat::ActiveModel,
+) -> anyhow::Result<DeleteResult> {
+    tracing::trace!("delete start chat_id={:?}", &user_chat_am.chat_id);
+    let delete_result: DeleteResult = user_chat_am.delete(db_connection).await?;
+    tracing::trace!(
+        "delete end rows_affected={:?}",
+        &delete_result.rows_affected
+    );
+    Ok(delete_result)
 }
