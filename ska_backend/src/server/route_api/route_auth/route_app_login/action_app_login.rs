@@ -1,10 +1,11 @@
 use chrono::{NaiveDateTime, Utc};
-use sea_orm::{ActiveValue::NotSet, IntoActiveModel, Set};
+use sea_orm::{ActiveValue::NotSet, DatabaseTransaction, IntoActiveModel, Set};
 
 use crate::{
     domain::{entities::users, repos::repo_users},
     modules::{
         auth::{auth_models::UserAuthenticationDetails, DtoUserDetails},
+        db,
         error::ErrorResponse,
         global_state::GlobalState,
     },
@@ -16,15 +17,13 @@ pub async fn do_app_login(
     user_authentication_details: UserAuthenticationDetails,
 ) -> Result<DtoUserDetails, ErrorResponse> {
     tracing::debug!("action_app_login::do_app_login start");
+    let txn: sea_orm::DatabaseTransaction = db::transaction_begin_write(global_state).await?;
 
-    let user_opt = repo_users::find_by_sub(
-        &global_state.db_connection,
-        &user_authentication_details.sub,
-    )
-    .await
-    .map_err(|err| ErrorResponse::new_standard(err.to_string(), true, false))?;
+    let user_opt = repo_users::find_by_sub(&txn, &user_authentication_details.sub)
+        .await
+        .map_err(|err| ErrorResponse::new_standard(err.to_string(), true, false))?;
 
-    let user = create_or_update_user(global_state, user_opt, &user_authentication_details)
+    let user = create_or_update_user(global_state, &txn, user_opt, &user_authentication_details)
         .await
         .map_err(|err| ErrorResponse::new_standard(err.to_string(), true, false))?;
 
@@ -35,12 +34,14 @@ pub async fn do_app_login(
         email: user_authentication_details.email,
         roles: user_authentication_details.roles.clone(),
     };
+    db::transaction_commit(txn).await?;
     tracing::debug!("action_app_login::do_app_login end");
     Ok(dto_user_details)
 }
 
 async fn create_or_update_user(
-    global_state: &GlobalState,
+    _global_state: &GlobalState,
+    txn: &DatabaseTransaction,
     user_opt: Option<users::Model>,
     user_authentication_details: &UserAuthenticationDetails,
 ) -> anyhow::Result<users::Model> {
@@ -54,7 +55,7 @@ async fn create_or_update_user(
             user_am.email = sea_orm::Set(user_authentication_details.email.clone());
             user_am.updated_at = sea_orm::Set(current_date);
             user_am.last_login = sea_orm::Set(current_date);
-            let user = repo_users::update(&global_state.db_connection, user_am).await?;
+            let user = repo_users::update(txn, user_am).await?;
             tracing::debug!("action_app_login::create_or_update_user end updated");
             Ok(user)
         }
@@ -68,7 +69,7 @@ async fn create_or_update_user(
                 created_at: Set(current_date),
                 updated_at: Set(current_date),
             };
-            let user = repo_users::insert(&global_state.db_connection, user_am).await?;
+            let user = repo_users::insert(txn, user_am).await?;
             tracing::debug!("action_app_login::create_or_update_user end created");
             Ok(user)
         }

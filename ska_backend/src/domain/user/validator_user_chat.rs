@@ -1,14 +1,12 @@
+use sea_orm::DatabaseTransaction;
+
 use crate::{
     domain::{
         entities::user_chat,
         nn_model::{service_nn_model, NnModelData},
         repos::repo_user_chat,
     },
-    modules::{
-        auth::auth_models::UserDetails,
-        error::ErrorPacket,
-        global_state::{self, GlobalState},
-    },
+    modules::{auth::auth_models::UserDetails, error::ErrorPacket, global_state::GlobalState},
 };
 
 use super::dto_chat_details::DtoChatDetails;
@@ -25,8 +23,9 @@ pub struct ValidDataCreateUpdateUserChat {
 }
 
 pub async fn validate_create_update_user_chat(
-    global_state: &GlobalState,
+    _global_state: &GlobalState,
     user_details: &UserDetails,
+    txn: &DatabaseTransaction,
     dto_chat_details: DtoChatDetails,
     is_update: bool,
 ) -> Result<ValidDataCreateUpdateUserChat, Vec<ErrorPacket>> {
@@ -83,7 +82,7 @@ pub async fn validate_create_update_user_chat(
         };
 
         if let Ok(chat_id) = result_chat_id {
-            let result_br3_existing_chat = br3_existing_chat(global_state, chat_id).await;
+            let result_br3_existing_chat = br3_existing_chat(txn, chat_id).await;
             if let Err(error) = &result_br3_existing_chat {
                 errors.push(error.clone());
             };
@@ -137,13 +136,14 @@ pub struct ValidDataDeleteUserChat {
 }
 
 pub async fn validate_delete_user_chat(
-    global_state: &GlobalState,
+    _global_state: &GlobalState,
     user_details: &UserDetails,
+    txn: &DatabaseTransaction,
     chat_id: i64,
 ) -> Result<ValidDataDeleteUserChat, Vec<ErrorPacket>> {
     let mut errors: Vec<ErrorPacket> = vec![];
 
-    let result_existing_chat = br3_existing_chat(global_state, chat_id).await;
+    let result_existing_chat = br3_existing_chat(txn, chat_id).await;
     if let Err(error) = &result_existing_chat {
         errors.push(error.clone());
     }
@@ -277,10 +277,10 @@ pub fn br2_llm_model(dto_chat_details: &DtoChatDetails) -> Result<NnModelData, E
 }
 
 pub async fn br3_existing_chat(
-    global_state: &GlobalState,
+    txn: &DatabaseTransaction,
     chat_id: i64,
 ) -> Result<user_chat::Model, ErrorPacket> {
-    let chat = repo_user_chat::find_by_chat_id(&global_state.db_connection, chat_id)
+    let chat = repo_user_chat::find_by_chat_id(txn, chat_id)
         .await
         .map_err(|e| ErrorPacket::new_backend(format!("{}", e).as_str()))?;
 

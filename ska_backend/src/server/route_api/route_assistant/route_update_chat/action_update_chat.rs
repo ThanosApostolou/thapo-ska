@@ -1,5 +1,5 @@
 use chrono::{NaiveDateTime, Utc};
-use sea_orm::{ActiveValue::NotSet, Set};
+use sea_orm::{ActiveValue::NotSet, DatabaseTransaction, Set};
 
 use crate::{
     domain::{
@@ -12,6 +12,7 @@ use crate::{
     },
     modules::{
         auth::auth_models::UserDetails,
+        db,
         error::{ErrorCode, ErrorResponse},
         global_state::GlobalState,
     },
@@ -23,9 +24,10 @@ pub async fn do_update_chat(
     dto_chat_details: DtoChatDetails,
 ) -> Result<DtoCreateUpdateChatResponse, ErrorResponse> {
     tracing::trace!("do_update_chat start");
-    match validate_update_chat(global_state, &user_details, dto_chat_details).await {
+    let txn: sea_orm::DatabaseTransaction = db::transaction_begin_write(global_state).await?;
+    match validate_update_chat(global_state, &user_details, &txn, dto_chat_details).await {
         Ok(valid_data) => {
-            let chat = update_user_chat(global_state, &user_details, &valid_data)
+            let chat = update_user_chat(global_state, &txn, &user_details, &valid_data)
                 .await
                 .map_err(|_| {
                     return ErrorResponse {
@@ -38,21 +40,24 @@ pub async fn do_update_chat(
             let dto_create_update_chat_response = DtoCreateUpdateChatResponse {
                 chat_id: chat.chat_id,
             };
+            db::transaction_commit(txn).await?;
             tracing::trace!("do_update_chat end");
-            Ok(dto_create_update_chat_response)
+            return Ok(dto_create_update_chat_response);
         }
-        Err(error) => Err(error),
+        Err(error) => return Err(error),
     }
 }
 
 async fn validate_update_chat(
     _global_state: &GlobalState,
     user_details: &UserDetails,
+    txn: &DatabaseTransaction,
     dto_chat_details: DtoChatDetails,
 ) -> Result<ValidDataCreateUpdateUserChat, ErrorResponse> {
     let valid_data = validator_user_chat::validate_create_update_user_chat(
         _global_state,
         user_details,
+        txn,
         dto_chat_details,
         true,
     )
@@ -67,7 +72,8 @@ async fn validate_update_chat(
 }
 
 async fn update_user_chat(
-    global_state: &GlobalState,
+    _global_state: &GlobalState,
+    txn: &sea_orm::DatabaseTransaction,
     user_details: &UserDetails,
     valid_data: &ValidDataCreateUpdateUserChat,
 ) -> anyhow::Result<user_chat::Model> {
@@ -87,7 +93,7 @@ async fn update_user_chat(
             updated_at: Set(current_date),
         };
 
-        let user_chat = repo_user_chat::update(&global_state.db_connection, user_chat_am).await?;
+        let user_chat = repo_user_chat::update(txn, user_chat_am).await?;
         return Ok(user_chat);
     }
     return Err(anyhow::anyhow!("unexpected error"));

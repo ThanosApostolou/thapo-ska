@@ -1,12 +1,11 @@
 use sea_orm::{
-    entity::prelude::*, ColumnTrait, DatabaseConnection, DeleteResult, EntityTrait, Order,
-    QueryFilter, QueryOrder,
+    entity::prelude::*, ColumnTrait, DeleteResult, EntityTrait, Order, QueryFilter, QueryOrder,
 };
 
 use crate::domain::entities::user_chat;
 
 pub async fn find_by_user_id(
-    db_connection: &DatabaseConnection,
+    db_connection: &impl ConnectionTrait,
     user_id: i64,
 ) -> anyhow::Result<Vec<user_chat::Model>> {
     tracing::trace!("select_by_user_id start user_id={}", user_id);
@@ -20,7 +19,7 @@ pub async fn find_by_user_id(
 }
 
 pub async fn find_by_chat_id(
-    db_connection: &DatabaseConnection,
+    db_connection: &impl ConnectionTrait,
     chat_id: i64,
 ) -> anyhow::Result<Option<user_chat::Model>> {
     tracing::trace!("find_by_chat_id start chat_id={}", chat_id);
@@ -33,7 +32,7 @@ pub async fn find_by_chat_id(
 }
 
 pub async fn insert(
-    db_connection: &DatabaseConnection,
+    db_connection: &impl ConnectionTrait,
     user_chat_am: user_chat::ActiveModel,
 ) -> anyhow::Result<user_chat::Model> {
     tracing::trace!("insert start chat_id={:?}", &user_chat_am.chat_id);
@@ -43,7 +42,7 @@ pub async fn insert(
 }
 
 pub async fn update(
-    db_connection: &DatabaseConnection,
+    db_connection: &impl ConnectionTrait,
     user_chat_am: user_chat::ActiveModel,
 ) -> anyhow::Result<user_chat::Model> {
     tracing::trace!("update start chat_id={:?}", &user_chat_am.chat_id);
@@ -53,7 +52,7 @@ pub async fn update(
 }
 
 pub async fn delete(
-    db_connection: &DatabaseConnection,
+    db_connection: &impl ConnectionTrait,
     user_chat_am: user_chat::ActiveModel,
 ) -> anyhow::Result<DeleteResult> {
     tracing::trace!("delete start chat_id={:?}", &user_chat_am.chat_id);

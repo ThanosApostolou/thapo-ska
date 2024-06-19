@@ -1,9 +1,9 @@
-use sea_orm::{entity::prelude::*, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
+use sea_orm::{entity::prelude::*, ColumnTrait, EntityTrait, QueryFilter};
 
 use crate::domain::entities::users;
 
 pub async fn find_by_sub(
-    db_connection: &DatabaseConnection,
+    db_connection: &impl ConnectionTrait,
     sub: &str,
 ) -> anyhow::Result<Option<users::Model>> {
     tracing::trace!("repo_users::find_by_sub start {}", sub);
@@ -16,7 +16,7 @@ pub async fn find_by_sub(
 }
 
 pub async fn insert(
-    db_connection: &DatabaseConnection,
+    db_connection: &impl ConnectionTrait,
     user_am: users::ActiveModel,
 ) -> anyhow::Result<users::Model> {
     tracing::trace!("repo_users::insert start user.sub={:?}", &user_am.sub);
@@ -26,7 +26,7 @@ pub async fn insert(
 }
 
 pub async fn update(
-    db_connection: &DatabaseConnection,
+    db_connection: &impl ConnectionTrait,
     user_am: users::ActiveModel,
 ) -> anyhow::Result<users::Model> {
     tracing::trace!("repo_users::insert start user.sub={:?}", &user_am.sub);

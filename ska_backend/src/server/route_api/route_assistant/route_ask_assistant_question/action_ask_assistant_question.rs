@@ -1,6 +1,7 @@
 use crate::{
     domain::nn_model::{service_nn_model, NnModelData, NnModelType},
     modules::{
+        db,
         error::{ErrorCode, ErrorPacket, ErrorResponse},
         global_state::GlobalState,
     },
@@ -12,6 +13,8 @@ pub async fn do_ask_assistant_question(
     global_state: &GlobalState,
     request: AskAssistantQuestionRequest,
 ) -> Result<AskAssistantQuestionResponse, ErrorResponse> {
+    tracing::trace!("do_ask_assistant_question start");
+    let txn: sea_orm::DatabaseTransaction = db::transaction_begin_read(global_state).await?;
     let emb_model: NnModelData = service_nn_model::get_nn_models_list()
         .into_iter()
         .filter(|nn_model| NnModelType::ModelEmbedding == nn_model.model_type)
@@ -26,10 +29,15 @@ pub async fn do_ask_assistant_question(
         &request.prompt_template,
     );
     match rag_invoke_result {
-        Ok(output) => Ok(AskAssistantQuestionResponse {
-            answer: output.answer,
-            sources: None,
-        }),
+        Ok(output) => {
+            let ask_assistant_question_response = AskAssistantQuestionResponse {
+                answer: output.answer,
+                sources: None,
+            };
+            db::transaction_commit(txn).await?;
+            tracing::trace!("do_ask_assistant_question end");
+            return Ok(ask_assistant_question_response);
+        }
         Err(error) => {
             let error_str = error.to_string();
             let error_packets: Vec<ErrorPacket> = if error_str.is_empty() {
@@ -40,11 +48,12 @@ pub async fn do_ask_assistant_question(
                     backend_message: error_str,
                 }]
             };
-            Err(ErrorResponse::new(
+            tracing::warn!("do_ask_assistant_question end error");
+            return Err(ErrorResponse::new(
                 ErrorCode::UnprocessableEntity422,
                 true,
                 error_packets,
-            ))
+            ));
         }
     }
 }

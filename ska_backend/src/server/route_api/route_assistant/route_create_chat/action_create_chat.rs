@@ -1,5 +1,5 @@
 use chrono::{NaiveDateTime, Utc};
-use sea_orm::{ActiveValue::NotSet, Set};
+use sea_orm::{ActiveValue::NotSet, DatabaseTransaction, Set};
 
 use crate::{
     domain::{
@@ -12,6 +12,7 @@ use crate::{
     },
     modules::{
         auth::auth_models::UserDetails,
+        db,
         error::{ErrorCode, ErrorResponse},
         global_state::GlobalState,
     },
@@ -23,9 +24,10 @@ pub async fn do_create_chat(
     dto_chat_details: DtoChatDetails,
 ) -> Result<DtoCreateUpdateChatResponse, ErrorResponse> {
     tracing::trace!("do_create_chat start");
-    match validate_create_chat(global_state, &user_details, dto_chat_details).await {
+    let txn: sea_orm::DatabaseTransaction = db::transaction_begin_write(global_state).await?;
+    match validate_create_chat(global_state, &user_details, &txn, dto_chat_details).await {
         Ok(valid_data) => {
-            let chat = create_user_chat(global_state, &user_details, &valid_data)
+            let chat = create_user_chat(global_state, &user_details, &txn, &valid_data)
                 .await
                 .map_err(|_| {
                     return ErrorResponse {
@@ -38,6 +40,7 @@ pub async fn do_create_chat(
             let dto_create_update_chat_response = DtoCreateUpdateChatResponse {
                 chat_id: chat.chat_id,
             };
+            db::transaction_commit(txn).await?;
             tracing::trace!("do_create_chat end");
             Ok(dto_create_update_chat_response)
         }
@@ -48,11 +51,13 @@ pub async fn do_create_chat(
 async fn validate_create_chat(
     _global_state: &GlobalState,
     user_details: &UserDetails,
+    txn: &DatabaseTransaction,
     dto_chat_details: DtoChatDetails,
 ) -> Result<ValidDataCreateUpdateUserChat, ErrorResponse> {
     let valid_data = validator_user_chat::validate_create_update_user_chat(
         _global_state,
         user_details,
+        txn,
         dto_chat_details,
         false,
     )
@@ -67,8 +72,9 @@ async fn validate_create_chat(
 }
 
 async fn create_user_chat(
-    global_state: &GlobalState,
+    _global_state: &GlobalState,
     user_details: &UserDetails,
+    txn: &DatabaseTransaction,
     valid_data: &ValidDataCreateUpdateUserChat,
 ) -> anyhow::Result<user_chat::Model> {
     let current_date = Utc::now();
@@ -84,6 +90,6 @@ async fn create_user_chat(
         created_at: Set(current_date),
         updated_at: Set(current_date),
     };
-    let user_chat = repo_user_chat::insert(&global_state.db_connection, user_chat_am).await?;
+    let user_chat = repo_user_chat::insert(txn, user_chat_am).await?;
     Ok(user_chat)
 }

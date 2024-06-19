@@ -13,6 +13,7 @@ use crate::{
     domain::repos::repo_users,
     modules::{
         auth::auth_models::UserDetails,
+        db,
         error::{ErrorCode, ErrorResponse},
         global_state::{EnvConfig, GlobalState, SecretConfig},
     },
@@ -130,14 +131,17 @@ pub async fn perform_auth_user(
     auth_type: &AuthTypes,
 ) -> Result<AuthUser, ErrorResponse> {
     tracing::debug!("service_auth::perform_auth_user start");
+    let txn: sea_orm::DatabaseTransaction = db::transaction_begin_read(global_state).await?;
     match auth_type {
         AuthTypes::Public => Ok(AuthUser::None),
         AuthTypes::Authentication => {
             let response_result = authenticate_user(global_state, headers).await;
             match response_result {
                 Ok(user_authentication_details) => {
+                    let authenticated = AuthUser::Authenticated(user_authentication_details);
+                    db::transaction_commit(txn).await?;
                     tracing::debug!("service_auth::perform_auth_user Authentication ok");
-                    Ok(AuthUser::Authenticated(user_authentication_details))
+                    return Ok(authenticated);
                 }
                 Err(e) => {
                     tracing::error!(
@@ -169,10 +173,12 @@ pub async fn perform_auth_user(
                                 user_id: user.user_id,
                                 last_login: user.last_login,
                             };
+                            let authorized = AuthUser::Authorized(user_details);
+                            db::transaction_commit(txn).await?;
                             tracing::debug!(
                                 "service_auth::perform_auth_user AuthorizationNoRoles ok"
                             );
-                            return Ok(AuthUser::Authorized(user_details));
+                            return Ok(authorized);
                         }
                     }
                     return Err(ErrorResponse {
@@ -226,6 +232,7 @@ pub async fn perform_auth_user(
                                 user_id: user.user_id,
                                 last_login: user.last_login,
                             };
+                            db::transaction_commit(txn).await?;
                             tracing::debug!("service_auth::perform_auth_user Authorization ok");
                             return Ok(AuthUser::Authorized(user_details));
                         }
