@@ -10,8 +10,8 @@ def handle_rag_prepare(data_path: str, vector_store_path: str, embedding_model_p
     skalib.rag_prepare(data_path, vector_store_path, embedding_model_path)
 
 
-def handle_rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str):
-    skalib.rag_invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type)
+def handle_rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str, temperature: int, top_p: int):
+    skalib.rag_invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type, temperature, top_p)
 
 def handle_create_skalm(data_path: str, skalm_dir_path: str, skalm_config_path: str, ska_tmp_dir: str):
     skalib.create_skalm(data_path, skalm_dir_path, skalm_config_path, ska_tmp_dir)
@@ -46,6 +46,8 @@ def main():
     parser_rag_invoke.add_argument('prompt_template', type=str)
     parser_rag_invoke.add_argument('question', type=str)
     parser_rag_invoke.add_argument('model_type', type=str)
+    parser_rag_invoke.add_argument('temperature', type=int)
+    parser_rag_invoke.add_argument('top_p', type=int)
 
     parser_create_thapollm = subparsers.add_parser("create_skalm")
     parser_create_thapollm.add_argument('data_path', type=str)
@@ -65,7 +67,7 @@ def main():
     elif args.cmd == 'rag_prepare':
         handle_rag_prepare(args.data_path, args.vector_store_path, args.embedding_model_path)
     elif args.cmd == 'rag_invoke':
-        handle_rag_invoke(args.vector_store_path, args.embedding_model_path, args.llm_model_path, args.prompt_template, args.question, args.model_type)
+        handle_rag_invoke(args.vector_store_path, args.embedding_model_path, args.llm_model_path, args.prompt_template, args.question, args.model_type, args.temperature, args.top_p)
     elif args.cmd == 'create_skalm':
         handle_create_skalm(args.data_path, args.skalm_dir_path, args.skalm_config_path, args.ska_tmp_dir)
     elif args.cmd == 'invoke_skalm':

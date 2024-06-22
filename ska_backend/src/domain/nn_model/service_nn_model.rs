@@ -28,66 +28,70 @@ pub fn get_nn_models_list() -> Vec<NnModelData> {
 
 pub fn rag_invoke(
     global_state: &GlobalState,
-    emb_name: &String,
-    llm_name: &String,
+    emb_model_data: &NnModelData,
+    llm_model_data: &NnModelData,
     question: &String,
     prompt_template: &Option<String>,
+    temperature: Option<f64>,
+    top_p: Option<f64>,
 ) -> anyhow::Result<InvokeOutputDto> {
     tracing::trace!("action_rag_invoke start");
+    let message = format!("action_rag_invoke llm_model_data={:?}", llm_model_data);
+    tracing::trace!(message);
     // validate syntax
-    if emb_name.len() > 96 {
-        return Err(anyhow::anyhow!("emb_name length must be <= 96"));
-    }
-    if llm_name.len() > 96 {
-        return Err(anyhow::anyhow!("llm_name length must be <= 96"));
-    }
-    if question.len() > 384 {
-        return Err(anyhow::anyhow!("question length must be <= 384"));
-    }
-    if let Some(prompt_template) = prompt_template {
-        if prompt_template.len() > 512 {
-            return Err(anyhow::anyhow!("prompt_template length must be <= 512"));
-        }
-    }
+    // if emb_name.len() > 96 {
+    //     return Err(anyhow::anyhow!("emb_name length must be <= 96"));
+    // }
+    // if llm_name.len() > 96 {
+    //     return Err(anyhow::anyhow!("llm_name length must be <= 96"));
+    // }
+    // if question.len() > 384 {
+    //     return Err(anyhow::anyhow!("question length must be <= 384"));
+    // }
+    // if let Some(prompt_template) = prompt_template {
+    //     if prompt_template.len() > 512 {
+    //         return Err(anyhow::anyhow!("prompt_template length must be <= 512"));
+    //     }
+    // }
 
-    let nn_models = get_nn_models_list();
-    // embedding
-    let emb_model_data = nn_models
-        .iter()
-        .filter(|nn_model| nn_model.name == *emb_name)
-        .next()
-        .ok_or(anyhow::anyhow!(
-            "could not find nn_model with name {}",
-            emb_name
-        ))?;
+    // let nn_models = get_nn_models_list();
+    // // embedding
+    // let emb_model_data = nn_models
+    //     .iter()
+    //     .filter(|nn_model| nn_model.name == *emb_name)
+    //     .next()
+    //     .ok_or(anyhow::anyhow!(
+    //         "could not find nn_model with name {}",
+    //         emb_name
+    //     ))?;
 
-    if !matches!(emb_model_data.model_type, NnModelType::ModelEmbedding) {
-        return Err(anyhow::anyhow!(
-            "{} is not an embedding model",
-            emb_model_data.name
-        ));
-    }
-    // llm
+    // if !matches!(emb_model_data.model_type, NnModelType::ModelEmbedding) {
+    //     return Err(anyhow::anyhow!(
+    //         "{} is not an embedding model",
+    //         emb_model_data.name
+    //     ));
+    // }
+    // // llm
 
-    let llm_model_data = if NnModelData::get_skalm_data().name.eq(llm_name) {
-        &NnModelData::get_skalm_data()
-    } else {
-        nn_models
-            .iter()
-            .filter(|nn_model| nn_model.name == *llm_name)
-            .next()
-            .ok_or(anyhow::anyhow!(
-                "could not find nn_model with name {}",
-                llm_name
-            ))?
-    };
+    // let llm_model_data = if NnModelData::get_skalm_data().name.eq(llm_name) {
+    //     &NnModelData::get_skalm_data()
+    // } else {
+    //     nn_models
+    //         .iter()
+    //         .filter(|nn_model| nn_model.name == *llm_name)
+    //         .next()
+    //         .ok_or(anyhow::anyhow!(
+    //             "could not find nn_model with name {}",
+    //             llm_name
+    //         ))?
+    // };
 
-    if !matches!(llm_model_data.model_type, NnModelType::ModelLlm) {
-        return Err(anyhow::anyhow!(
-            "{} is not an llm model",
-            llm_model_data.name
-        ));
-    }
+    // if !matches!(llm_model_data.model_type, NnModelType::ModelLlm) {
+    //     return Err(anyhow::anyhow!(
+    //         "{} is not an llm model",
+    //         llm_model_data.name
+    //     ));
+    // }
 
     // TODO
     //  llm_model_path: str, prompt_template: str, question: str, model_type: str
@@ -118,6 +122,8 @@ pub fn rag_invoke(
         Some(llm_model_type) => llm_model_type.get_value(),
         None => "",
     };
+    let top_p = top_p.unwrap_or(0.0);
+    let temperature = temperature.unwrap_or(0.0);
 
     let skalm_config_path = my_paths::get_skalm_config_file(&global_state.env_config)
         .to_str()
@@ -133,6 +139,8 @@ pub fn rag_invoke(
         question.clone(),
         llm_model_type.to_string(),
         skalm_config_path,
+        temperature,
+        top_p,
     )?;
     tracing::trace!("action_rag_invoke end");
     Ok(invoke_output_dto)
@@ -147,7 +155,11 @@ fn py_rag_invoke(
     question: String,
     llm_model_type: String,
     skalm_config_path: String,
+    temperature: f64,
+    top_p: f64,
 ) -> anyhow::Result<InvokeOutputDto> {
+    tracing::trace!("py_rag_invoke start");
+    tracing::trace!("py_rag_invoke llm_model_type={}", llm_model_type);
     // let output = process::Command::new("python3")
     //     .args([
     //         python_lib_path,
@@ -188,6 +200,8 @@ fn py_rag_invoke(
                 &prompt_template,
                 &question,
                 &llm_model_type,
+                &temperature.to_string(),
+                &top_p.to_string(),
             ])
             .output()?
     };
@@ -209,20 +223,6 @@ fn py_rag_invoke(
     let invoke_output_dto: InvokeOutputDto = serde_json::from_str(output_json)?;
     tracing::debug!("{:?}", invoke_output_dto);
 
+    tracing::trace!("py_rag_invoke end");
     Ok(invoke_output_dto)
-}
-
-pub fn get_skalm_data() -> NnModelData {
-    NnModelData {
-        name: "skalm".to_string(),
-        repo_id: "".to_string(),
-        rel_path: "skalm".to_string(),
-        model_path: "skalm".to_string(),
-        revision: "".to_string(),
-        allow_patterns: "*".to_string(),
-        ignore_patterns: "".to_string(),
-        model_type: NnModelType::ModelLlm,
-        default_prompt: "".to_string(),
-        llm_model_type: None,
-    }
 }

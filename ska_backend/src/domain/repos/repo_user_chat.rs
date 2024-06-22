@@ -2,7 +2,7 @@ use sea_orm::{
     entity::prelude::*, ColumnTrait, DeleteResult, EntityTrait, Order, QueryFilter, QueryOrder,
 };
 
-use crate::domain::entities::user_chat;
+use crate::domain::entities::{chat_message, user_chat};
 
 pub async fn find_by_user_id(
     db_connection: &impl ConnectionTrait,
@@ -29,6 +29,27 @@ pub async fn find_by_chat_id(
         .await?;
     tracing::trace!("find_by_chat_id end chat_id={}", chat_id);
     Ok(user_chat)
+}
+
+pub async fn find_by_chat_id_with_messages(
+    db_connection: &impl ConnectionTrait,
+    chat_id: i64,
+) -> anyhow::Result<Option<(user_chat::Model, Vec<chat_message::Model>)>> {
+    tracing::trace!("find_by_chat_id_with_messages start chat_id={}", chat_id);
+    let user_chats = user_chat::Entity::find()
+        .find_with_related(chat_message::Entity)
+        .filter(user_chat::Column::ChatId.eq(chat_id))
+        .all(db_connection)
+        .await?;
+    if user_chats.len() > 1 {
+        return Err(anyhow::anyhow!(format!(
+            "user_chats has len {}",
+            user_chats.len()
+        )));
+    }
+    let user_chat = user_chats.get(0).cloned();
+    tracing::trace!("find_by_chat_id_with_messages end chat_id={}", chat_id);
+    return Ok(user_chat);
 }
 
 pub async fn insert(

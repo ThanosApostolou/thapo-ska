@@ -1,5 +1,6 @@
 use sea_orm::{
-    entity::prelude::*, ColumnTrait, DeleteResult, EntityTrait, Order, QueryFilter, QueryOrder,
+    entity::prelude::*, ColumnTrait, DeleteResult, EntityTrait, InsertResult, Order, QueryFilter,
+    QueryOrder,
 };
 
 use crate::domain::entities::chat_message;
@@ -39,6 +40,24 @@ pub async fn insert(
     let chat_message = chat_message_am.insert(db_connection).await?;
     tracing::trace!("insert end chat_id_fk={:?}", &chat_message.chat_id_fk);
     Ok(chat_message)
+}
+
+pub async fn insert_many(
+    db_connection: &impl ConnectionTrait,
+    chat_message_ams: Vec<chat_message::ActiveModel>,
+) -> anyhow::Result<InsertResult<chat_message::ActiveModel>> {
+    tracing::trace!(
+        "insert start chat_message_ams.len()={:?}",
+        &chat_message_ams.len()
+    );
+    let insert_result = chat_message::Entity::insert_many(chat_message_ams)
+        .exec(db_connection)
+        .await?;
+    tracing::trace!(
+        "insert end last_insert_id={:?}",
+        &insert_result.last_insert_id
+    );
+    Ok(insert_result)
 }
 
 pub async fn update(

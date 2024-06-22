@@ -1,34 +1,36 @@
 import { UtilsTypes } from "@/utils/core/utils_types";
+import { DtoChatPacket } from "./dto_chat_packet";
 
 export class AskAssistantQuestionRequest {
+    chat_id: number;
     question: string;
-    llm_model: string;
-    prompt_template: string | null;
 
     constructor(obj: {
+        chat_id: number,
         question: string,
-        llm_model: string,
-        prompt_template: string | null,
     }) {
+        this.chat_id = obj.chat_id;
         this.question = obj.question;
-        this.llm_model = obj.llm_model;
-        this.prompt_template = obj.prompt_template;
     }
 }
 
 export class AskAssistantQuestionResponse {
-    answer: string;
+    question: DtoChatPacket;
+    answer: DtoChatPacket;
 
     constructor(obj: {
-        answer: string
+        question: DtoChatPacket;
+        answer: DtoChatPacket;
     }) {
+        this.question = obj.question;
         this.answer = obj.answer;
     }
 
     static fromUnknown(value: unknown): AskAssistantQuestionResponse {
         const obj = UtilsTypes.unknownToObject(value).unwrap();
         return new AskAssistantQuestionResponse({
-            answer: UtilsTypes.unknownToString(obj.answer).unwrap()
+            question: DtoChatPacket.fromUnknown(obj.question),
+            answer: DtoChatPacket.fromUnknown(obj.answer)
         })
     }
 }

@@ -12,9 +12,10 @@ import CompConfirmationDialog from '@/utils/ui/CompConfirmationDialog.vue';
 // hooks
 const chatPackets = ref<DtoChatPacket[]>([
   new DtoChatPacket({
-    timestamp: Date.now(),
-    value: 'Please ask me anything related to this field',
-    packet_type: ChatPacketType.ANSWER
+    created_at: Date.now(),
+    message_body: 'Please ask me anything related to this field',
+    packet_type: ChatPacketType.ANSWER,
+    context: []
   })
 ])
 
@@ -160,8 +161,8 @@ async function onDeleteDialogAction(isConfirm: boolean) {
         </div>
       </div>
 
-      <div v-if="selectedLlm != null" class="ska-page-column-flex flex">
-        <CompChat :chat-packets="chatPackets" :selectedLlm="selectedLlm" :prompt="prompt"
+      <div v-if="selectedUserChat != null" class="ska-page-column-flex flex">
+        <CompChat :chat-packets="chatPackets" :selectedUserChat="selectedUserChat" :prompt="prompt"
           :isEditPrompt="isEditPrompt" />
       </div>
     </div>

@@ -5,11 +5,12 @@ import { ChatPacketType, DtoChatPacket } from './dtos/dto_chat_packet';
 import { AskAssistantQuestionRequest } from './dtos/dto_ask_assistant_question';
 import { ServiceAssistant } from './service_assistant';
 import type { DtoLlmData } from './dtos/dto_fetch_assistant_options';
+import type { DtoChatDetails } from './dtos/dto_chat_details';
 
 // hooks
 const props = defineProps<{
   chatPackets: DtoChatPacket[],
-  selectedLlm: DtoLlmData,
+  selectedUserChat: DtoChatDetails,
   prompt: string,
   isEditPrompt: boolean,
 }>();
@@ -18,26 +19,16 @@ const question = ref<string>('');
 
 async function onSubmit() {
   const request = new AskAssistantQuestionRequest({
+    chat_id: props.selectedUserChat.chat_id || -1,
     question: question.value,
-    llm_model: props.selectedLlm.name,
-    prompt_template: props.isEditPrompt ? props.prompt : null,
   });
 
-  const newTimestamp = Date.now();
-  const answer = await ServiceAssistant.askAssistantQuestion(request);
-  if (answer.isOk()) {
-    const data = answer.data;
-    props.chatPackets.push(new DtoChatPacket({
-      timestamp: newTimestamp,
-      value: question.value,
-      packet_type: ChatPacketType.QUESTION,
-    }));
+  const response = await ServiceAssistant.askAssistantQuestion(request);
+  if (response.isOk()) {
+    const data = response.data;
+    props.chatPackets.push(data.question);
 
-    props.chatPackets.push(new DtoChatPacket({
-      timestamp: Date.now(),
-      value: data.answer,
-      packet_type: ChatPacketType.ANSWER,
-    }));
+    props.chatPackets.push(data.answer);
   }
 
 }
@@ -48,10 +39,10 @@ async function onSubmit() {
     <div class="ska-page-column-flex bg-error">
       <template v-for="(chatPacket, index) of props.chatPackets" :key="index">
         <div v-if="chatPacket.packet_type === ChatPacketType.ANSWER" class="chat chat-start">
-          <div class="chat-bubble">{{ chatPacket.value }}</div>
+          <div class="chat-bubble">{{ chatPacket.message_body }}</div>
         </div>
         <div v-if="chatPacket.packet_type === ChatPacketType.QUESTION" class="chat chat-end">
-          <div class="chat-bubble">{{ chatPacket.value }}</div>
+          <div class="chat-bubble">{{ chatPacket.message_body }}</div>
         </div>
       </template>
     </div>

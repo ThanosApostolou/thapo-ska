@@ -11,8 +11,8 @@ def rag_prepare(data_path: str, vector_store_path: str, embedding_model_path: st
     rag.prepare(data_path, vector_store_path, embedding_model_path)
 
 
-def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str) -> str:
-    output = rag.invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type)
+def rag_invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str, temperature: int, top_p: int) -> str:
+    output = rag.invoke(vector_store_path, embedding_model_path, llm_model_path, prompt_template, question, model_type, temperature, top_p)
     # print('rag_invoke_context:', output.context)
     # print('rag_invoke_question:', output.question)
     # print('rag_invoke_answer:', output.answer)

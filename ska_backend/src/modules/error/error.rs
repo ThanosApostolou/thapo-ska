@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{error::Error, fmt};
 
 use axum::http;
 use serde::{Deserialize, Serialize};
@@ -49,6 +49,8 @@ impl ErrorResponse {
         }
     }
 }
+
+impl Error for ErrorResponse {}
 
 impl fmt::Display for ErrorResponse {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

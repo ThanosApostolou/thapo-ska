@@ -1,28 +1,34 @@
 import { Err, Ok, type Result } from "@/utils/core/result";
 import { UtilsTypes } from "@/utils/core/utils_types";
+import { DocumentDto } from "./dto_document";
 
 export class DtoChatPacket {
-    timestamp: number;
-    value: string;
+    created_at: number;
+    message_body: string;
     packet_type: ChatPacketType;
+    context: DocumentDto[];
 
     constructor(obj: {
-        timestamp: number,
-        value: string,
+        created_at: number,
+        message_body: string,
         packet_type: ChatPacketType,
+        context: DocumentDto[],
     }) {
-        this.timestamp = obj.timestamp;
-        this.value = obj.value;
+        this.created_at = obj.created_at;
+        this.message_body = obj.message_body;
         this.packet_type = obj.packet_type;
+        this.context = obj.context;
     }
 
     static fromUnknown(value: unknown): DtoChatPacket {
         const obj = UtilsTypes.unknownToObject(value).unwrap();
-        const packetTypeStr = UtilsTypes.unknownToString(obj.packet_type).unwrap();
+        const context = DocumentDto.listFromUnknown(obj.context);
+        const packet_type_str = UtilsTypes.unknownToString(obj.packet_type).unwrap();
         return new DtoChatPacket({
-            timestamp: UtilsTypes.unknownToNumber(obj.timestamp).unwrap(),
-            value: UtilsTypes.unknownToString(obj.value).unwrap(),
-            packet_type: chatPacketTypeFromString(packetTypeStr).unwrap()
+            created_at: UtilsTypes.unknownToNumber(obj.created_at).unwrap(),
+            message_body: UtilsTypes.unknownToString(obj.message_body).unwrap(),
+            packet_type: chatPacketTypeFromString(packet_type_str).unwrap(),
+            context: context
         })
     }
 }

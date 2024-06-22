@@ -1,4 +1,3 @@
-import json
 from typing import Any, Self
 from langchain_community.document_loaders.directory import DirectoryLoader
 from langchain_community.document_loaders.text import TextLoader
@@ -152,11 +151,11 @@ def prepare(data_path: str, vector_store_path: str, embedding_model_path: str):
     db.save_local(vector_store_path, constants.VS_INDEX_NAME)
 
 
-def create_llm(llm_model_path: str, model_type: str):
+def create_llm(llm_model_path: str, model_type: str, temperature: int, top_p: int):
     context_length = 512
     max_tokens = 160
-    top_p = 0
-    temperature = 0
+    # top_p = 0
+    # temperature = 0
     batch_size = 256
     last_n_tokens = 16
     repetition_penalty = 1.1
@@ -203,14 +202,14 @@ def create_llm(llm_model_path: str, model_type: str):
     else:
         raise Exception(f"unsuported model_type {model_type}")
 
-def create_chain(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, model_type: str):
+def create_chain(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, model_type: str, temperature: int, top_p: int):
     """
     Retrieval Augmented Generation (RAG) prepare
     """
 
     # load the language model
     # TODO check https://github.com/marella/ctransformers
-    llm = create_llm(llm_model_path, model_type)
+    llm = create_llm(llm_model_path, model_type, temperature, top_p)
 
     # load the interpreted information from the local database
     embeddings = get_embeddings(embedding_model_path)
@@ -252,8 +251,8 @@ def create_chain(vector_store_path: str, embedding_model_path: str, llm_model_pa
     return rag_chain_with_source
 
 
-def invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str) -> InvokeOutput:
-    qa_chain = create_chain(vector_store_path, embedding_model_path, llm_model_path, prompt_template, model_type)
+def invoke(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, question: str, model_type: str, temperature: int, top_p: int) -> InvokeOutput:
+    qa_chain = create_chain(vector_store_path, embedding_model_path, llm_model_path, prompt_template, model_type, temperature, top_p)
     output = qa_chain.invoke(question)
     invoke_output = InvokeOutput.from_output_dict(output)
     return invoke_output

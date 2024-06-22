@@ -1,13 +1,13 @@
 use std::{fs, process};
 
-use crate::domain::nn_model::service_nn_model;
+use crate::domain::nn_model::NnModelData;
 use crate::modules::global_state::GlobalState;
 use crate::modules::myfs::my_paths;
 
 pub fn do_create_skalm(global_state: &GlobalState) -> anyhow::Result<()> {
     tracing::trace!("do_create_skalm start");
 
-    let skalm_data = service_nn_model::get_skalm_data();
+    let skalm_data = NnModelData::get_skalm_data();
 
     let python_main_path = my_paths::get_ska_llm_main_py(&global_state.env_config)
         .to_str()
