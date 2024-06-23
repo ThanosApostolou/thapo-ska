@@ -1,11 +1,10 @@
-use std::error::Error;
-
 use chrono::{NaiveDateTime, Utc};
 use sea_orm::ActiveValue::NotSet;
 use sea_orm::{DatabaseTransaction, Set};
 
 use crate::domain::entities::{chat_message, user_chat};
 use crate::domain::repos::{repo_chat_message, repo_user_chat};
+use crate::domain::user::dto_chat_details::DtoChatPacket;
 use crate::domain::user::user_enums::ChatPacketType;
 use crate::domain::user::validator_chat_message;
 use crate::{
@@ -18,7 +17,7 @@ use crate::{
     },
 };
 
-use super::{AskAssistantQuestionRequest, AskAssistantQuestionResponse, DtoChatPacket};
+use super::{AskAssistantQuestionRequest, AskAssistantQuestionResponse};
 
 pub async fn do_ask_assistant_question(
     global_state: &GlobalState,
@@ -63,7 +62,6 @@ async fn ask_assistant_question(
     // question
     let current_date = Utc::now();
     let current_date = NaiveDateTime::new(current_date.date_naive(), current_date.time());
-    let x: i64 = current_date.and_utc().timestamp();
 
     let chat_message_am = chat_message::ActiveModel {
         chat_message_id: NotSet,
@@ -164,7 +162,7 @@ async fn perform_validation_ask_assistant_question(
     }
 
     if let Ok(chat_messages_option) = &result_chat_messages {
-        if let Some((chat, chat_messages)) = chat_messages_option {
+        if let Some((chat, _chat_messages)) = chat_messages_option {
             if chat.user_id_fk != user_details.user_id {
                 let message = format!(
                     "user_id={} does not own chat_id={}",

@@ -46,7 +46,7 @@ pub async fn do_fetch_assistant_options(
 
     let dto_user_chats = user_chats
         .into_iter()
-        .map(|chat| DtoChatDetails::from_user_chat(chat))
+        .map(|chat| DtoChatDetails::from_user_chat(&chat))
         .collect();
 
     let dto_assitant_options = DtoAssistantOptions {

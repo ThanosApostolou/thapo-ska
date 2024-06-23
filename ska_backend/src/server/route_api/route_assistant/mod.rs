@@ -3,6 +3,7 @@ mod route_assistant;
 mod route_create_chat;
 mod route_delete_chat;
 mod route_fetch_assistant_options;
+pub mod route_fetch_chat_messages;
 mod route_update_chat;
 
 pub use route_assistant::*;

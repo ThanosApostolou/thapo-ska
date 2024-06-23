@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::domain::{nn_model::DocumentDto, user::user_enums::ChatPacketType};
+use crate::domain::user::dto_chat_details::DtoChatPacket;
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct AskAssistantQuestionRequest {
@@ -12,12 +12,4 @@ pub struct AskAssistantQuestionRequest {
 pub struct AskAssistantQuestionResponse {
     pub question: DtoChatPacket,
     pub answer: DtoChatPacket,
-}
-
-#[derive(Clone, Serialize, Deserialize)]
-pub struct DtoChatPacket {
-    pub created_at: i64,
-    pub message_body: String,
-    pub packet_type: ChatPacketType,
-    pub context: Vec<DocumentDto>,
 }

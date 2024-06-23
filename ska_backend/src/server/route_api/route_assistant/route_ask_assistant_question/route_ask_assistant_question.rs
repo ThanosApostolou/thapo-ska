@@ -1,9 +1,6 @@
 use std::sync::Arc;
 
-use axum::{
-    extract::{Query, State},
-    Extension, Json,
-};
+use axum::{extract::State, Extension, Json};
 use hyper::StatusCode;
 
 use crate::modules::{
@@ -15,15 +12,15 @@ use super::{do_ask_assistant_question, AskAssistantQuestionRequest, AskAssistant
 pub async fn handle_ask_assistant_question(
     State(global_state): State<Arc<GlobalState>>,
     Extension(user_details): Extension<UserDetails>,
-    Query(query): Query<AskAssistantQuestionRequest>,
+    Json(body): Json<AskAssistantQuestionRequest>,
 ) -> Result<Json<AskAssistantQuestionResponse>, (StatusCode, Json<DtoErrorResponse>)> {
     tracing::trace!(
         "handle_ask_assistant_question start chat_id={}, question={}",
-        &query.chat_id,
-        &query.question
+        &body.chat_id,
+        &body.question
     );
     let ask_assistant_question_result =
-        do_ask_assistant_question(&global_state, user_details, query).await;
+        do_ask_assistant_question(&global_state, user_details, body).await;
     match ask_assistant_question_result {
         Ok(ask_assistant_question) => Ok(Json(ask_assistant_question)),
         Err(error_response) => {

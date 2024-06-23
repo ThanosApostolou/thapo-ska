@@ -7,6 +7,7 @@ import { ServiceAssistant } from './service_assistant';
 import { DtoAssistantOptions, DtoLlmData } from './dtos/dto_fetch_assistant_options';
 import type { DtoChatDetails } from './dtos/dto_chat_details';
 import CompConfirmationDialog from '@/utils/ui/CompConfirmationDialog.vue';
+import { DtoFetchChatMessagesRequest } from './dtos/dto_fetch_chat_messages';
 
 
 // hooks
@@ -60,6 +61,29 @@ async function fetchAssistantOptions() {
 
 }
 
+async function fetchChatMessages(chat_id: number) {
+  const request = new DtoFetchChatMessagesRequest({
+    chat_id
+  });
+  isLoading.value = true;
+  const result = await ServiceAssistant.fetchChatMessages(request);
+  if (result.isErr()) {
+    const errors = result.error;
+    pageErrors.value = errors.packets.map(packet => packet.message);
+    isLoading.value = false;
+  } else {
+    const data = result.data;
+    chatPackets.value = [new DtoChatPacket({
+      created_at: Date.now(),
+      message_body: 'Please ask me anything related to this field',
+      packet_type: ChatPacketType.ANSWER,
+      context: []
+    })];
+    chatPackets.value = chatPackets.value.concat(data.chat_packets);
+    isLoading.value = false;
+  }
+}
+
 function onAddClicked() {
   userChatForAction.value = null;
   chatDialog.value?.showModal();
@@ -79,6 +103,12 @@ function onDeleteClicked(userChat: DtoChatDetails) {
 function onSelectChange() {
   isEditPrompt.value = false;
   prompt.value = selectedLlm.value?.default_prompt || '';
+}
+
+async function onRadioChange(event: Event) {
+  console.log('event', event);
+  console.log('selectedUserChat', selectedUserChat.value);
+  await fetchChatMessages(selectedUserChat.value?.chat_id || 0);
 
 }
 
@@ -143,7 +173,7 @@ async function onDeleteDialogAction(isConfirm: boolean) {
         <div v-for="userChat in assistantOptions.user_chats" :key="userChat.chat_id || 0" class="form-control">
           <label class="label cursor-pointer">
             <input type="radio" :name="userChat.chat_name" :value="userChat" class="radio checked:bg-red-500"
-              v-model="selectedUserChat" :disabled="isLoading" />
+              v-model="selectedUserChat" :disabled="isLoading" @change="onRadioChange" />
             <span class="label-text">{{ userChat.chat_name }}</span>
             <details class="dropdown dropdown-end">
               <summary class="btn btn-ghost btn-square"> <img src="/assets/icons/ellipsis-vertical.svg" width="24" />

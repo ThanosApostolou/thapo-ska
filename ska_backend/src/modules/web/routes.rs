@@ -7,6 +7,7 @@ use const_format::formatcp;
 use crate::modules::auth::auth_models::AuthRoles;
 use crate::server::handle_root;
 use crate::server::route_api::route_assistant::route_ask_assistant_question::handle_ask_assistant_question;
+use crate::server::route_api::route_assistant::route_fetch_chat_messages::handle_fetch_chat_messages;
 use crate::server::route_api::route_assistant::{
     handle_create_chat, handle_delete_chat, handle_fetch_assistant_options, handle_update_chat,
 };
@@ -101,7 +102,7 @@ impl Routes {
                         AuthRoles::SkaAdmin,
                         AuthRoles::SkaUser,
                     ])),
-                    method_router: get(handle_ask_assistant_question),
+                    method_router: post(handle_ask_assistant_question),
                 },
                 EndpointInfo {
                     path: RoutePath {
@@ -146,6 +147,17 @@ impl Routes {
                         AuthRoles::SkaUser,
                     ])),
                     method_router: delete(handle_delete_chat),
+                },
+                EndpointInfo {
+                    path: RoutePath {
+                        parent_path: formatcp!("{API_STR}{ASSISTANT_STR}"),
+                        self_path: "/fetch_chat_messages",
+                    },
+                    auth_type: AuthTypes::Authorization(HashSet::from([
+                        AuthRoles::SkaAdmin,
+                        AuthRoles::SkaUser,
+                    ])),
+                    method_router: get(handle_fetch_chat_messages),
                 },
             ],
         };
@@ -226,7 +238,7 @@ pub struct RouteAuth {
 #[derive(Clone, Debug)]
 pub struct RouteAssistant {
     pub path: RoutePath,
-    pub endpoints: [EndpointInfo; 5],
+    pub endpoints: [EndpointInfo; 6],
 }
 
 // const fn concat(str1: &'static str)

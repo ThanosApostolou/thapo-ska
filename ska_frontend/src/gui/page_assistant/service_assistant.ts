@@ -5,6 +5,7 @@ import { UtilsHttp } from "@/utils/http/utils_http";
 import { AskAssistantQuestionRequest, AskAssistantQuestionResponse } from "./dtos/dto_ask_assistant_question";
 import { DtoAssistantOptions } from "./dtos/dto_fetch_assistant_options";
 import { DtoCreateUpdateChatResponse, type DtoChatDetails } from "./dtos/dto_chat_details";
+import { DtoFetchChatMessagesResponse, type DtoFetchChatMessagesRequest } from "./dtos/dto_fetch_chat_messages";
 
 export class ServiceAssistant {
     private static readonly PATH_API_ASSISTANT: string = "api/assistant";
@@ -15,7 +16,7 @@ export class ServiceAssistant {
         const globalState = GlobalState.instance();
         const url = `${globalState.envConfig.backendUrl}${this.PATH_API_ASSISTANT}/ask_assistant_question`;
 
-        const result = await UtilsHttp.getRequest<unknown>(url, { params: request });
+        const result = await UtilsHttp.postRequest<unknown>(url, request);
         return result.map((data) => AskAssistantQuestionResponse.fromUnknown(data));
     }
 
@@ -53,5 +54,13 @@ export class ServiceAssistant {
             }
         });
         return result.map((data) => DtoCreateUpdateChatResponse.fromUnknown(data));
+    }
+
+    static async fetchChatMessages(request: DtoFetchChatMessagesRequest): Promise<Result<DtoFetchChatMessagesResponse, DtoErrorResponse>> {
+        const globalState = GlobalState.instance();
+        const url = `${globalState.envConfig.backendUrl}${this.PATH_API_ASSISTANT}/fetch_chat_messages`;
+
+        const result = await UtilsHttp.getRequest<unknown>(url, { params: request });
+        return result.map((data) => DtoFetchChatMessagesResponse.fromUnknown(data));
     }
 }
