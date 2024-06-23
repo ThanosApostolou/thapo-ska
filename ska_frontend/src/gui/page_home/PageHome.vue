@@ -12,7 +12,7 @@ async function login() {
 </script>
 
 <template>
-  <div class="ska-page-container">
+  <div class="ska-page-container prose max-w-none">
     <div class="ska-page-column-flex">
       <div class="text-center flex flex-col justify-center justify-items-center content-center items-center">
         <img class="text-center justify-center justify-self-center" src="/assets/icons/chat-bubble-left-right.svg"

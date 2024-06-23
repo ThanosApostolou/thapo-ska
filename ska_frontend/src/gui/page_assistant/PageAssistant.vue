@@ -4,7 +4,7 @@ import CompChat from './CompChat.vue';
 import ChatDialog from './ChatDialog.vue';
 import { ChatPacketType, DtoChatPacket } from './dtos/dto_chat_packet';
 import { ServiceAssistant } from './service_assistant';
-import { DtoAssistantOptions, DtoLlmData } from './dtos/dto_fetch_assistant_options';
+import { DtoAssistantOptions } from './dtos/dto_fetch_assistant_options';
 import type { DtoChatDetails } from './dtos/dto_chat_details';
 import CompConfirmationDialog from '@/utils/ui/CompConfirmationDialog.vue';
 import { DtoFetchChatMessagesRequest } from './dtos/dto_fetch_chat_messages';
@@ -23,11 +23,8 @@ const chatPackets = ref<DtoChatPacket[]>([
 const isLoading = ref<boolean>(false);
 const pageErrors = ref<string[]>([]);
 const assistantOptions = ref<DtoAssistantOptions | null>(null);
-const selectedLlm = ref<DtoLlmData | null>(null);
 const selectedUserChat = ref<DtoChatDetails | null>(null);
 const userChatForAction = ref<DtoChatDetails | null>(null);
-const prompt = ref<string>('');
-const isEditPrompt = ref<boolean>(false);
 const chatDialog = ref<InstanceType<typeof ChatDialog> | null>(null)
 const deleteDialogOpen = ref<boolean>(false);
 
@@ -42,9 +39,7 @@ onMounted(async () => {
 async function fetchAssistantOptions() {
   pageErrors.value = [];
   assistantOptions.value = null;
-  selectedLlm.value = null;
   selectedUserChat.value = null;
-  prompt.value = '';
   isLoading.value = true;
   const result = await ServiceAssistant.fetchAssistantOptions();
   if (result.isErr()) {
@@ -53,9 +48,7 @@ async function fetchAssistantOptions() {
     isLoading.value = false;
   } else {
     assistantOptions.value = result.data;
-    selectedLlm.value = assistantOptions.value.llms[0];
     selectedUserChat.value = null;
-    prompt.value = selectedLlm.value.default_prompt;
     isLoading.value = false;
   }
 
@@ -100,16 +93,10 @@ function onDeleteClicked(userChat: DtoChatDetails) {
   deleteDialogOpen.value = true;
 }
 
-function onSelectChange() {
-  isEditPrompt.value = false;
-  prompt.value = selectedLlm.value?.default_prompt || '';
-}
-
 async function onRadioChange(event: Event) {
   console.log('event', event);
   console.log('selectedUserChat', selectedUserChat.value);
   await fetchChatMessages(selectedUserChat.value?.chat_id || 0);
-
 }
 
 function onCreateUpdate(chat_id: number) {
@@ -141,7 +128,7 @@ async function onDeleteDialogAction(isConfirm: boolean) {
       <p>{{ pageErrors }}</p>
     </div>
 
-    <div v-else-if="assistantOptions != null" class="flex flex-row flex-auto min-h-0">
+    <div v-else-if="assistantOptions != null" class="ska-page-container flex flex-row flex-auto min-h-0">
       <div class="ska-page-column bg-base-300 w-[16rem] break-words">
         <button class="btn" @click="onAddClicked">
           <img src="/assets/icons/plus.svg" width="24" />Add Chat
@@ -149,26 +136,6 @@ async function onDeleteDialogAction(isConfirm: boolean) {
 
         <ChatDialog ref="chatDialog" :assistantOptions="assistantOptions" :user-chat-update="userChatForAction"
           @success="onCreateUpdate" />
-
-
-
-        <label for="llms" class="form-control">Choose a LLM:</label>
-        <select v-model="selectedLlm" name="llms" id="llms" class="select" @change="onSelectChange()">
-          <option v-for="llm of assistantOptions.llms" :key="llm.name" :value="llm">
-            {{ llm.name }}
-          </option>
-        </select>
-
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">Edit prompt</span>
-            <input type="checkbox" v-model="isEditPrompt" class="checkbox" />
-          </label>
-        </div>
-
-        <textarea v-model="prompt" placeholder="Prompt" :disabled="!isEditPrompt"
-          class="textarea textarea-bordered textarea-xs w-full max-w-xs" rows="16">
-        </textarea>
 
         <div v-for="userChat in assistantOptions.user_chats" :key="userChat.chat_id || 0" class="form-control">
           <label class="label cursor-pointer">
@@ -192,8 +159,10 @@ async function onDeleteDialogAction(isConfirm: boolean) {
       </div>
 
       <div v-if="selectedUserChat != null" class="ska-page-column-flex flex">
-        <CompChat :chat-packets="chatPackets" :selectedUserChat="selectedUserChat" :prompt="prompt"
-          :isEditPrompt="isEditPrompt" />
+        <CompChat :chat-packets="chatPackets" :selectedUserChat="selectedUserChat" />
+      </div>
+      <div v-else class="center p-2 prose max-w-none">
+        <h4>Please Add or Select a chat in order to ask the Assistant some questions!</h4>
       </div>
     </div>
 
@@ -202,8 +171,8 @@ async function onDeleteDialogAction(isConfirm: boolean) {
 
   <CompConfirmationDialog v-if="deleteDialogOpen" :open="deleteDialogOpen" title="Delete Chat"
     @action="onDeleteDialogAction($event)">
-    <div>
-      <p>Are you sure you want to delete chat {{ userChatForAction?.chat_name }}?</p>
+    <div class="prose max-w-none">
+      <h4>Are you sure you want to delete chat {{ userChatForAction?.chat_name }}?</h4>
     </div>
   </CompConfirmationDialog>
 </template>

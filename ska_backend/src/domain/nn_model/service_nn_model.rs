@@ -1,7 +1,7 @@
 use std::{path::PathBuf, process};
 
 use crate::{
-    domain::nn_model::{InvokeOutputDto, LlmModelTypeEnum, NnModelType},
+    domain::nn_model::{InvokeOutputDto, LlmModelTypeEnum},
     modules::{
         global_state::{EnvConfig, GlobalState},
         myfs::my_paths,

@@ -1,6 +1,5 @@
 use sea_orm::{
-    entity::prelude::*, ColumnTrait, DeleteResult, EntityTrait, InsertResult, Order, QueryFilter,
-    QueryOrder,
+    entity::prelude::*, ColumnTrait, DeleteResult, EntityTrait, InsertResult, QueryFilter,
 };
 
 use crate::domain::entities::chat_message;

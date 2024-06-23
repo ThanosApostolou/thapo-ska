@@ -4,17 +4,13 @@ import { ref } from 'vue';
 import { ChatPacketType, DtoChatPacket } from './dtos/dto_chat_packet';
 import { AskAssistantQuestionRequest } from './dtos/dto_ask_assistant_question';
 import { ServiceAssistant } from './service_assistant';
-import type { DtoLlmData } from './dtos/dto_fetch_assistant_options';
 import type { DtoChatDetails } from './dtos/dto_chat_details';
 
 // hooks
 const props = defineProps<{
   chatPackets: DtoChatPacket[],
   selectedUserChat: DtoChatDetails,
-  prompt: string,
-  isEditPrompt: boolean,
 }>();
-// const chat_packets = ref<DtoChatPacket[]>([])
 const question = ref<string>('');
 
 async function onSubmit() {
