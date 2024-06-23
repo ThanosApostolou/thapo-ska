@@ -1,5 +1,3 @@
-use std::{path::PathBuf, process};
-
 use crate::{
     domain::nn_model::{InvokeOutputDto, LlmModelTypeEnum},
     modules::{
@@ -7,6 +5,8 @@ use crate::{
         myfs::my_paths,
     },
 };
+use std::path::PathBuf;
+use tokio::process;
 
 use super::{NnModelData, NnModelEnum};
 
@@ -26,7 +26,7 @@ pub fn get_nn_models_list() -> Vec<NnModelData> {
     NnModelEnum::get_data_list()
 }
 
-pub fn rag_invoke(
+pub async fn rag_invoke(
     global_state: &GlobalState,
     emb_model_data: &NnModelData,
     llm_model_data: &NnModelData,
@@ -141,12 +141,13 @@ pub fn rag_invoke(
         skalm_config_path,
         temperature,
         top_p,
-    )?;
+    )
+    .await?;
     tracing::trace!("action_rag_invoke end");
     Ok(invoke_output_dto)
 }
 
-fn py_rag_invoke(
+async fn py_rag_invoke(
     python_lib_path: String,
     vector_store_path: String,
     embedding_model_path: String,
@@ -188,7 +189,8 @@ fn py_rag_invoke(
                 &llm_model_path,
                 &skalm_config_path,
             ])
-            .output()?
+            .output()
+            .await?
     } else {
         process::Command::new("python3")
             .args([
@@ -203,7 +205,8 @@ fn py_rag_invoke(
                 &temperature.to_string(),
                 &top_p.to_string(),
             ])
-            .output()?
+            .output()
+            .await?
     };
 
     if !output.status.success() {

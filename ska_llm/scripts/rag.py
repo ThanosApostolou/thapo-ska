@@ -156,8 +156,8 @@ def create_llm(llm_model_path: str, model_type: str, temperature: int, top_p: in
     max_tokens = 160
     # top_p = 0
     # temperature = 0
-    batch_size = 256
-    last_n_tokens = 16
+    batch_size = 512
+    last_n_tokens = 8
     repetition_penalty = 1.1
 
     if model_type == 'llamacpp':

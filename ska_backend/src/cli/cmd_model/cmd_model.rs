@@ -27,7 +27,7 @@ pub enum ModelSubcommands {
     CreateSkalm,
 }
 
-pub fn handle_model(global_state: &GlobalState, cmd_model: &CmdModelArgs) {
+pub async fn handle_model(global_state: &GlobalState, cmd_model: &CmdModelArgs) {
     tracing::debug!("handle_model start");
     match &cmd_model.command {
         ModelSubcommands::Download => handle_download(global_state),
@@ -35,13 +35,16 @@ pub fn handle_model(global_state: &GlobalState, cmd_model: &CmdModelArgs) {
         ModelSubcommands::RagPrepare(cmd_rag_prepare_args) => {
             handle_rag_prepare(global_state, &cmd_rag_prepare_args.emb_name)
         }
-        ModelSubcommands::RagInvoke(cmd_rag_invoke_args) => handle_rag_invoke(
-            global_state,
-            &cmd_rag_invoke_args.emb_name,
-            &cmd_rag_invoke_args.llm_name,
-            &cmd_rag_invoke_args.question,
-            &cmd_rag_invoke_args.prompt_template,
-        ),
+        ModelSubcommands::RagInvoke(cmd_rag_invoke_args) => {
+            handle_rag_invoke(
+                global_state,
+                &cmd_rag_invoke_args.emb_name,
+                &cmd_rag_invoke_args.llm_name,
+                &cmd_rag_invoke_args.question,
+                &cmd_rag_invoke_args.prompt_template,
+            )
+            .await
+        }
         ModelSubcommands::CreateSkalm => handle_create_skalm(global_state),
     }
     tracing::debug!("handle_model end");

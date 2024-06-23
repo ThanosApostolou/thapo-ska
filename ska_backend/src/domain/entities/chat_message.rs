@@ -11,6 +11,8 @@ pub struct Model {
     pub chat_id_fk: i64,
     pub message_type: String,
     pub message_body: String,
+    #[sea_orm(column_type = "JsonBinary")]
+    pub context: Json,
     pub created_at: DateTime,
 }
 

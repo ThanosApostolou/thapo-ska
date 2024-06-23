@@ -2,7 +2,7 @@ use crate::domain::nn_model::service_nn_model::get_nn_models_list;
 use crate::domain::nn_model::{service_nn_model, InvokeOutputDto, NnModelData, NnModelType};
 use crate::modules::global_state::GlobalState;
 
-pub fn action_rag_invoke(
+pub async fn action_rag_invoke(
     global_state: &GlobalState,
     emb_name: &String,
     llm_name: &String,
@@ -58,7 +58,8 @@ pub fn action_rag_invoke(
         prompt_template,
         None,
         None,
-    )?;
+    )
+    .await?;
     tracing::info!("{:?}", invoke_output_dto);
 
     tracing::trace!("action_rag_invoke end");

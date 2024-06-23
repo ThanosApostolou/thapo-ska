@@ -141,7 +141,7 @@ async function onDeleteDialogAction(isConfirm: boolean) {
           <label class="label cursor-pointer">
             <input type="radio" :name="userChat.chat_name" :value="userChat" class="radio checked:bg-red-500"
               v-model="selectedUserChat" :disabled="isLoading" @change="onRadioChange" />
-            <span class="label-text">{{ userChat.chat_name }}</span>
+            <span class="label-text"><b>{{ userChat.chat_name }}</b> ({{ userChat.llm_model }})</span>
             <details class="dropdown dropdown-end">
               <summary class="btn btn-ghost btn-square"> <img src="/assets/icons/ellipsis-vertical.svg" width="24" />
               </summary>

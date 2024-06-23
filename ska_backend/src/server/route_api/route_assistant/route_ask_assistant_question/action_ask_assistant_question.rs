@@ -57,17 +57,20 @@ async fn ask_assistant_question(
         &valid_data.chat.prompt,
         valid_data.chat.temperature,
         valid_data.chat.top_p,
-    )?;
+    )
+    .await?;
 
     // question
     let current_date = Utc::now();
     let current_date = NaiveDateTime::new(current_date.date_naive(), current_date.time());
 
+    let j = serde_json::Value::Object(serde_json::Map::new());
     let chat_message_am = chat_message::ActiveModel {
         chat_message_id: NotSet,
         chat_id_fk: Set(valid_data.chat.chat_id),
         message_type: Set(ChatPacketType::Question.to_string()),
         message_body: Set(valid_data.question.clone()),
+        context: Set(j),
         created_at: Set(current_date),
     };
     let chat_message_question = repo_chat_message::insert(txn, chat_message_am).await?;
@@ -80,6 +83,7 @@ async fn ask_assistant_question(
         chat_id_fk: Set(valid_data.chat.chat_id),
         message_type: Set(ChatPacketType::Answer.to_string()),
         message_body: Set(output.answer.clone()),
+        context: Set(serde_json::json!(output.context)),
         created_at: Set(current_date),
     };
     let chat_message_answer = repo_chat_message::insert(txn, chat_message_am).await?;
