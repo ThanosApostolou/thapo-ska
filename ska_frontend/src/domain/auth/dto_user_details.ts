@@ -6,6 +6,8 @@ export class DtoUserDetails {
     sub: string;
     username: string;
     email: string;
+    given_name: string | null;
+    family_name: string | null;
     roles: AuthRoles[];
 
     constructor(obj: {
@@ -13,12 +15,16 @@ export class DtoUserDetails {
         sub: string,
         username: string,
         email: string,
+        given_name: string | null;
+        family_name: string | null;
         roles: AuthRoles[],
     }) {
         this.user_id = obj.user_id;
         this.sub = obj.sub;
         this.username = obj.username;
         this.email = obj.email;
+        this.given_name = obj.given_name;
+        this.family_name = obj.family_name;
         this.roles = obj.roles;
     }
 
@@ -31,6 +37,8 @@ export class DtoUserDetails {
             sub: UtilsTypes.unknownToString(obj.sub).unwrap(),
             username: UtilsTypes.unknownToString(obj.username).unwrap(),
             email: UtilsTypes.unknownToString(obj.email).unwrap(),
+            given_name: UtilsTypes.unknownToStringNullable(obj.given_name).unwrap(),
+            family_name: UtilsTypes.unknownToStringNullable(obj.family_name).unwrap(),
             roles: roles.map(roleUnknown => {
                 const roleStr = UtilsTypes.unknownToString(roleUnknown).unwrap();
                 return authRolesFromString(roleStr).unwrap();

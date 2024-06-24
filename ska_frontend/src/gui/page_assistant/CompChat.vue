@@ -42,8 +42,8 @@ function onShowContextClick(chatPacket: DtoChatPacket) {
 </script>
 
 <template>
-  <div class="flex flex-col flex-auto items-stretch">
-    <div class="ska-page-column-flex bg-error">
+  <div class="flex flex-col flex-auto items-stretch shadow">
+    <div class="ska-page-column-flex bg-primary-content shadow">
       <template v-for="(chatPacket, index) of props.chatPackets" :key="index">
         <div v-if="chatPacket.packet_type === ChatPacketType.ANSWER" class="chat chat-start">
           <div class="chat-bubble">
@@ -61,7 +61,7 @@ function onShowContextClick(chatPacket: DtoChatPacket) {
       </template>
     </div>
 
-    <div class="ska-page-column">
+    <div class="ska-page-column shadow">
       <form class="form-control" @submit.prevent="onSubmit">
         <label class="label w-full">
           <input type="text" placeholder="Ask your question" class="input input-bordered input-primary w-full mr-1"

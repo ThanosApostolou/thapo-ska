@@ -59,6 +59,18 @@ export class ServiceAuth {
     }
 
 
+
+    static async accountManagement(): Promise<void> {
+        const envConfig = GlobalState.instance().envConfig;
+        const params = new URLSearchParams({
+            referrer: envConfig.authClientId,
+            referrer_uri: `${envConfig.frontendUrl}/account`,
+        })
+        const accountManagementURl = new URL(`${envConfig.authIssuerUrl}/account?${params.toString()}`);
+        window.location.href = accountManagementURl.href;
+    }
+
+
     static async initialAuth(globalStore: GlobalStore, router: Router): Promise<void> {
         const globalState = GlobalState.instance();
         let user = await ServiceAuth.getUser();

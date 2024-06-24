@@ -5,7 +5,8 @@ export function createRouterAccount(appRoutes: AppRoutes): RouteRecordRaw {
     const routes = {
         path: appRoutes.PAGE_ACCOUNT,
         name: 'account',
-        component: () => import('./PageAccount.vue')
+        component: () => import('./PageAccount.vue'),
+        meta: { requiresAuth: true }
     };
     return routes;
 }

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, createMemoryHistory, type RouterHistory, type Router } from 'vue-router';
 import { createRouterHome } from './page_home/router_home';
-import { createRouterAccount } from './page_acount/router_account';
+import { createRouterAccount } from './page_account/router_account';
 import { GlobalState } from '@/domain/global_state/global_state';
 import { BuildEnv } from '@/domain/global_state/build_env';
 import { createRouterAssistant } from './page_assistant/router_assistant';
@@ -22,7 +22,6 @@ export function myCreateRouter(global_state: GlobalState): Router {
             createRouterHome(appRoutes),
             createRouterAccount(appRoutes),
             createRouterAssistant(appRoutes),
-            // createRouterLogin(appRoutes),
             {
                 path: '/:pathMatch(.*)*',
                 name: 'not_found',

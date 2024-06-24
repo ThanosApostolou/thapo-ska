@@ -35,6 +35,8 @@ pub type MyAuthClient = Client<
 pub struct MyExtraTokenFields {
     pub realm_access: RealmAccess,
     pub email: String,
+    pub given_name: Option<String>,
+    pub family_name: Option<String>,
 }
 
 impl ExtraTokenFields for MyExtraTokenFields {}
@@ -119,6 +121,8 @@ async fn authenticate_user(
         sub,
         username,
         email: ef.email.clone(),
+        given_name: ef.given_name.clone(),
+        family_name: ef.family_name.clone(),
         roles,
     };
     tracing::debug!("service_auth::authenticate_user end");

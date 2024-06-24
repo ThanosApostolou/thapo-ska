@@ -32,6 +32,8 @@ pub async fn do_app_login(
         sub: user_authentication_details.sub,
         username: user_authentication_details.username,
         email: user_authentication_details.email,
+        given_name: user_authentication_details.given_name,
+        family_name: user_authentication_details.family_name,
         roles: user_authentication_details.roles.clone(),
     };
     db::transaction_commit(txn).await?;

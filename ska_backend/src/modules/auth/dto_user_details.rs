@@ -10,5 +10,7 @@ pub struct DtoUserDetails {
     pub sub: String,
     pub username: String,
     pub email: String,
+    pub given_name: Option<String>,
+    pub family_name: Option<String>,
     pub roles: HashSet<AuthRoles>,
 }

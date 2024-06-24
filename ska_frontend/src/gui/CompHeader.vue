@@ -44,6 +44,11 @@ async function logout() {
             </button>
           </li>
           <li v-if="globalStore.globalStore.userDetails != null">
+            <RouterLink :to="globalState.appRoutes.PAGE_ACCOUNT" activeClass="active">
+              <img src="/assets/icons/user-circle.svg" width="24" />Account
+            </RouterLink>
+          </li>
+          <li v-if="globalStore.globalStore.userDetails != null">
             <button class="btn btn-ghost" @click="logout">
               <img src="/assets/icons/arrow-left-end-on-rectangle.svg" width="24" />logout
             </button>

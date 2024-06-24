@@ -129,7 +129,7 @@ async function onDeleteDialogAction(isConfirm: boolean) {
     </div>
 
     <div v-else-if="assistantOptions != null" class="ska-page-container flex flex-row flex-auto min-h-0">
-      <div class="ska-page-column bg-base-300 w-[16rem] break-words">
+      <div class="ska-page-column bg-base-300 w-[16rem] break-words shadow">
         <button class="btn" @click="onAddClicked">
           <img src="/assets/icons/plus.svg" width="24" />Add Chat
         </button>
