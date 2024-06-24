@@ -100,6 +100,15 @@ impl ErrorPacket {
             backend_message,
         }
     }
+
+    pub fn from_error(error: anyhow::Error) -> ErrorPacket {
+        let message = "".to_string();
+        let backend_message = error.to_string();
+        ErrorPacket {
+            message,
+            backend_message,
+        }
+    }
 }
 
 impl fmt::Display for ErrorPacket {

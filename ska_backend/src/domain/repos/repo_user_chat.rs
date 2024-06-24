@@ -39,6 +39,8 @@ pub async fn find_by_chat_id_with_messages(
     let user_chats = user_chat::Entity::find()
         .find_with_related(chat_message::Entity)
         .filter(user_chat::Column::ChatId.eq(chat_id))
+        .order_by(user_chat::Column::ChatId, Order::Asc)
+        .order_by(chat_message::Column::CreatedAt, Order::Asc)
         .all(db_connection)
         .await?;
     if user_chats.len() > 1 {

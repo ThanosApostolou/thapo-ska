@@ -1,6 +1,7 @@
 use chrono::{NaiveDateTime, Utc};
 use sea_orm::ActiveValue::NotSet;
 use sea_orm::{DatabaseTransaction, Set};
+use serde_json::json;
 
 use crate::domain::entities::{chat_message, user_chat};
 use crate::domain::repos::{repo_chat_message, repo_user_chat};
@@ -64,13 +65,12 @@ async fn ask_assistant_question(
     let current_date = Utc::now();
     let current_date = NaiveDateTime::new(current_date.date_naive(), current_date.time());
 
-    let j = serde_json::Value::Object(serde_json::Map::new());
     let chat_message_am = chat_message::ActiveModel {
         chat_message_id: NotSet,
         chat_id_fk: Set(valid_data.chat.chat_id),
         message_type: Set(ChatPacketType::Question.to_string()),
         message_body: Set(valid_data.question.clone()),
-        context: Set(j),
+        context: Set(json!([])),
         created_at: Set(current_date),
     };
     let chat_message_question = repo_chat_message::insert(txn, chat_message_am).await?;

@@ -58,14 +58,16 @@ pub struct DtoChatPacket {
 }
 
 impl DtoChatPacket {
-    pub fn from_chat_message(message: &chat_message::Model) -> DtoChatPacket {
+    pub fn from_chat_message(message: &chat_message::Model) -> anyhow::Result<DtoChatPacket> {
         let packet_type = ChatPacketType::from_str(message.message_type.as_str())
             .unwrap_or(ChatPacketType::Answer);
-        return DtoChatPacket {
+
+        let context: Vec<DocumentDto> = serde_json::from_value(message.context.clone())?;
+        return Ok(DtoChatPacket {
             created_at: message.created_at.and_utc().timestamp(),
             message_body: message.message_body.clone(),
             packet_type: packet_type,
-            context: vec![], // TODO
-        };
+            context: context,
+        });
     }
 }

@@ -31,7 +31,12 @@ pub async fn do_fetch_chat_messages(
         .chat_messages
         .iter()
         .map(|message| DtoChatPacket::from_chat_message(message))
-        .collect();
+        .collect::<anyhow::Result<Vec<DtoChatPacket>>>()
+        .map_err(|e| ErrorResponse {
+            error_code: ErrorCode::InternalServerError500,
+            is_unexpected_error: false,
+            packets: vec![ErrorPacket::from_error(e)],
+        })?;
 
     let dto_assitant_options = DtoFetchChatMessagesResponse {
         user_chat: DtoChatDetails::from_user_chat(&valid_data.chat),
