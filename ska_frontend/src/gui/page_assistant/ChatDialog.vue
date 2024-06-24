@@ -29,25 +29,30 @@ const chat_name = ref<string>('');
 const prompt = ref<string>('');
 const temperature = ref<number>(0);
 const top_p = ref<number>(0);
-const isEditPrompt = ref<boolean>(false);
+const isEditParameters = ref<boolean>(false);
 const errorPackets = ref<DtoErrorPacket[]>([]);
 
 watch(props, (newProps) => {
-    const foundLlm = newProps.assistantOptions?.llms.find(llm => llm.name === newProps.userChatUpdate?.llm_model) || null;
-    console.log('newProps.userChatUpdate', newProps.userChatUpdate);
-    console.log('props.userChatUpdate', props.userChatUpdate);
-    isLoading.value = false;
-    selectedLlm.value = foundLlm;
-    chat_name.value = newProps.userChatUpdate?.chat_name || '';
-    prompt.value = newProps.userChatUpdate?.prompt_template || '';
-    temperature.value = newProps.userChatUpdate?.temperature || 0;
-    top_p.value = newProps.userChatUpdate?.top_p || 0;
-    isEditPrompt.value = newProps.userChatUpdate?.prompt_template != null;
-    errorPackets.value = [];
+    initState(newProps.assistantOptions, newProps.userChatUpdate);
 });
 
 // functions
+function initState(assistantOptions: DtoAssistantOptions | null, userChatUpdate: DtoChatDetails | null) {
+    const foundLlm = assistantOptions?.llms.find(llm => llm.name === userChatUpdate?.llm_model) || null;
+    const defaultPrompt: string = foundLlm?.default_prompt != null ? foundLlm.default_prompt : '';
+
+    isLoading.value = false;
+    selectedLlm.value = foundLlm;
+    chat_name.value = userChatUpdate?.chat_name || '';
+    prompt.value = userChatUpdate?.prompt_template != null ? userChatUpdate.prompt_template : defaultPrompt;
+    temperature.value = userChatUpdate?.temperature || 0;
+    top_p.value = userChatUpdate?.top_p || 0;
+    isEditParameters.value = userChatUpdate?.prompt_template != null;
+    errorPackets.value = [];
+}
+
 function showModal(): void {
+    initState(props.assistantOptions, props.userChatUpdate);
     chatDialog.value?.showModal();
 }
 
@@ -58,11 +63,16 @@ function close(): void {
 
 
 function onSelectChange() {
-    isEditPrompt.value = false;
+    isEditParameters.value = false;
     prompt.value = selectedLlm.value?.default_prompt || '';
     temperature.value = 0;
     top_p.value = 0;
+}
 
+function onEditParametersChange() {
+    prompt.value = selectedLlm.value?.default_prompt || '';
+    temperature.value = 0;
+    top_p.value = 0;
 }
 
 async function onSubmit() {
@@ -75,9 +85,9 @@ async function onSubmit() {
             user_id: props.userChatUpdate.user_id,
             chat_name: chat_name.value,
             llm_model: selectedLlm.value?.name || '',
-            prompt_template: isEditPrompt.value ? prompt.value : null,
-            temperature: isEditPrompt.value ? temperature.value : null,
-            top_p: isEditPrompt.value ? top_p.value : null,
+            prompt_template: isEditParameters.value ? prompt.value : null,
+            temperature: isEditParameters.value ? temperature.value : null,
+            top_p: isEditParameters.value ? top_p.value : null,
             default_prompt: selectedLlm.value?.default_prompt || '',
         });
         const result = await ServiceAssistant.updateChat(chatDetails);
@@ -98,9 +108,9 @@ async function onSubmit() {
             user_id: globalStore.globalStore.userDetails?.user_id || -1,
             chat_name: chat_name.value,
             llm_model: selectedLlm.value?.name || '',
-            prompt_template: isEditPrompt.value ? prompt.value : null,
-            temperature: isEditPrompt.value ? temperature.value : null,
-            top_p: isEditPrompt.value ? top_p.value : null,
+            prompt_template: isEditParameters.value ? prompt.value : null,
+            temperature: isEditParameters.value ? temperature.value : null,
+            top_p: isEditParameters.value ? top_p.value : null,
             default_prompt: selectedLlm.value?.default_prompt || '',
         });
         const result = await ServiceAssistant.createChat(chatDetails);
@@ -127,7 +137,7 @@ defineExpose({
 
 <template>
     <dialog ref="chatDialog" id="chatDialog" class="modal">
-        <div class="modal-box">
+        <div class="modal-box w-11/12 max-w-6xl h-5/6">
             <h3 class="font-bold text-lg">
                 <template v-if="props.userChatUpdate == null">Add Chat</template>
                 <template v-else>Edit Chat</template>
@@ -152,8 +162,9 @@ defineExpose({
 
                     <div class="form-control">
                         <label class="label cursor-pointer">
-                            <span class="label-text">Edit prompt</span>
-                            <input type="checkbox" v-model="isEditPrompt" class="checkbox" />
+                            <span class="label-text">Edit Parameters?</span>
+                            <input type="checkbox" v-model="isEditParameters" class="checkbox"
+                                @change="onEditParametersChange" />
                         </label>
                     </div>
 
@@ -161,7 +172,7 @@ defineExpose({
                         <label class="label cursor-pointer">
                             <span class="label-text">Temperature</span>
                             <input type="number" step="0.01" min="0" max="1" placeholder="Temperature"
-                                v-model="temperature" class="input input-bordered" :disabled="!isEditPrompt" />
+                                v-model="temperature" class="input input-bordered" :disabled="!isEditParameters" />
                         </label>
                     </div>
 
@@ -169,14 +180,14 @@ defineExpose({
                         <label class="label cursor-pointer">
                             <span class="label-text">Top-P</span>
                             <input type="number" step="0.01" min="0" max="1" placeholder="Top-P" v-model="top_p"
-                                class="input input-bordered" :disabled="!isEditPrompt" />
+                                class="input input-bordered" :disabled="!isEditParameters" />
                         </label>
                     </div>
 
                     <div class="form-control">
                         <label class="label cursor-pointer">
                             <span class="label-text">Prompt</span>
-                            <textarea v-model="prompt" placeholder="Prompt" :disabled="!isEditPrompt"
+                            <textarea v-model="prompt" placeholder="Prompt" :disabled="!isEditParameters"
                                 class="textarea textarea-bordered textarea-xs w-full max-w-xs" rows="16">
                 </textarea>
                         </label>

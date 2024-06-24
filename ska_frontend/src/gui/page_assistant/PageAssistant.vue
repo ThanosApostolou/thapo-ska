@@ -37,10 +37,12 @@ onMounted(async () => {
 
 // functions
 async function fetchAssistantOptions() {
+  const lastChatId = selectedUserChat.value?.chat_id || 0;
   pageErrors.value = [];
   assistantOptions.value = null;
   selectedUserChat.value = null;
   isLoading.value = true;
+
   const result = await ServiceAssistant.fetchAssistantOptions();
   if (result.isErr()) {
     const errors = result.error;
@@ -48,7 +50,8 @@ async function fetchAssistantOptions() {
     isLoading.value = false;
   } else {
     assistantOptions.value = result.data;
-    selectedUserChat.value = null;
+    const lastFoundChat = assistantOptions.value.user_chats.find(chat => chat.chat_id === lastChatId) || null;
+    selectedUserChat.value = lastFoundChat;
     isLoading.value = false;
   }
 

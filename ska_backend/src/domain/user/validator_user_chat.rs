@@ -204,9 +204,9 @@ pub fn syntax_chat_name(chat_name: Option<&String>) -> Result<(), ErrorPacket> {
 pub fn syntax_prompt(prompt: &Option<String>) -> Result<(), ErrorPacket> {
     if let Some(prompt) = prompt {
         let len = prompt.trim().len();
-        if len < 2 || len > 512 {
+        if len > 512 {
             return Err(ErrorPacket {
-                message: "prompt size must be between 2 and 512".to_string(),
+                message: "prompt size must be less than 512".to_string(),
                 backend_message: "prompt size must be between 2 and 512".to_string(),
             });
         }

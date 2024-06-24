@@ -46,8 +46,8 @@ def main():
     parser_rag_invoke.add_argument('prompt_template', type=str)
     parser_rag_invoke.add_argument('question', type=str)
     parser_rag_invoke.add_argument('model_type', type=str)
-    parser_rag_invoke.add_argument('temperature', type=int)
-    parser_rag_invoke.add_argument('top_p', type=int)
+    parser_rag_invoke.add_argument('temperature', type=float)
+    parser_rag_invoke.add_argument('top_p', type=float)
 
     parser_create_thapollm = subparsers.add_parser("create_skalm")
     parser_create_thapollm.add_argument('data_path', type=str)

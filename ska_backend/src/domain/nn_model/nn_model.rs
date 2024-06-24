@@ -24,9 +24,10 @@ impl LlmModelTypeEnum {
 pub enum NnModelEnum {
     AllMiniLML6,
     Llama27BChat,
-    TinyLlama1_1BChat,
-    Opt350M,
-    Gpt2,
+    Llama38BInstruct,
+    // TinyLlama1_1BChat,
+    // Opt350M,
+    // Gpt2,
 }
 impl NnModelEnum {
     pub fn get_data(&self) -> NnModelData {
@@ -52,52 +53,64 @@ impl NnModelEnum {
                 allow_patterns: "*.json,*.txt,*.md,*.model,llama-2-7b-chat.Q2_K.gguf".to_string(),
                 ignore_patterns: "*.bin,*.h5,*.msgpack,*.ot, *.safetensors".to_string(),
                 model_type: NnModelType::ModelLlm,
-                default_prompt: "[INST]
-<<SYS>>
-You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
-<</SYS>>
-Question: {question}
+                default_prompt: "<s>[INST] <<SYS>>
+You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.<</SYS>>
 Context: {context}
+Question: {question}
 Answer: [/INST]".to_string(),
                 llm_model_type: Some(LlmModelTypeEnum::LlamaCpp),
             },
-            NnModelEnum::TinyLlama1_1BChat => NnModelData {
-                name: "tinyllama1_1B".to_string(),
-                repo_id: "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
-                rel_path: "TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
-                model_path: "TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
-                revision: "036fa4651240b9a1487f709833b9e4b96b4c1574".to_string(),
-                allow_patterns: "*".to_string(),
-                ignore_patterns: "*.bin".to_string(),
+            NnModelEnum::Llama38BInstruct => NnModelData {
+                name: "llama3-8B".to_string(),
+                repo_id: "SanctumAI/Meta-Llama-3-8B-Instruct-GGUF".to_string(),
+                rel_path: "Meta-Llama-3-8B-Instruct-GGUF".to_string(),
+                model_path: "Meta-Llama-3-8B-Instruct-GGUF/meta-llama-3-8b-instruct.Q2_K.gguf".to_string(),
+                revision: "f688151a21ac4496648f183682ac25772b110658".to_string(),
+                allow_patterns: "*.json,*.txt,*.md,*.model,meta-llama-3-8b-instruct.Q2_K.gguf".to_string(),
+                ignore_patterns: "*.bin,*.h5,*.msgpack,*.ot, *.safetensors".to_string(),
                 model_type: NnModelType::ModelLlm,
-                default_prompt: "".to_string(),
-                llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
+                default_prompt: "<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.<|eot_id|><|start_header_id|>user<|end_header_id|>
+Context: {context}. Question: {question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>".to_string(),
+                llm_model_type: Some(LlmModelTypeEnum::LlamaCpp),
             },
-            NnModelEnum::Opt350M => NnModelData {
-                name: "opt350m".to_string(),
-                repo_id: "facebook/opt-350m".to_string(),
-                rel_path: "opt-350m".to_string(),
-                model_path: "opt-350m".to_string(),
-                revision: "08ab08cc4b72ff5593870b5d527cf4230323703c".to_string(),
-                allow_patterns: "*.json,*.txt,*.md,*.bin,*.model".to_string(),
-                ignore_patterns: "*.safetensors,*.h5,*.msgpack,*.ot".to_string(),
-                model_type: NnModelType::ModelLlm,
-                default_prompt: "".to_string(),
-                llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
-            },
+            // NnModelEnum::TinyLlama1_1BChat => NnModelData {
+            //     name: "tinyllama1_1B".to_string(),
+            //     repo_id: "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
+            //     rel_path: "TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
+            //     model_path: "TinyLlama-1.1B-intermediate-step-1431k-3T".to_string(),
+            //     revision: "036fa4651240b9a1487f709833b9e4b96b4c1574".to_string(),
+            //     allow_patterns: "*".to_string(),
+            //     ignore_patterns: "*.bin".to_string(),
+            //     model_type: NnModelType::ModelLlm,
+            //     default_prompt: "".to_string(),
+            //     llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
+            // },
+            // NnModelEnum::Opt350M => NnModelData {
+            //     name: "opt350m".to_string(),
+            //     repo_id: "facebook/opt-350m".to_string(),
+            //     rel_path: "opt-350m".to_string(),
+            //     model_path: "opt-350m".to_string(),
+            //     revision: "08ab08cc4b72ff5593870b5d527cf4230323703c".to_string(),
+            //     allow_patterns: "*.json,*.txt,*.md,*.bin,*.model".to_string(),
+            //     ignore_patterns: "*.safetensors,*.h5,*.msgpack,*.ot".to_string(),
+            //     model_type: NnModelType::ModelLlm,
+            //     default_prompt: "".to_string(),
+            //     llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
+            // },
 
-            NnModelEnum::Gpt2 => NnModelData {
-                name: "gpt2".to_string(),
-                repo_id: "openai-community/gpt2".to_string(),
-                rel_path: "gpt2".to_string(),
-                model_path: "gpt2".to_string(),
-                revision: "607a30d783dfa663caf39e06633721c8d4cfcd7e".to_string(),
-                allow_patterns: "*.json,*.txt,*.md,*.safetensors,*.model".to_string(),
-                ignore_patterns: "*.bin,*.h5,*.msgpack,*.ot".to_string(),
-                model_type: NnModelType::ModelLlm,
-                default_prompt: "".to_string(),
-                llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
-            },
+            // NnModelEnum::Gpt2 => NnModelData {
+            //     name: "gpt2".to_string(),
+            //     repo_id: "openai-community/gpt2".to_string(),
+            //     rel_path: "gpt2".to_string(),
+            //     model_path: "gpt2".to_string(),
+            //     revision: "607a30d783dfa663caf39e06633721c8d4cfcd7e".to_string(),
+            //     allow_patterns: "*.json,*.txt,*.md,*.safetensors,*.model".to_string(),
+            //     ignore_patterns: "*.bin,*.h5,*.msgpack,*.ot".to_string(),
+            //     model_type: NnModelType::ModelLlm,
+            //     default_prompt: "".to_string(),
+            //     llm_model_type: Some(LlmModelTypeEnum::HuggingFace),
+            // },
         }
     }
 
@@ -105,9 +118,10 @@ Answer: [/INST]".to_string(),
         Vec::<NnModelData>::from([
             NnModelEnum::AllMiniLML6.get_data(),
             NnModelEnum::Llama27BChat.get_data(),
-            NnModelEnum::TinyLlama1_1BChat.get_data(),
-            NnModelEnum::Opt350M.get_data(),
-            NnModelEnum::Gpt2.get_data(),
+            NnModelEnum::Llama38BInstruct.get_data(),
+            // NnModelEnum::TinyLlama1_1BChat.get_data(),
+            // NnModelEnum::Opt350M.get_data(),
+            // NnModelEnum::Gpt2.get_data(),
         ])
     }
 }

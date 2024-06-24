@@ -65,7 +65,7 @@ function onShowContextClick(chatPacket: DtoChatPacket) {
       <form class="form-control" @submit.prevent="onSubmit">
         <label class="label w-full">
           <input type="text" placeholder="Ask your question" class="input input-bordered input-primary w-full mr-1"
-            v-model="question" />
+            v-model="question" :disabled="isWaitingAsync" />
           <button type="submit" :disabled="isWaitingAsync" class="btn btn-outline btn-primary">
             <span v-if="isWaitingAsync" class="loading loading-spinner loading-sm"></span>
             <img src="/assets/icons/paper-airplane.svg" height="32" width="32" />
