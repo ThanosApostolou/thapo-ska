@@ -34,6 +34,7 @@ backend_pack:
     mkdir -p dist/ska_backend/etc
     mkdir -p dist/ska_backend/share/thapo_ska_py
     rsync -av ska_backend/distribution/bin/. dist/ska_backend/bin
+    rsync -av ska_backend/distribution/share/. dist/ska_backend/share
     rsync -av ska_backend/distribution/etc/${THAPO_SKA_ENV_PROFILE}/. dist/ska_backend/etc/
     rsync -av target/release/app-server dist/ska_backend/bin/app-server
     rsync -av target/release/app-cli dist/ska_backend/bin/app-cli
