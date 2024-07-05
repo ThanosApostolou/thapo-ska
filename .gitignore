@@ -179,3 +179,19 @@ dmypy.json
 *.m~
 ska_frontend/tailwind.css
 .secret
+
+## LaTex
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
+*.fdb_latexmk
+*synctex.gz
