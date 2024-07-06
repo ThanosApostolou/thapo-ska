@@ -41,7 +41,6 @@
   ),
 )
 #set text(font: "Arial", size: 10pt)
-#set heading(numbering: "1.")
 #show heading.where(
   level: 1
 ): it => [
@@ -218,8 +217,44 @@
   // #v(3pt)
 ]
 
+// ABASTRACT
 #pagebreak()
-= Abstract
+#set heading(outlined: true)
+#align(center, [= Abstract])
+
+dynamics_in glaciers and how they
+contribute to the formation and
+behaviour of these natural structures.
+behaviour of these natural structures.
+behaviour of these natural structures.
+behaviour of these natural structures.
+behaviour of these natural structures.
+
+dynamics_in glaciers and how they
+contribute to the formation and
+behaviour of these natural structures.
+behaviour of these natural structures.
+behaviour of these natural structures.
+behaviour of these natural structures.
+behaviour of these natural structures.
+
+#set heading(outlined: false)
+#align(center, [= Περίληψη])
+Αυτή είναι μια ωραία περίληψηΑυτή είναι μια ωραία περίληψηΑυτή είναι μια ωραία περίληψηΑυτή είναι μια ωραία περίληψη
+
+Αυτή είναι μια ωραία περίληψηΑυτή είναι μια ωραία περίληψηΑυτή είναι μια ωραία περίληψηΑυτή είναι μια ωραία περίληψηΑυτή είναι μια ωραία περίληψη
+
+// INTRODUCTION
+#set heading(numbering: "1.", outlined: true)
+#pagebreak()
+= Introduction
+
+In this report, we will explore the
+various factors that influence _fluid @harry
+dynamics_ in glaciers and how they
+contribute to the formation and
+behaviour of these natural structures.
+
 
 == test
 
@@ -228,15 +263,6 @@ behaviour of these natural structures.
 
 === test2
 
-contribute to the formation and
-behaviour of these natural structures.
-
-#pagebreak()
-= Introduction
-
-In this report, we will explore the
-various factors that influence _fluid @harry
-dynamics_ in glaciers and how they
 contribute to the formation and
 behaviour of these natural structures.
 
