@@ -42,18 +42,53 @@
 )
 #set par(
   justify: true,
-  leading: 0.52em,
-  first-line-indent: 10pt,
+  leading: 0.65em,
+  first-line-indent: 6pt,
 )
 #set heading(numbering: "1.")
+#show par: it => [
+  #set block(spacing: 10pt)
+  #it
+]
+#show heading.where(
+  level: 1
+): it => [
+  #set text(font: "Arial",size: 12pt, weight: "black")
+  #it
+]
+#show heading.where(
+  level: 2
+): it => [
+  #set text(font: "Arial",size: 11pt, weight: "black")
+  #it
+]
+#show heading.where(
+  level: 3
+): it => [
+  #set text(font: "Arial",size: 10pt, weight: "black")
+  #it
+]
+#show figure: it => [
+  #set text(font: "Arial",size: 8pt, weight: "bold")
+  #it
+]
 
 #image("images/unipi.png", width: 40pt)
+#figure(
+   image("images/unipi.png"),
+   caption: [here comes text],
+   supplement: [IMAGE],
+ ) <test_img>
+
 
 #pagebreak()
 #outline()
 
 #pagebreak()
 = Abstract
+
+== test
+=== test2
 
 #pagebreak()
 = Introduction
