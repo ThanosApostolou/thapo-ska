@@ -5,3 +5,8 @@ harry:
   volume: 5
   page-total: 768
   date: 2003-06-21
+huggingface_text_generation:
+  type: Web
+  title: Text Generation
+  author: Hugging Face
+  url: https://huggingface.co/tasks/text-generation
