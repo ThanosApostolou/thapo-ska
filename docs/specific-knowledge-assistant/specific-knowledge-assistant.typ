@@ -223,7 +223,7 @@
 #grid(columns: 1, rows: (1fr, 1fr),
   [
     #align(center, [= Abstract])
-    This MSc thesis is about utilizing artificial intelligence models in order to find specific knowledge. As part of this goal we will develop a complete web application, where users will be able to ask questions to artificial intelligence models, which will answer them based on a specific context. We will follow two different methodologies. For the first methodology we will create our own text generation AI model @huggingface_text_generation which will be trained to understand specific knowledge. For the second methodology, we will use existing artificial intelligence models, trying to limit them so that they respond only to the specific knowledge context that we have chosen. In the end we will be able to come to conclusion about the usefulness of these methodologies.
+    This MSc thesis is about utilizing artificial intelligence models in order to find specific knowledge. As part of this goal we will develop a complete web application, where users will be able to ask questions to artificial intelligence models, which will answer them based on a specific context. We will follow two different methodologies. For the first methodology we will create our own text generation AI model @huggingface_text_generation which will be trained to understand specific knowledge. For the second methodology, we will use existing artificial intelligence models, trying to limit them so that they respond only to the specific knowledge context that we have chosen. In the end we will be able to come to conclusions about the usefulness of these methodologies.
   ],
   [
     #set heading(outlined: false)
@@ -237,37 +237,22 @@
 #pagebreak()
 = Introduction
 
-In this report, we will explore the
-various factors that influence _fluid @harry
-dynamics_ in glaciers and how they
-contribute to the formation and
-behaviour of these natural structures.
+In our era, the knowledge we have acquired is bigger than ever. The number of books, notes, web pages and other forms of content keeps increasing year by year. It is impossible for any human being, to be able to read an process all this available knowledge. Fortunately, technology has been greatly improved and is being used daily for tasks involving knowledge search and analysis. While traditional tools like search engines made it easier for us to find existing knowledge, in the past years we have observed the increasing development of tools using artificial intelligence. We will study the usage of text generation machine learning models in specific knowledge search and analysis assistance. We will use two different methodologies for these tasks and we will develop a full web application with which users will be able to ask questions
+
+In chapter 2 we will describe and analyze the fundamental theoretical concepts needed for better understanding of this thesis. We will also describe the various technologies and their advantage, which we will use for our application development and deployment.
+
+In chapter 3 we will dive in the details of the two methodologies that we will use. We will compare them and we will describe their advantages and disadvantages.
+
+In chapter 4 we will describe the architecture and the implementation of our application. We will show the components which construct our application, the tasks each component can perform and how they are connected together.
+
+In chapter 5 we will show the design and execution results of our deployed application. We will investigate the various ways in which our application can be used by the users in order to find specific knowledge based on raw data like documents or web pages.
+
+In chapter 6 we will write our conclusions we reached. We will describe the problems and limitations we faced. Finally, we will specify future improvements that can be made as well as future goals about scaling and expand the core idea.
 
 
-== test
-
-contribute to the formation and
-behaviour of these natural structures.
-
-=== test2
-
-contribute to the formation and
-behaviour of these natural structures.
-
-In this report, we will explore the
-various factors that influence _fluid
-dynamics_ in glaciers and how they
-contribute to the formation and
-behaviour of these natural structures.
-
-In this report, we will explore the
-various factors that influence _fluid
-dynamics_ in glaciers and how they
-contribute to the formation and
-behaviour of these natural structures.
 
 #pagebreak()
-= Literature Review
+= Theory and Literature Review
 
 
 
@@ -286,13 +271,16 @@ contribute to the formation and
 behaviour of these natural structures.
 
 #pagebreak()
-= Technologies and Machine Learning Approaches
+= Specific Knowledge Assistance Approaches
 
 #pagebreak()
-= Experimentation / Execution Examples
+= System Architecture
 
 #pagebreak()
-= Conclustions and Future Work
+= Usage and Execution of the Application
+
+#pagebreak()
+= Conclusions and Future Work
 
 #pagebreak()
 #bibliography("bibliography.yaml")
