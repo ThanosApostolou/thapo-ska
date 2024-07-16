@@ -223,12 +223,12 @@
 #grid(columns: 1, rows: (1fr, 1fr),
   [
     #align(center, [= Abstract])
-    This MSc thesis is about utilizing artificial intelligence models in order to find specific knowledge. As part of this goal we will develop a complete web application, where users will be able to ask questions to artificial intelligence models, which will answer them based on a specific context. We will follow two different methodologies. For the first methodology we will create our own text generation AI model @huggingface_text_generation which will be trained to understand specific knowledge. For the second methodology, we will use existing artificial intelligence models, trying to limit them so that they respond only to the specific knowledge context that we have chosen. In the end we will be able to come to conclusions about the usefulness of these methodologies.
+    This MSc thesis is about utilizing artificial intelligence models in order to find specific knowledge. As part of this goal we will develop a complete web application, where users will be able to ask questions to artificial intelligence models, which will answer them based on a specific context. We will follow two different methodologies. For the first methodology we will create our own text generation AI model @web_huggingface_text_generation which will be trained to understand specific knowledge. For the second methodology, we will use existing artificial intelligence models, trying to limit them so that they respond only to the specific knowledge context that we have chosen. In the end we will be able to come to conclusions about the usefulness of these methodologies.
   ],
   [
     #set heading(outlined: false)
     #align(center, [= Περίληψη])
-    Η παρούσα μεταπτυχιακή εργασία ασχολείται με την αξιοποίηση μοντέλων τεχνητής νοημοσύνης για την υποβοήθηση ανεύρεσης συγκεκριμένης γνώσης. Στα πλαίσια αυτού του στόχου θα αναπτύξουμε μια πλήρη διαδικτυακή εφαρμογή, στην οποία οι χρήστες θα μπορούν να κάνουν ερωτήσεις σε μοντέλα τεχνητής νοημοσύνης, τα οποία θα τους απαντάνε με βάση συγκεκριμένο πλαίσιο. Θα ακολουθήσουμε δύο διαφορετικές μεθοδολογίες. Για την πρώτη μεθοδολογία θα δημιουργήσουμε ένα δικό μας μοντέλο τεχνητής νοημοσύνης παραγωγής κειμένου @huggingface_text_generation το οποίο θα εκπαιδευτεί για να κατανοεί συγκεκριμένη γνώση. Για την δεύτερη μεθοδολογία θα χρησιμοποιήσουμε υπάρχοντα μοντέλα τεχνητής νοημοσύνης προσπαθώντας να τα περιορίσουμε ώστε να απαντάνε μόνο στο συγκεκριμένο πλαίσιο γνώσης που έχουμε επιλέξει. Στο τέλος θα μπορέσουμε να καταλήξουμε σε συμπεράσματα. Στο τέλος θα μπορέσουμε να καταλήξουμε σε συμπεράσματα για την χρησιμότητα αυτών των μεθοδολογιών.
+    Η παρούσα μεταπτυχιακή εργασία ασχολείται με την αξιοποίηση μοντέλων τεχνητής νοημοσύνης για την υποβοήθηση ανεύρεσης συγκεκριμένης γνώσης. Στα πλαίσια αυτού του στόχου θα αναπτύξουμε μια πλήρη διαδικτυακή εφαρμογή, στην οποία οι χρήστες θα μπορούν να κάνουν ερωτήσεις σε μοντέλα τεχνητής νοημοσύνης, τα οποία θα τους απαντάνε με βάση συγκεκριμένο πλαίσιο. Θα ακολουθήσουμε δύο διαφορετικές μεθοδολογίες. Για την πρώτη μεθοδολογία θα δημιουργήσουμε ένα δικό μας μοντέλο τεχνητής νοημοσύνης παραγωγής κειμένου @web_huggingface_text_generation το οποίο θα εκπαιδευτεί για να κατανοεί συγκεκριμένη γνώση. Για την δεύτερη μεθοδολογία θα χρησιμοποιήσουμε υπάρχοντα μοντέλα τεχνητής νοημοσύνης προσπαθώντας να τα περιορίσουμε ώστε να απαντάνε μόνο στο συγκεκριμένο πλαίσιο γνώσης που έχουμε επιλέξει. Στο τέλος θα μπορέσουμε να καταλήξουμε σε συμπεράσματα. Στο τέλος θα μπορέσουμε να καταλήξουμε σε συμπεράσματα για την χρησιμότητα αυτών των μεθοδολογιών. @book_artificial_intelligence_a_modern_approach
   ]
 )
 
@@ -254,24 +254,43 @@ In chapter 6 we will write our conclusions we reached. We will describe the prob
 #pagebreak()
 = Theory and Literature Review
 
+In this chapter we will talk about the theoretic terms that this thesis is based upon. We will also describe the main technologies which we will use.
+
+== Theoretic Terms
+
+=== Artificial intelligence
+Artificial intelligence (AI), in its broadest sense, is intelligence exhibited by machines, particularly computer systems. It is a field of research in computer science that develops and studies methods and software that enable machines to perceive their environment and use learning and intelligence to take actions that maximize their chances of achieving defined goals. Such machines may be called AIs. @web_wiki_artificial_intelligence
+
+Some consider intelligence to be a property of internal thought processes and reasoning, while others focus on intelligent behavior, an external characterization. From these two dimensions (human vs. rational and thought vs. behavior) there are four possible combinations, and there have been adherents and research programs for all four. The methods used are necessarily different: the pursuit of human-like intelligence must be in part an empirical science related to psychology, involving observations and hypotheses about actual human behavior and thought processes; a rationalist approach, on the other hand, involves a combination of mathematics and engineering, and connects to statistics, control theory, and economics. The various groups have both disparaged and helped each other. These 4 approaches are the following:@book_artificial_intelligence_a_modern_approach
+- Acting humanly: The Turing test approach
+- Thinking humanly: The cognitive modeling approach
+- Thinking rationally: The “laws of thought” approach
+- Acting rationally: The rational agent approach
+
+=== Machine Learning Models
 
 
-In this report, we will explore the
-various factors that influence _fluid
-dynamics_ in glaciers and how they
-contribute to the formation and
-behaviour of these natural structures.
+#figure(
+  image("images/Venn-Diagram-for-AI-ML-NLP-DL.png", height: 300pt),
+  caption: [Venn Diagram for AI, ML, Deep Learning @article_handwritten_text_recognition],
+  supplement: [IMAGE],
+) <img_venn>
 
+== Technologies
 
+=== Programming Languages
 
-In this report, we will explore the
-various factors that influence _fluid
-dynamics_ in glaciers and how they
-contribute to the formation and
-behaviour of these natural structures.
+=== Libraries
+
+=== Containers, Docker and Kubernetes
+
 
 #pagebreak()
 = Specific Knowledge Assistance Approaches
+
+== Custom Text Generation Model Method
+
+== Retrieval Augmented Generation Method
 
 #pagebreak()
 = System Architecture
@@ -283,4 +302,4 @@ behaviour of these natural structures.
 = Conclusions and Future Work
 
 #pagebreak()
-#bibliography("bibliography.yaml")
+#bibliography("bibliography.bib")
