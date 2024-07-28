@@ -8,10 +8,10 @@ pub struct SecretConfig {
 impl SecretConfig {
     pub fn from_env() -> SecretConfig {
         let db_user =
-            dotenv::var("THAPO_SKA_DB_USER").expect("THAPO_SKA_DB_USER env var is missing");
-        let db_password =
-            dotenv::var("THAPO_SKA_DB_PASSWORD").expect("THAPO_SKA_DB_PASSWORD env var is missing");
-        let auth_client_secret = dotenv::var("THAPO_SKA_AUTH_CLIENT_SECRET")
+            dotenvy::var("THAPO_SKA_DB_USER").expect("THAPO_SKA_DB_USER env var is missing");
+        let db_password = dotenvy::var("THAPO_SKA_DB_PASSWORD")
+            .expect("THAPO_SKA_DB_PASSWORD env var is missing");
+        let auth_client_secret = dotenvy::var("THAPO_SKA_AUTH_CLIENT_SECRET")
             .expect("THAPO_SKA_AUTH_CLIENT_SECRET env var is missing");
 
         SecretConfig {

@@ -9,7 +9,7 @@ use ska_backend::{
 async fn main() {
     let secret_file =
         std::env::var("THAPO_SKA_SECRET_FILE").unwrap_or_else(|_| ".secret".to_string());
-    dotenv::from_filename(&secret_file)
+    dotenvy::from_filename(&secret_file)
         .unwrap_or_else(|_| panic!("could not load file {}", secret_file.clone()));
 
     let global_state = GlobalState::initialize_default().await.unwrap();
