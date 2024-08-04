@@ -210,7 +210,7 @@
 
 #set par(justify: true, leading: 7pt, first-line-indent: 10pt)
 #show par: it => [
-  #set block(spacing: 10pt)
+  #set block(spacing: 7pt)
   #it
   // #v(3pt)
 ]
@@ -355,15 +355,79 @@ following:@book_artificial_intelligence_a_modern_approach
   agent is one that acts so as to achieve the best outcome or, when there is
   uncertainty, the best expected outcome.
 
-=== Machine Learning Models
+=== Machine Learning
 We described the fundamental concepts with which artificial intelligence is
-defined.
+defined. Machine learning (ML) is a field of study in artificial intelligence
+concerned with the development and study of statistical algorithms that can
+learn from data and generalize to unseen data and thus perform tasks without
+explicit instructions. @web_wiki_machine_learning
+
+Machine learning is a subset of artificial intelligence (AI) focused on
+developing algorithms and statistical models that enable computers to perform
+tasks without explicit instructions. Instead, these systems learn and improve
+from experience by identifying patterns in data. Machine Learning uses
+algorithms and statistical models to enable computers to perform specific tasks
+without being explicitly programmed to do so. Machine learning systems learn
+from and make decisions based on data. The process involves the following steps:
+- Data Collection: Gathering relevant data that the model will learn from.
+- Data Preparation: Cleaning and organizing data to make it suitable for training.
+- Model Selection: Choosing an appropriate algorithm that fits the problem.
+- Training: Using data to train the model, allowing it to learn and identify
+  patterns.
+- Evaluation: Assessing the model's performance using different metrics.
+- Optimization: Fine-tuning the model to improve its accuracy and efficiency.
+- Deployment: Implementing the model in a real-world scenario for practical use.
+
+There are 4 basic types of Machine Learning: @web_wiki_machine_learning
+@web_geeksforgeeks_types_machine_learning
+@web_lakefs_machine_learning_components
+- Supervised Learning:
+
+  The model is trained on labeled data, meaning the input comes with the correct
+  output. The goal is to learn a mapping from inputs to outputs. Examples:
+  Regression, classification.
+- Unsupervised Learning:
+
+  The model is trained on unlabeled data, and it must find hidden patterns or
+  intrinsic structures in the input data. Examples: Clustering, association.
+- Semi-Supervised Learning:
+
+  Combines a small amount of labeled data with a large amount of unlabeled data
+  during training. It falls between supervised and unsupervised learning.
+- Reinforcement Learning:
+
+  The model learns by interacting with an environment, receiving rewards or
+  penalties based on its actions, and aims to maximize the cumulative reward.
+  Examples: Game playing, robotic control.
+
+Deep learning is a subset of machine learning that uses multilayered neural
+networks, called deep neural networks, to simulate the complex decision-making
+power of the human brain @web_ibm_deep_learning. Deep learning is being used in
+order to teach computers how to process data in a way that is inspired by the
+human brain. Deep learning models can recognize complex patterns in pictures,
+text, sounds, and other data to produce accurate insights and predictions. Deep
+learning methods can be used in order to automate tasks that typically require
+human intelligence, such as describing images or transcribing a sound file into
+text @web_aws_deep_learning. We can visualize the subsets of Deep Learning,
+Machine Learning and Artificial Intelligence with the diagram below:
 
 #figure(
-  image("images/Venn-Diagram-for-AI-ML-NLP-DL.png", height: 300pt),
+  image("images/Venn-Diagram-for-AI-ML-NLP-DL.png", height: 250pt),
   caption: [ Venn Diagram for AI, ML, Deep Learning @article_handwritten_text_recognition ],
   supplement: [IMAGE],
 ) <img_venn>
+
+Artificial Intelligence, Machine Learning and Deep Learning are involved in many
+applications like Image Recognition, Speech Recognition, Traffic prediction,
+Recommender Systems, Self-driving cars, Email Spam and Malware Filtering,
+Virtual Personal Assistant, Fraud Detection, Stock Market trading, Medical
+Diagnosis, Automatic Language Translation, Chatbots, Generation of text images
+and videos. @web_javatpoint_applications_machine_learning
+@web_geeksforgeeks_applications_machine_learning
+@web_coursera_applications_machine_learning. All these applications required
+different artificial intelligence disciplines that can be combined in order to
+create a complete artificial intelligence system which produces the required
+output.
 
 #figure(
   image("images/ai-systems.png", height: 300pt),
@@ -372,6 +436,8 @@ defined.
     to learn from data. @book_deep_learning ],
   supplement: [IMAGE],
 ) <img_venn>
+
+=== Text Generation Models and RAG
 
 == Technologies
 
