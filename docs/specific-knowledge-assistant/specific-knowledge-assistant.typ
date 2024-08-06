@@ -300,6 +300,12 @@ In this chapter we will talk about the theoretic terms that this thesis is based
 upon. We will also describe the main technologies which we will use.
 
 == Theoretic Terms
+The fundamental theoretic concepts of this thesis stem from the study field of
+artificial intelligence. We will describe the connection between artificial
+intelligence, machine learning and deep learning. We will focus on a specific
+category of machine learning models involving text generation and the state of
+the art practices of utilizing their capabilities to the maximum by using
+Retrieval Augmented Generation (RAG) technique.
 
 === Artificial intelligence
 In the general sense, Artificial intelligence (AI) is intelligence exhibited by
@@ -319,41 +325,34 @@ actual human behavior and thought processes; a rationalist approach, on the
 other hand, involves a combination of mathematics and engineering, and connects
 to statistics, control theory, and economics. These 4 approaches are the
 following:@book_artificial_intelligence_a_modern_approach
-- Acting humanly: The Turing test approach
-
-  The Turing test, proposed by Alan Turing (1950) and it consists of 4 core
-  principles that a computer would need to follow in order to pass it.
+- Acting humanly: The Turing test approach The Turing test, proposed by Alan
+  Turing (1950) and it consists of 4 core principles that a computer would need to
+  follow in order to pass it.
   - natural language processing to communicate successfully in a human language
   - knowledge representation to store what it knows or hears
   - automated reasoning to answer questions and to draw new conclusions
   - machine learning to adapt to new circumstances and to detect and extrapolate
     patterns
-
   The full turing test is completed with 2 additional characteristics which have
   been added by later researchers:
   - computer vision and speech recognition to perceive the world
   - robotics to manipulate objects and move about
-
-- Thinking humanly: The cognitive modeling approach
-
-  We can determine if a computer or a program thinks like a human by analyzing the
-  human thought in 3 main concepts:
+- Thinking humanly: The cognitive modeling approach We can determine if a computer
+  or a program thinks like a human by analyzing the human thought in 3 main
+  concepts:
   - introspection - trying to catch our own thoughts as they go by
   - psychological experiments - observing a person in action
   - brain imaging - observing the brain in action
+- Thinking rationally: The “laws of thought” approach Rationally thinking can be
+  achieved by following the rules defined by the "logic" study field. When
+  conventional logic requires knowledge that cannot be obtained realistically,
+  then the theory of probability helps us define logical thinking.
 
-- Thinking rationally: The “laws of thought” approach
-
-  Rationally thinking can be achieved by following the rules defined by the "logic"
-  study field. When conventional logic requires knowledge that cannot be obtained
-  realistically, then the theory of probability helps us define logical thinking.
-
-- Acting rationally: The rational agent approach
-
-  Rational thinking can achieve a construction of a comprehensive model of
-  rational thought, but cannot generate intelligent behavior by itself. A rational
-  agent is one that acts so as to achieve the best outcome or, when there is
-  uncertainty, the best expected outcome.
+- Acting rationally: The rational agent approach Rational thinking can achieve a
+  construction of a comprehensive model of rational thought, but cannot generate
+  intelligent behavior by itself. A rational agent is one that acts so as to
+  achieve the best outcome or, when there is uncertainty, the best expected
+  outcome.
 
 === Machine Learning
 We described the fundamental concepts with which artificial intelligence is
@@ -381,24 +380,18 @@ from and make decisions based on data. The process involves the following steps:
 There are 4 basic types of Machine Learning: @web_wiki_machine_learning
 @web_geeksforgeeks_types_machine_learning
 @web_lakefs_machine_learning_components
-- Supervised Learning:
-
-  The model is trained on labeled data, meaning the input comes with the correct
-  output. The goal is to learn a mapping from inputs to outputs. Examples:
-  Regression, classification.
-- Unsupervised Learning:
-
-  The model is trained on unlabeled data, and it must find hidden patterns or
-  intrinsic structures in the input data. Examples: Clustering, association.
-- Semi-Supervised Learning:
-
-  Combines a small amount of labeled data with a large amount of unlabeled data
-  during training. It falls between supervised and unsupervised learning.
-- Reinforcement Learning:
-
-  The model learns by interacting with an environment, receiving rewards or
-  penalties based on its actions, and aims to maximize the cumulative reward.
-  Examples: Game playing, robotic control.
+- Supervised Learning: The model is trained on labeled data, meaning the input
+  comes with the correct output. The goal is to learn a mapping from inputs to
+  outputs. Examples: Regression, classification.
+- Unsupervised Learning: The model is trained on unlabeled data, and it must find
+  hidden patterns or intrinsic structures in the input data. Examples: Clustering,
+  association.
+- Semi-Supervised Learning: Combines a small amount of labeled data with a large
+  amount of unlabeled data during training. It falls between supervised and
+  unsupervised learning.
+- Reinforcement Learning: The model learns by interacting with an environment,
+  receiving rewards or penalties based on its actions, and aims to maximize the
+  cumulative reward. Examples: Game playing, robotic control.
 
 Deep learning is a subset of machine learning that uses multilayered neural
 networks, called deep neural networks, to simulate the complex decision-making
@@ -461,7 +454,6 @@ These are the key components and concepts of text generation models:
   - Preprocessing: Cleaning and organizing the text data, including tokenization
     (breaking text into words or subwords), removing special characters, and
     normalizing text.
-
 - Model Architecture:
   - Recurrent Neural Networks (RNNs): Earlier models for text generation, including
     Long Short-Term Memory (LSTM) and Gated Recurrent Units (GRUs), which handle
@@ -472,14 +464,12 @@ These are the key components and concepts of text generation models:
     distances in the text. Examples include the GPT (Generative Pre-trained
     Transformer) series, BERT (Bidirectional Encoder Representations from
     Transformers), and others.
-
 - Training Process:
   - Unsupervised Learning: Most text generation models are trained using
     unsupervised learning, where the model learns to predict the next word or
     sequence of words based on the context provided by preceding text.
   - Fine-Tuning: After pre-training on a large corpus, models are often fine-tuned
     on specific datasets to adapt them to particular tasks or domains.
-
 - Generation Techniques:
   - Sampling: Randomly selecting the next word from the probability distribution
     generated by the model.
@@ -526,24 +516,6 @@ organization's internal knowledge base, all without the need to retrain the
 model. It is a cost-effective approach to improving LLM output so it remains
 relevant, accurate, and useful in various contexts @web_aws_rag.
 
-A typical RAG application has two main components @web_langchain_rag:
-- Indexing: a pipeline for ingesting data from a source and indexing it. This
-  usually happens offline.
-  - Load: First we need to load our data. This is done with Document Loaders.
-  - Split: Text splitters break large Documents into smaller chunks. This is useful
-    both for indexing data and for passing it in to a model, since large chunks are
-    harder to search over and won't fit in a model's finite context window.
-  - Store: We need somewhere to store and index our splits, so that they can later
-    be searched over. This is often done using a VectorStore and Embeddings model.
-
-- Retrieval and generation: the actual RAG chain, which takes the user query at
-  run time and retrieves the relevant data from the index, then passes that to the
-  model.
-  - Retrieve: Given a user input, relevant splits are retrieved from storage using a
-    Retriever.
-  - Generate: A ChatModel / LLM produces an answer using a prompt that includes the
-    question and the retrieved data
-
 RAG is important because of these reasons @web_aws_rag:
 - LLMs have known drawbacks:
   - Presenting false information when it does not have the answer.
@@ -576,11 +548,192 @@ RAG is important because of these reasons @web_aws_rag:
     sources for specific questions. Organizations can implement generative AI
     technology more confidently for a broader range of applications.
 
+A typical RAG application has two main components @web_langchain_rag:
+- Indexing: a pipeline for ingesting data from a source and indexing it. This
+  usually happens offline.
+  - Load: First we need to load our data. This is done with Document Loaders.
+  - Split: Text splitters break large Documents into smaller chunks. This is useful
+    both for indexing data and for passing it in to a model, since large chunks are
+    harder to search over and won't fit in a model's finite context window.
+  - Store: We need somewhere to store and index our splits, so that they can later
+    be searched over. This is often done using a VectorStore and Embeddings model.
+
+- Retrieval and generation: the actual RAG chain, which takes the user query at
+  run time and retrieves the relevant data from the index, then passes that to the
+  model.
+  - Retrieve: Given a user input, relevant splits are retrieved from storage using a
+    Retriever.
+  - Generate: A ChatModel / LLM produces an answer using a prompt that includes the
+    question and the retrieved data
+
+#figure(
+  image("images/rag-conceptual-flow.jpg", height: 300pt),
+  caption: [Conceptual flow of using RAG with LLMs. @web_aws_rag ],
+  supplement: [IMAGE],
+) <img_rag>
+
 == Technologies
+In the context of this thesis we will use many technologies in order to produce
+a complete application. We will describe the main programming languages we used
+for this application, Rust and Python. We will see more details about the core
+programming libraries our application is using and their basic features we
+utilize. Finally we will talk about the state of the art deployment procedure of
+deployments based on containers utilization.
 
-=== Programming Languages
+=== Python Programming Language
+Python is a high-level, general-purpose programming language. Its design
+philosophy emphasizes code readability with the use of significant indentation.
+Python is dynamically typed and garbage-collected. It supports multiple
+programming paradigms, including structured (particularly procedural),
+object-oriented and functional programming. It is often described as a "batteries
+included" language due to its comprehensive standard library. @web_wiki_python
 
-=== Libraries
+Choosing python as a programming language has several benefits @web_aws_python
+- Developers can easily read and understand a Python program because it has basic,
+  English-like syntax.
+- Python makes developers more productive because they can write a Python program
+  using fewer lines of code compared to many other languages.
+- Python has a large standard library that contains reusable codes for almost any
+  task. As a result, developers do not have to write code from scratch.
+- Developers can easily use Python with other popular programming languages such
+  as Java, C, and C++.
+- The active Python community includes millions of supportive developers around
+  the globe. If you face an issue, you can get quick support from the community.
+- Plenty of helpful resources are available on the internet if you want to learn
+  Python. For example, you can easily find videos, tutorials, documentation, and
+  developer guides.
+- Python is portable across different computer operating systems such as Windows,
+  macOS, Linux, and Unix.
+
+The python programming language is very popular in various applications:
+@web_aws_python
+- Server-side web development: Server-side web development includes the complex
+  backend functions that websites perform to display information to the user. For
+  example, websites must interact with databases, talk to other websites, and
+  protect data when sending it over the network.
+- Graphical User Interfaces development (GUI): Develop user friendly GUI
+  applications while also providing a good user experience.
+- Gaming development: Python can be used to develop games. Popular python
+  libraries exist for both 2D and 3D graphics development.
+- Automation with Python scripts: A scripting language is a programming language
+  that automates tasks that humans normally perform. Such tasks usually include:
+  - filesystem operations like files renaming, reading, writing, converting.
+  - Mathematical operations
+  - download content
+  - text operations and transformations in files
+  - basic log analysis
+- Data science and machine learning: Data science is extracting valuable knowledge
+  from data, and machine learning (ML) teaches computers to automatically learn
+  from the data and make accurate predictions.
+- Software deployments and operations: Python can be used for different
+  development tasks and software applications such as:
+  - Automatically building the software
+  - Utilize continuous integration and continuous deployments (CI/CD)
+  - Handling software project management
+- Software test automation: Check whether the actual results from the software
+  match the expected results to ensure that the software is error-free.
+
+Using python programming language has various advantages
+@web_geeksforgeeks_python_advantages_disadvantages:
+- Presence of third-party modules: Python has a rich ecosystem of third-party
+  modules and libraries that extend its functionality for various tasks.
+- Extensive support libraries: Python boasts extensive support libraries like
+  NumPy for numerical calculations and Pandas for data analytics, making it
+  suitable for scientific and data-related applications.
+- Open source and large active community base: Python is open source, and it has a
+  large and active community that contributes to its development and provides
+  support.
+- Versatile, easy to read, learn, and write: Python is known for its simplicity
+  and readability, making it an excellent choice for both beginners and
+  experienced programmers.
+- User-friendly data structures: Python offers intuitive and easy-to-use data
+  structures, simplifying data manipulation and management.
+- High-level language: Python is a high-level language that abstracts low-level
+  details, making it more user-friendly.
+- Dynamically typed language: Python is dynamically typed, meaning you don't need
+  to declare data types explicitly, making it flexible but still reliable.
+- Object-Oriented and Procedural programming language: Python supports both
+  object-oriented and procedural programming, providing versatility in coding
+  styles.
+- Portable and interactive: Python is portable across operating systems and
+  interactive, allowing real-time code execution and testing.
+- Ideal for prototypes: Python's concise syntax allows developers to prototype
+  applications quickly with less code.
+- Highly efficient: Python's clean design provides enhanced process control, and
+  it has excellent text processing capabilities, making it efficient for various
+  applications.
+- Internet of Things (IoT) opportunities: Python is used in IoT applications due
+  to its simplicity and versatility.
+- Interpreted language: Python is interpreted, which allows for easier debugging
+  and code development.
+
+However python programming language has also some drawbacks
+@web_geeksforgeeks_python_advantages_disadvantages:
+- Performance: Python is an interpreted language, which means that it can be
+  slower than compiled languages like C or Java. This can be an issue for
+  performance-intensive tasks.
+- Global Interpreter Lock: The Global Interpreter Lock (GIL) is a mechanism in
+  Python that prevents multiple threads from executing Python code at once. This
+  can limit the parallelism and concurrency of some applications.
+- Memory consumption: Python can consume a lot of memory, especially when working
+  with large datasets or running complex algorithms.
+- Dynamically typed: Python is a dynamically typed language, which means that the
+  types of variables can change at runtime. This can make it more difficult to
+  catch errors and can lead to bugs.
+- Packaging and versioning: Python has a large number of packages and libraries,
+  which can sometimes lead to versioning issues and package conflicts.
+- Lack of strictness: Python's flexibility can sometimes be a double-edged sword.
+  While it can be great for rapid development and prototyping, it can also lead to
+  code that is difficult to read and maintain.
+
+=== Rust Programming Language
+Rust is a general-purpose programming language emphasizing performance, type
+safety, and concurrency. It enforces memory safety, meaning that all references
+point to valid memory, without a garbage collector. To simultaneously enforce
+memory safety and prevent data races, its "borrow checker" tracks the object
+lifetime of all references in a program during compiling. Rust was influenced by
+ideas from functional programming, including immutability, higher-order
+functions, and algebraic data types. It is popular for systems programming.Rust
+does not enforce a programming paradigm, but supports object-oriented
+programming via structs, enums, traits, and methods, and supports functional
+programming via immutability, pure functions, higher order functions, and
+pattern matching. @web_wiki_rust
+
+Rust programming languages can be used in many applications @web_rust_lang
+@web_medium_best_use_cases_rust:
+- Server-side web development: Rust can be used to write simple REST apis or even
+  full stack backend applications which connect to databases and serve complex
+  html pages using various template engines.
+- Client-side web development: Rust can be compile to WebAssembly and be used to
+  create client side web applications supported in all modern web browsers.
+- Graphical User Interfaces development (GUI): Develop user friendly GUI
+  applications while also providing a good user experience. Rust gui frameworks
+  can use different architecture including Elm, immediate mode, reactive and
+  others.
+- Gaming development: Rust can be used to develop games. New modern rust libraries
+  have emerged for both 2D and 3D graphics development.
+- Embedded development: Due to low resource usage and high performance, rust can
+  be used to develop applications for low resource devices.
+- Command line development: Rust can be used to create both command line
+  interfaces (CLI) as well as terminal user interfaces (TUI).
+- Internet of Things development (IoT): IoT devices typically have limited
+  resources, and Rust's memory safety and low-level control make it an excellent
+  choice for developing embedded systems.
+- Robotics: Robotics requires real-time processing, and Rust's low-level control
+  and memory safety make it ideal for developing real-time applications. Rust's
+  concurrency features make it possible to handle multiple threads efficiently,
+  which is essential in robotics applications.
+- Machine Learning: Rust libraries and ecosystem for machine learning development
+  is newer and currently more limited than Python's. However rust can be preferred
+  for its higher performance, the memory safety and its immutability features.
+
+Using rust programming language has various advantages: TODO
+
+However rust programming language has also some drawbacks: TODO
+
+=== Python Libraries
+
+=== Rust Libraries
 
 === Containers, Docker and Kubernetes
 
