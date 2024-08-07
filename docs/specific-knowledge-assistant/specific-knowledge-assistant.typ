@@ -727,15 +727,79 @@ Rust programming languages can be used in many applications @web_rust_lang
   is newer and currently more limited than Python's. However rust can be preferred
   for its higher performance, the memory safety and its immutability features.
 
-Using rust programming language has various advantages: TODO
+Using rust programming language has various advantages
+@web_medium_rust_pros_cons:
+- Memory Safety: Rust's borrow checker ensures memory safety without the overhead
+  of garbage collection. This means fewer memory leaks and crashes.
+- Performance: Comparable to C and C++, Rust provides fine-grained control of
+  memory and other resources.
+- Concurrency: Rust's ownership model makes concurrent programming more manageable
+  and less prone to bugs.
+- Modern Tooling: Cargo, Rust's package manager and build system, is highly
+  praised for its ease of use.
+- Vibrant Community: Rust has a growing and enthusiastic community, which results
+  in good documentation, community support, and an expanding ecosystem.
 
-However rust programming language has also some drawbacks: TODO
+However rust programming language has also some drawbacks
+@web_medium_rust_pros_cons:
+- Steep Learning Curve: Rust's unique features, like ownership and lifetimes, can
+  be challenging to grasp for newcomers.
+- Compilation Time: Rust programs can have longer compile times compared to some
+  other languages.
+- Lesser Library Support: While growing, the Rust ecosystem is still smaller than
+  those of older languages like C++, Java or Python.
 
 === Python Libraries
+We will talk about the most important Python libraries that we use for our
+application and their important parts that we utilize.
+
+One of the most significant libraries we use is NLTK. NLTK is a leading platform
+for building Python programs to work with human language data. It provides
+easy-to-use interfaces to over 50 corpora and lexical resources such as WordNet,
+along with a suite of text processing libraries for classification,
+tokenization, stemming, tagging, parsing, and semantic reasoning, wrappers for
+industrial-strength NLP libraries, and an active discussion forum. Thanks to a
+hands-on guide introducing programming fundamentals alongside topics in
+computational linguistics, plus comprehensive API documentation, NLTK is
+suitable for linguists, engineers, students, educators, researchers, and
+industry users alike. NLTK is available for Windows, Mac OS X, and Linux. Best
+of all, NLTK is a free, open source, community-driven project @web_nltk. NLTK
+comes with many corpora, toy grammars, trained models, etc which are called NTLK
+Data @web_nltk_data. One of the most important modules of NLTK is the "tokenize"
+module which can help us split a long text into sentences or into words.
+
+pytorch: TODO
+
+llama-cpp: TODO
+
+matplotlib: TODO
+
+huggingface-hub: TODO
+
+langchain: TODO
+
+unstructured: TODO
+
+fais: TODO
 
 === Rust Libraries
+We will talk about the most important Rust libraries that we use for our
+application and their important parts that we utilize.
+
+clap: TODO
+
+tokio: TODO
+
+axum: TODO
+
+sea-orm: TODO
+
+=== Typescript, HTML, CSS, Vue.js
+TODO
 
 === Containers, Docker and Kubernetes
+
+TODO
 
 #pagebreak()
 = Specific Knowledge Assistance Approaches
@@ -747,11 +811,15 @@ However rust programming language has also some drawbacks: TODO
 #pagebreak()
 = System Architecture
 
+TODO
+
 #pagebreak()
 = Usage and Execution of the Application
+TODO
 
 #pagebreak()
 = Conclusions and Future Work
+TODO
 
 #pagebreak()
 #bibliography("bibliography.bib")
