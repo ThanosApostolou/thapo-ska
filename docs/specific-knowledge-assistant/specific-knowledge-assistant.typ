@@ -1005,12 +1005,253 @@ with the familiarity of dynamic languages. Some SeaORM features are:
 SeaORM supports connections with MySQL, Postgres or SQLite databases
 @web_seaql_connection.
 
-=== Typescript, HTML, CSS, Vue.js <heading_typescript_html_css_vue>
-TODO
+=== HTML, CSS, SPA, Typescript, Vue.js <heading_html_css_spa_typescript_vue>
+We will use Web Technologies in order to create a Frontend for our application.
+In this section we will describe the main technologies for our frontend.
+
+HTML (HyperText Markup Language) is the most basic building block of the Web. It
+defines the meaning and structure of web content. Other technologies besides
+HTML are generally used to describe a web page's appearance/presentation (CSS)
+or functionality/behavior (JavaScript).
+"Hypertext" refers to links that connect web pages to one another, either within
+a single website or between websites. Links are a fundamental aspect of the Web.
+By uploading content to the Internet and linking it to pages created by other
+people, you become an active participant in the World Wide Web. HTML uses "markup"
+to annotate text, images, and other content for display in a Web browser. HTML
+markup includes special "elements" such as `<head>, <title>, <body>` and many
+others. An HTML element is set off from other text in a document by "tags",
+which consist of the element name surrounded by "<" and ">". The name of an
+element inside a tag is case-insensitive. That is, it can be written in
+uppercase, lowercase, or a mixture. @web_mozilla_developer_html
+
+Cascading Style Sheets (CSS) is a stylesheet language used to describe the
+presentation of a document written in HTML or XML (including XML dialects such
+as SVG, MathML or XHTML). CSS describes how elements should be rendered on
+screen, on paper, in speech, or on other media. CSS is among the core languages
+of the open web and is standardized across Web browsers according to W3C
+specifications. Previously, the development of various parts of CSS
+specification was done synchronously, which allowed the versioning of the latest
+recommendations. You might have heard about CSS1, CSS2.1, or even CSS3. There
+will never be a CSS3 or a CSS4; rather, everything is now just "CSS" with
+individual CSS modules having version numbers. @web_mozilla_developer_css
+
+JavaScript (JS) is a lightweight interpreted (or just-in-time compiled)
+programming language with first-class functions. While it is most well-known as
+the scripting language for Web pages, many non-browser environments also use it,
+such as Node.js, Apache CouchDB and Adobe Acrobat. JavaScript is a
+prototype-based, multi-paradigm, single-threaded, dynamic language, supporting
+object-oriented, imperative, and declarative (e.g. functional programming)
+styles. JavaScript's dynamic capabilities include runtime object construction,
+variable parameter lists, function variables, dynamic script creation (via
+eval), object introspection (via for...in and Object utilities), and source-code
+recovery (JavaScript functions store their source text and can be retrieved
+through toString()). The standards for JavaScript are the ECMAScript Language
+Specification (ECMA-262) and the ECMAScript Internationalization API
+specification (ECMA-402). @web_mozilla_developer_javascript
+
+TypeScript is a programming language that adds static type checking to
+JavaScript. TypeScript is a superset of JavaScript, meaning that everything
+available in JavaScript is also available in TypeScript, and that every
+JavaScript program is a syntactically legal TypeScript program. Also, the
+runtime behavior of TypeScript and JavaScript is identical. However, TypeScript
+adds compile time type checking, implementing rules about how different types
+can be used and combined. This catches a wide variety of programming errors that
+in JavaScript are only encountered at runtime. Some typing rules are inferred
+from JavaScript. ypeScript also enables the programmer to annotate their code,
+to indicate, for example, the types of parameters to a function or the
+properties of an object. After compilation, type annotations are removed, making
+the compiled output just JavaScript, meaning it can be executed in any
+JavaScript runtime. @web_mozilla_developer_typescript
+
+An SPA (Single-page application) is a web app implementation that loads only a
+single web document, and then updates the body content of that single document
+via JavaScript APIs such as Fetch when different content is to be shown. This
+therefore allows users to use websites without loading whole new pages from the
+server, which can result in performance gains and a more dynamic experience,
+with some tradeoff disadvantages such as SEO, more effort required to maintain
+state, implement navigation, and do meaningful performance monitoring.
+@web_mozilla_developer_spa
+
+Our frontend will utilize all the technologies described above and it will use
+the Vue.js framework. Vue is a JavaScript framework for building user
+interfaces. It builds on top of standard HTML, CSS, and JavaScript and provides
+a declarative, component-based programming model that helps you efficiently
+develop user interfaces of any complexity. The two core features of Vue are:
+- Declarative Rendering: Vue extends standard HTML with a template syntax that
+  allows us to declaratively describe HTML output based on JavaScript state.
+- Reactivity: Vue automatically tracks JavaScript state changes and efficiently
+  updates the DOM when changes happen.
+Vue can be used in different ways:
+- Enhancing static HTML without a build step
+- Embedding as Web Components on any page
+- Single-Page Application (SPA)
+- Fullstack / Server-Side Rendering (SSR)
+- Jamstack / Static Site Generation (SSG)
+- Targeting desktop, mobile, WebGL, and even the terminal
+@web_vuejs_introduction
 
 === Containers, Docker and Kubernetes <heading_containers_docker_kubernetes>
+We already talked about the programming languages and the most important
+programming libraries which we will use for developing our application. In this
+section we will talk about the most important technologies which we will use in
+order to deploy and devliver our application.
 
-TODO
+Containers are executable units of software that package application code along
+with its libraries and dependencies. They allow code to run in any computing
+environment, whether it be desktop, traditional IT or cloud infrastructure.
+Containers take advantage of a form of operating system (OS) virtualization in
+which features of the OS kernel (for example, Linux namespaces and cgroups,
+Windows silos and job objects) can be used to isolate processes and control the
+amount of CPU, memory and disk that those processes can access. More portable
+and resource-efficient than virtual machines (VMs), containers have become the
+de facto compute units of modern cloud-native applications. Additionally,
+containers are critical to the underlying IT infrastructure that powers hybrid
+multicloud settings—the combination of on-premises, private cloud, public cloud
+and more than one cloud service from more than one cloud vendor. One way to
+better understand a container is to examine how it differs from a traditional
+virtual machine (VM), which is a virtual representation or emulation of a
+physical computer. A VM is often referred to as a guest, while the physical
+machine it runs on is called the host. Virtualization technology makes VMs
+possible. A hypervisor—a small software layer—allocates physical computing
+resources (for example, processors, memory, storage) to each VM. It keeps each
+VM separate from others so they don’t interfere with each other. Each VM then
+contains a guest OS and a virtual copy of the hardware that the OS requires to
+run, along with an application and its associated libraries and dependencies.
+VMware was one of the first to develop and commercialize virtualization
+technology based on hypervisors. Instead of virtualizing the underlying
+hardware, container technology virtualizes the operating system (typically
+Linux) so each container contains only the application and its libraries,
+configuration files and dependencies. The absence of the guest OS is why
+containers are so lightweight and, thus, faster and more portable than VMs.
+Containers and virtual machines are not mutually exclusive. For instance, an
+organization might leverage both technologies by running containers in VMs to
+increase isolation and security and leverage already installed tools for
+automation, backup and monitoring @web_ibm_containers. Here are the top
+advantages of using containers:
+- Lightweight: Containers share the machine OS kernel, eliminating the need for a
+  full OS instance per application and making container files small and easy on
+  resources. A container’s smaller size, especially compared to a VM, means it can
+  spin up quickly and better support cloud-native applications that scale
+  horizontally.
+- Portable and platform-independent: Containers carry all their dependencies with
+  them, meaning that software can be written once and then run without needing to
+  be re-configured across computing environments (for example, laptops, cloud and
+  on-premises).
+- Supportive of modern development and architecture: Due to a combination of their
+  deployment portability and consistency across platforms and their small size,
+  containers are an ideal fit for modern development and application patterns—such
+  as DevOps, serverless and microservices—that are built by using regular code
+  deployments in small increments.
+- Improved utilization: Like VMs, containers enable developers and operators to
+  improve CPU and memory utilization of physical machines. Containers go even
+  further because they enable microservices architecture so that application
+  components can be deployed and scaled more granularly. This is an attractive
+  alternative to scaling up an entire monolithic application because a single
+  component is struggling with its load.
+- Faster time to market: Containers rely less on system resources, making them
+  faster to manage and deploy than VMs. This feature helps save money and time on
+  application deployment and optimizes time to market.
+@web_ibm_containers
+
+The most popular containerization technology nowadays is Docker. Docker enables
+developers to build, deploy, run, update and manage containers. Docker uses the
+Linux kernel (the operating system’s base component) and kernel features (like
+Cgroups and namespaces) to separate processes so they can run independently.
+Docker essentially takes an application and its dependencies and turns them into
+a virtual container that can run on any Windows, macOS or Linux-running computer
+system. Docker is based on a client-server architecture, with Docker Engine
+serving as the underlying technology. Docker provides an image-based deployment
+model, making sharing apps simple across computing environments
+@web_ibm_containers. Docker is an open platform for developing, shipping, and
+running applications. Docker allows you to separate your applications from your
+infrastructure so you can deliver software quickly. With Docker, you can manage
+your infrastructure in the same ways you manage your applications. By taking
+advantage of Docker's methodologies for shipping, testing, and deploying code
+quickly, you can significantly reduce the delay between writing code and running
+it in production @web_docker_get_docker. Docker provides many tools and
+components, the most important of which is *Docker Engine*. Docker Engine is an
+open source containerization technology for building and containerizing your
+applications. Docker Engine acts as a client-server application with: A server
+with a long-running daemon process dockerd. APIs which specify interfaces that
+programs can use to talk to and instruct the Docker daemon. A command line
+interface (CLI) client docker. The CLI uses Docker APIs to control or interact
+with the Docker daemon through scripting or direct CLI commands. Many other
+Docker applications use the underlying API and CLI. The daemon creates and
+manages Docker objects, such as images, containers, networks, and volumes.
+@web_docker_engine *Docker Build* is one of Docker Engine's most used features.
+Whenever you are creating an image you are using Docker Build. Build is a key
+part of your software development life cycle allowing you to package and bundle
+your code and ship it anywhere. Docker Build is more than a command for building
+images, and it's not only about packaging your code. It's a whole ecosystem of
+tools and features that support not only common workflow tasks but a lso
+provides support for more complex and advanced scenarios @web_docker_build.
+Finally, when we talk about docker is essential to talk about *Docker Compose*
+too. Docker Compose is a tool for defining and running multi-container
+applications. It is the key to unlocking a streamlined and efficient development
+and deployment experience. Compose simplifies the control of your entire
+application stack, making it easy to manage services, networks, and volumes in a
+single, comprehensible YAML configuration file. Then, with a single command, you
+create and start all the services from your configuration file. Compose works in
+all environments; production, staging, development, testing, as well as CI
+workflows. It also has commands for managing the whole lifecycle of your
+application:
+- Start, stop, and rebuild services
+- View the status of running services
+- Stream the log output of running services
+- Run a one-off command on a service
+@web_docker_compose
+
+Since we talked about the fundamental concepts of containers and docker, which
+enables to build and run containers easily, it's time to talk about a more
+advanced containerization technology used for more complicated production
+systems which usually run multiple containers, this is *Kubernetes*. Kubernetes,
+also known as K8s, is an open source system for automating deployment, scaling,
+and management of containerized applications. It groups containers that make up
+an application into logical units for easy management and discovery. Kubernetes
+builds upon 15 years of experience of running production workloads at Google,
+combined with best-of-breed ideas and practices from the community
+@web_kubernetes. Kubernetes is a portable, extensible, open source platform for
+managing containerized workloads and services, that facilitates both declarative
+configuration and automation. It has a large, rapidly growing ecosystem.
+Kubernetes services, support, and tools are widely available. Containers are a
+good way to bundle and run your applications. In a production environment, you
+need to manage the containers that run the applications and ensure that there is
+no downtime. For example, if a container goes down, another container needs to
+start. Kubernetes provides you with a framework to run distributed systems
+resiliently. It takes care of scaling and failover for your application,
+provides deployment patterns, and more. For example: Kubernetes can easily
+manage a canary deployment for your system @web_kubernetes_overview. Some
+features of kubernetes are:
+- Service discovery and load balancing Kubernetes can expose a container using the
+  DNS name or using their own IP address. If traffic to a container is high,
+  Kubernetes is able to load balance and distribute the network traffic so that
+  the deployment is stable.
+- Storage orchestration Kubernetes allows you to automatically mount a storage
+  system of your choice, such as local storages, public cloud providers, and more.
+- Automated rollouts and rollbacks You can describe the desired state for your
+  deployed containers using Kubernetes, and it can change the actual state to the
+  desired state at a controlled rate. For example, you can automate Kubernetes to
+  create new containers for your deployment, remove existing containers and adopt
+  all their resources to the new container.
+- Automatic bin packing You provide Kubernetes with a cluster of nodes that it can
+  use to run containerized tasks. You tell Kubernetes how much CPU and memory
+  (RAM) each container needs. Kubernetes can fit containers onto your nodes to
+  make the best use of your resources.
+- Self-healing Kubernetes restarts containers that fail, replaces containers,
+  kills containers that don't respond to your user-defined health check, and
+  doesn't advertise them to clients until they are ready to serve.
+- Secret and configuration management Kubernetes lets you store and manage
+  sensitive information, such as passwords, OAuth tokens, and SSH keys. You can
+  deploy and update secrets and application configuration without rebuilding your
+  container images, and without exposing secrets in your stack configuration.
+- Batch execution In addition to services, Kubernetes can manage your batch and CI
+  workloads, replacing containers that fail, if desired.
+- Horizontal scaling Scale your application up and down with a simple command,
+  with a UI, or automatically based on CPU usage.
+- IPv4/IPv6 dual-stack Allocation of IPv4 and IPv6 addresses to Pods and Services
+  Designed for extensibility Add features to your Kubernetes cluster without
+  changing upstream source code.
+@web_kubernetes_overview
 
 #pagebreak()
 = Specific Knowledge Assistance Approaches
