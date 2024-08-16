@@ -210,7 +210,7 @@
 
 #set par(justify: true, leading: 7pt, first-line-indent: 10pt)
 #show par: it => [
-  #set block(spacing: 7pt)
+  #set block(spacing: 10pt)
   #it
   // #v(3pt)
 ]
@@ -294,12 +294,12 @@ problems and limitations we faced. Finally, we will specify future improvements
 that can be made as well as future goals about scaling and expand the core idea.
 
 #pagebreak()
-= Theory and Literature Review
+= Theory and Literature Review <heading_theory_literature_review>
 
 In this chapter we will talk about the theoretic terms that this thesis is based
 upon. We will also describe the main technologies which we will use.
 
-== Theoretic Terms
+== Theoretic Terms <heading_theoretic_terms>
 The fundamental theoretic concepts of this thesis stem from the study field of
 artificial intelligence. We will describe the connection between artificial
 intelligence, machine learning and deep learning. We will focus on a specific
@@ -307,7 +307,7 @@ category of machine learning models involving text generation and the state of
 the art practices of utilizing their capabilities to the maximum by using
 Retrieval Augmented Generation (RAG) technique.
 
-=== Artificial intelligence
+=== Artificial intelligence <heading_artificial_intelligence>
 In the general sense, Artificial intelligence (AI) is intelligence exhibited by
 machines, particularly computer systems. It is a field of research in computer
 science that develops and studies methods and software that enable machines to
@@ -324,7 +324,7 @@ science related to psychology, involving observations and hypotheses about
 actual human behavior and thought processes; a rationalist approach, on the
 other hand, involves a combination of mathematics and engineering, and connects
 to statistics, control theory, and economics. These 4 approaches are the
-following:@book_artificial_intelligence_a_modern_approach
+following: @book_artificial_intelligence_a_modern_approach
 - Acting humanly: The Turing test approach The Turing test, proposed by Alan
   Turing (1950) and it consists of 4 core principles that a computer would need to
   follow in order to pass it.
@@ -347,14 +347,14 @@ following:@book_artificial_intelligence_a_modern_approach
   achieved by following the rules defined by the "logic" study field. When
   conventional logic requires knowledge that cannot be obtained realistically,
   then the theory of probability helps us define logical thinking.
-
 - Acting rationally: The rational agent approach Rational thinking can achieve a
   construction of a comprehensive model of rational thought, but cannot generate
   intelligent behavior by itself. A rational agent is one that acts so as to
   achieve the best outcome or, when there is uncertainty, the best expected
   outcome.
+#h(0pt)
 
-=== Machine Learning
+=== Machine Learning <heading_machine_learning>
 We described the fundamental concepts with which artificial intelligence is
 defined. Machine learning (ML) is a field of study in artificial intelligence
 concerned with the development and study of statistical algorithms that can
@@ -376,6 +376,7 @@ from and make decisions based on data. The process involves the following steps:
 - Evaluation: Assessing the model's performance using different metrics.
 - Optimization: Fine-tuning the model to improve its accuracy and efficiency.
 - Deployment: Implementing the model in a real-world scenario for practical use.
+#h(0pt)
 
 There are 4 basic types of Machine Learning: @web_wiki_machine_learning
 @web_geeksforgeeks_types_machine_learning
@@ -392,6 +393,7 @@ There are 4 basic types of Machine Learning: @web_wiki_machine_learning
 - Reinforcement Learning: The model learns by interacting with an environment,
   receiving rewards or penalties based on its actions, and aims to maximize the
   cumulative reward. Examples: Game playing, robotic control.
+#h(0pt)
 
 Deep learning is a subset of machine learning that uses multilayered neural
 networks, called deep neural networks, to simulate the complex decision-making
@@ -430,7 +432,7 @@ output.
   supplement: [IMAGE],
 ) <img_venn>
 
-=== Text Generation Models, LLM
+=== Text Generation Models, LLM <heading_text_generation_models_llm>
 We described the fundamental concepts of artificial intelligence and machine
 learning. Now we will take a closer look into a specific category o machine
 learning models which are used in text generation tasks.
@@ -447,7 +449,6 @@ recognize and interpret human language or other types of complex data, then they
 are called large language models (LLM) @web_cloudflare_llm.
 
 These are the key components and concepts of text generation models:
-
 - Training Data:
   - Corpora: Large collections of text used to train the model. These can include
     books, articles, websites, dialogues, and other text sources.
@@ -480,7 +481,6 @@ These are the key components and concepts of text generation models:
     randomness of the generated text. Lower temperatures result in more
     deterministic outputs, while higher temperatures produce more diverse and
     creative text.
-
   Usually the most popular LLMs have these parameters in order to control
   sampling. Parameter "top_k" limits the model's output to the top-k most probable
   tokens at each step. This can help reduce incoherent or nonsensical output by
@@ -492,7 +492,6 @@ These are the key components and concepts of text generation models:
   diverse but potentially nonsensical outputs, while lower temperatures yield more
   focused and predictable responses @web_medium_setting_topk_topp_temperature
   @web_medium_understanding_topk_topp_temperature.
-
 - Evaluation:
   - Perplexity: A measure of how well a probability model predicts a sample. Lower
     perplexity indicates better performance.
@@ -501,8 +500,90 @@ These are the key components and concepts of text generation models:
   - Automated Metrics: BLEU (Bilingual Evaluation Understudy), ROUGE
     (Recall-Oriented Understudy for Gisting Evaluation), and other metrics comparing
     the generated text to reference texts.
+#h(0pt)
 
-=== Retrieval Augmented Generation (RAG)
+Due to the fact that pre-trained LLMs are huge in size and their invocation
+requires huge amounts of memory, most popular LLMs are converted using some
+quantization technique. Quantization is a model compression technique that
+converts the weights and activations within an LLM from a high-precision data
+representation to a lower-precision data representation, i.e., from a data type
+that can hold more information to one that holds less. A typical example of this
+is the conversion of data from a 32-bit floating-point number (FP32) to an 8-bit
+or 4-bit integer (INT4 or INT8). @web_symbl_ai_quantization The are two popular
+types of LLM Quantization: PTQ and QAT @web_symbl_ai_quantization
+- Post-Training Quantization (PTQ): this refers to techniques that quantize an LLM
+  after it has already been trained. PTQ is easier to implement than QAT, as it
+  requires less training data and is faster. However, it can also result in
+  reduced model accuracy from lost precision in the value of the weights.
+- Quantization-Aware Training (QAT): this refers to methods of fine-tuning on data
+  with quantization in mind. In contrast to PTQ techniques, QAT integrates the
+  weight conversion process, i.e., calibration, range estimation, clipping,
+  rounding, etc., during the training stage. This often results in superior model
+  performance, but is more computationally demanding.
+Some advantages of LLM quantization are: @web_symbl_ai_quantization
+- Smaller Models: by reducing the size of their weights, quantization results in
+  smaller models. This allows them to be deployed in a wider variety of
+  circumstances such as with less powerful hardware; and reduces storage costs.
+- Increased Scalability: the lower memory footprint produced by quantized models
+  also makes them more scalable. As quantized models have fewer hardware
+  constraints, organizations can feasibly add to their IT infrastructure to
+  accommodate their use.
+- Faster Inference: the lower bit widths used for weights and the resulting lower
+  memory bandwidth requirements allow for more efficient computations.
+However the disadvantages are @web_symbl_ai_quantization:
+- Loss of Accuracy: undoubtedly, the most significant drawback of quantization is
+  a potential loss of accuracy in output. Converting the model’s weights to a
+  lower precision is likely to degrade its performance – and the more “aggressive”
+  the quantization technique, i.e., the lower the bit widths of the converted data
+  type, e.g., 4-bit, 3-bit, etc., the greater the risk of loss of accuracy.
+Some thechniques for LLM quantization are the following
+@web_symbl_ai_quantization:
+- QLoRA: Low-Rank Adaptation (LoRA) is a Parameter-Efficient Fine-Tuning (PEFT)
+  technique that reduces the memory requirements of further training a base LLM by
+  freezing its weights and fine-tuning a small set of additional weights, called
+  adapters. Quantized Low-Rank Adaptation (QLoRA) takes this a step further by
+  quantizing the original weights within the base LLM to 4-bit: reducing the
+  memory requirements of an LLM to make it feasible to run on a single GPU.
+- PRILoRA: Pruned and Rank-Increasing Low-Rank Adaptation (PRILoRA) is a
+  fine-tuning technique recently proposed by researchers that aims to increase
+  LoRA efficiency through the introduction of two additional mechanisms: the
+  linear distribution of ranks and ongoing importance-based A-weight pruning.
+- GPTQ: General Pre-Trained Transformer Quantization (GPTQ) is a quantization
+  technique designed to reduce the size of models so they can run on a single GPU.
+  GPTQ works through a form of layer-wise quantization: an approach that quantizes
+  a model a layer at a time, with the aim of discovering the quantized weights
+  that minimize output error (the mean squared error (MSE), i.e., the squared
+  error between the outputs of the original, i.e., full-precision, layer and the
+  quantized layer.)
+- GGML/GGUF: GGML (which is said to stand for Georgi Gerganov Machine Learning,
+  after its creator, or GPT-Generated Model Language) is a C-based machine
+  learning library designed for the quantization of Llama models so they can run
+  on a CPU. More specifically, the library allows you to save quantized models in
+  the GGML binary format, which can be executed on a broader range of hardware.
+  GGML quantizes models through a process called the k-quant system, which uses
+  value representations of different bit widths depending on the chosen quant
+  method. First, the model's weights are divided into blocks of 32: with each
+  block having a scaling factor based on the largest weight value, i.e., the
+  highest gradient magnitude. Depending on the selected quant-method, the most
+  important weights are quantized to a higher-precision data type, while the rest
+  are assigned to a lower-precision type. For example, the q2_k quant method
+  converts the largest weights to 4-bit integers and the remaining weights to
+  2-bit. Alternatively, however, the q5_0 and q8_0 quant methods convert all
+  weights to 5-bit and 8-bit integer representations respectively. You can view
+  GGML's full range of quant methods by looking at the model cards in this code
+  repo. GGUF (GPT-Generated Unified Format), meanwhile, is a successor to GGML and
+  is designed to address its limitations, most notably, enabling the quantization
+  of non-Llama models. GGUF is also extensible: allowing for the integration of
+  new features while retaining compatibility with older LLMs.
+- AWQ: Conventionally, a model's weights are quantized irrespective of the data
+  they process during inference. In contrast, Activation-Aware Weight Quantization
+  (AWQ) accounts for the activations of the model, i.e., the most significant
+  features of the input data, and how it is distributed during inference. By
+  tailoring the precision of the model's weights to the particular characteristic
+  of the input, you can minimize the loss of accuracy caused by quantization.
+#h(0pt)
+
+=== Retrieval Augmented Generation (RAG) <heading_rag>
 Retrieval Augmented Generation (RAG) is a technique for augmenting LLM knowledge
 with additional data. LLMs can reason about wide-ranging topics, but their
 knowledge is limited to the public data up to a specific point in time that they
@@ -547,6 +628,7 @@ RAG is important because of these reasons @web_aws_rag:
     also troubleshoot and make fixes if the LLM references incorrect information
     sources for specific questions. Organizations can implement generative AI
     technology more confidently for a broader range of applications.
+#h(0pt)
 
 A typical RAG application has two main components @web_langchain_rag:
 - Indexing: a pipeline for ingesting data from a source and indexing it. This
@@ -557,7 +639,6 @@ A typical RAG application has two main components @web_langchain_rag:
     harder to search over and won't fit in a model's finite context window.
   - Store: We need somewhere to store and index our splits, so that they can later
     be searched over. This is often done using a VectorStore and Embeddings model.
-
 - Retrieval and generation: the actual RAG chain, which takes the user query at
   run time and retrieves the relevant data from the index, then passes that to the
   model.
@@ -565,6 +646,7 @@ A typical RAG application has two main components @web_langchain_rag:
     Retriever.
   - Generate: A ChatModel / LLM produces an answer using a prompt that includes the
     question and the retrieved data
+#h(0pt)
 
 #figure(
   image("images/rag-conceptual-flow.jpg", height: 300pt),
@@ -572,7 +654,7 @@ A typical RAG application has two main components @web_langchain_rag:
   supplement: [IMAGE],
 ) <img_rag>
 
-== Technologies
+== Technologies <heading_technologies>
 In the context of this thesis we will use many technologies in order to produce
 a complete application. We will describe the main programming languages we used
 for this application, Rust and Python. We will see more details about the core
@@ -580,7 +662,7 @@ programming libraries our application is using and their basic features we
 utilize. Finally we will talk about the state of the art deployment procedure of
 deployments based on containers utilization.
 
-=== Python Programming Language
+=== Python Programming Language <heading_python>
 Python is a high-level, general-purpose programming language. Its design
 philosophy emphasizes code readability with the use of significant indentation.
 Python is dynamically typed and garbage-collected. It supports multiple
@@ -604,6 +686,7 @@ Choosing python as a programming language has several benefits @web_aws_python
   developer guides.
 - Python is portable across different computer operating systems such as Windows,
   macOS, Linux, and Unix.
+#h(0pt)
 
 The python programming language is very popular in various applications:
 @web_aws_python
@@ -632,6 +715,7 @@ The python programming language is very popular in various applications:
   - Handling software project management
 - Software test automation: Check whether the actual results from the software
   match the expected results to ensure that the software is error-free.
+#h(0pt)
 
 Using python programming language has various advantages
 @web_geeksforgeeks_python_advantages_disadvantages:
@@ -666,6 +750,7 @@ Using python programming language has various advantages
   to its simplicity and versatility.
 - Interpreted language: Python is interpreted, which allows for easier debugging
   and code development.
+#h(0pt)
 
 However python programming language has also some drawbacks
 @web_geeksforgeeks_python_advantages_disadvantages:
@@ -685,8 +770,9 @@ However python programming language has also some drawbacks
 - Lack of strictness: Python's flexibility can sometimes be a double-edged sword.
   While it can be great for rapid development and prototyping, it can also lead to
   code that is difficult to read and maintain.
+#h(0pt)
 
-=== Rust Programming Language
+=== Rust Programming Language <heading_rust>
 Rust is a general-purpose programming language emphasizing performance, type
 safety, and concurrency. It enforces memory safety, meaning that all references
 point to valid memory, without a garbage collector. To simultaneously enforce
@@ -726,6 +812,7 @@ Rust programming languages can be used in many applications @web_rust_lang
 - Machine Learning: Rust libraries and ecosystem for machine learning development
   is newer and currently more limited than Python's. However rust can be preferred
   for its higher performance, the memory safety and its immutability features.
+#h(0pt)
 
 Using rust programming language has various advantages
 @web_medium_rust_pros_cons:
@@ -739,6 +826,7 @@ Using rust programming language has various advantages
   praised for its ease of use.
 - Vibrant Community: Rust has a growing and enthusiastic community, which results
   in good documentation, community support, and an expanding ecosystem.
+#h(0pt)
 
 However rust programming language has also some drawbacks
 @web_medium_rust_pros_cons:
@@ -748,8 +836,9 @@ However rust programming language has also some drawbacks
   other languages.
 - Lesser Library Support: While growing, the Rust ecosystem is still smaller than
   those of older languages like C++, Java or Python.
+#h(0pt)
 
-=== Python Libraries
+=== Python Libraries <heading_python_libraries>
 We will talk about the most important Python libraries that we use for our
 application and their important parts that we utilize.
 
@@ -768,36 +857,158 @@ comes with many corpora, toy grammars, trained models, etc which are called NTLK
 Data @web_nltk_data. One of the most important modules of NLTK is the "tokenize"
 module which can help us split a long text into sentences or into words.
 
-pytorch: TODO
+In order to create our own machine learning model we will use PyTorch library.
+PyTorch is a machine learning library based on the Torch library, used for
+applications such as computer vision and natural language processing
+@web_wiki_pytorch. Written in Python, it's relatively easy for most machine
+learning developers to learn and use. PyTorch is distinctive for its excellent
+support for GPUs and its use of reverse-mode auto-differentiation, which enables
+computation graphs to be modified on the fly. The most fundamental concepts of
+pytorch are Tensors and Graphs. Tensors are a core PyTorch data type, similar to
+a multidimensional array, used to store and manipulate the inputs and outputs of
+a model, as well as the model's parameters. Tensors are similar to NumPy's
+ndarrays, except that tensors can run on GPUs to accelerate computing. Graphs
+are data structures consisting of connected nodes (called vertices) and edges.
+Every modern framework for deep learning is based on the concept of graphs,
+where Neural Networks are represented as a graph structure of computations.
+PyTorch keeps a record of tensors and executed operations in a directed acyclic
+graph (DAG) consisting of Function objects. In this DAG, leaves are the input
+tensors, roots are the output tensors. @web_nvidia_pytorch
 
-llama-cpp: TODO
+In order to use existing pre-trained Large Language Models (LLM), which we
+described in @heading_text_generation_models_llm, we will use LangChain.
+LangChain is a framework for developing applications powered by large language
+models (LLMs). LangChain simplifies every stage of the LLM application lifecycle
+@web_langchain_python_introduction:
+- Development: Build your applications using LangChain's open-source building
+  blocks, components, and third-party integrations. Use LangGraph to build
+  stateful agents with first-class streaming and human-in-the-loop support.
+- Productionization: Use LangSmith to inspect, monitor and evaluate your chains,
+  so that you can continuously optimize and deploy with confidence.
+- Deployment: Turn your LangGraph applications into production-ready APIs and
+  Assistants with LangGraph Cloud.
+LangChain does not serve its own LLMs, but rather provides a standard interface
+for interacting with many different LLMs. To be specific, this interface is one
+that takes as input a string and returns a string. There are lots of LLM
+providers (OpenAI, Cohere, Hugging Face, Llama.cpp, etc), the LLM class is
+designed to provide a standard interface for all of them. @web_langchain_llms
+LangChain provides also integration with vector stores. One of the most common
+ways to store and search over unstructured data is to embed it and store the
+resulting embedding vectors, and then at query time to embed the unstructured
+query and retrieve the embedding vectors that are 'most similar' to the embedded
+query. A vector store takes care of storing embedded data and performing vector
+search for you. Supported vector stores are @web_langchain_vector_stores:
+- Chroma
+- Pinecone
+- FAISS
+- Lance
+#h(0pt)
 
-matplotlib: TODO
+We will use Hugging Face Hub in order to be able to download pre-trained LLMs.
+The Hugging Face Hub is a platform with over 350k models, 75k datasets, and 150k
+demo apps (Spaces), all open source and publicly available, in an online
+platform where people can easily collaborate and build ML together. The Hub
+works as a central place where anyone can explore, experiment, collaborate, and
+build technology with Machine Learning @web_huggingface_hub_documentation
 
-huggingface-hub: TODO
+From the supported LangChaing LLM providers we will mostly use the Llama.cpp
+provider. The main goal of llama.cpp is to enable LLM inference with minimal
+setup and state-of-the-art performance on a wide variety of hardware - locally
+and in the cloud. Some characteristics of this library are the following
+@web_github_llama_cpp
+- Plain C/C++ implementation without any dependencies
+- Apple silicon is a first-class citizen - optimized via ARM NEON, Accelerate and
+  Metal frameworks
+- AVX, AVX2 and AVX512 support for x86 architectures 1.5-bit, 2-bit, 3-bit, 4-bit,
+  5-bit, 6-bit, and 8-bit integer quantization for faster inference and reduced
+- memory use Custom CUDA kernels for running LLMs on NVIDIA GPUs (support for AMD
+  GPUs via HIP) Vulkan and SYCL backend support CPU+GPU hybrid inference to
+  partially accelerate models larger than the total VRAM capacity
+LLama.cpp uses ggml, a tensor library for machine learning @web_github_ggml. So
+llama cpp can be used with any LLMs which have been converted to ggml or gguf
+quantized formats, which we discussed in @heading_text_generation_models_llm.
 
-langchain: TODO
+In order to create a graph of our own machine learning model performance we will
+use matplotlib. Matplotlib is a comprehensive library for creating static,
+animated, and interactive visualizations in Python. Matplotlib produces
+publication-quality figures in a variety of hardcopy formats and interactive
+environments across platforms. Matplotlib can be used in Python scripts,
+Python/IPython shells, web application servers, and various graphical user
+interface toolkits. @web_pypi_matplotlib
 
-unstructured: TODO
+We will use unstructured library in order to be able to read various documents.
+The unstructured library provides open-source components for ingesting and
+pre-processing images and text documents, such as PDFs, HTML, Word docs, and
+many more. The use cases of unstructured revolve around streamlining and
+optimizing the data processing workflow for LLMs. unstructured modular functions
+and connectors form a cohesive system that simplifies data ingestion and
+pre-processing, making it adaptable to different platforms and efficient in
+transforming unstructured data into structured outputs. @web_pypi_unstructured
 
-fais: TODO
+We will depend on faiss library to provide us a vector store implementation and
+search algorithm to use with LangChain. Faiss is a library for efficient
+similarity search and clustering of dense vectors. It contains algorithms that
+search in sets of vectors of any size, up to ones that possibly do not fit in
+RAM. It also contains supporting code for evaluation and parameter tuning. Faiss
+is written in C++ with complete wrappers for Python/numpy. Some of the most
+useful algorithms are implemented on the GPU. @web_github_faiss
 
-=== Rust Libraries
+=== Rust Libraries <heading_rust_libraries>
 We will talk about the most important Rust libraries that we use for our
 application and their important parts that we utilize.
 
-clap: TODO
+In order to create a command line application (cli) we will use clap library.
+Clap is a command line argument parser for Rust. I allows us to create our
+command-line parser, with all of the bells and whistles, declaratively or
+procedurally. @web_github_clap_readme
 
-tokio: TODO
+To use aynschronous programming in Rust we need a asynchronous runtime, so we
+will use the most popular one tokio. Tokio is an event-driven, non-blocking I/O
+platform for writing asynchronous applications with the Rust programming
+language. At a high level, it provides a few major components:
+@web_github_tokio_readme
+- A multithreaded, work-stealing based task scheduler.
+- A reactor backed by the operating system's event queue (epoll, kqueue, IOCP,
+  etc...).
+- Asynchronous TCP and UDP sockets.
+Tokio provides a runtime for writing reliable, asynchronous, and slim
+applications with the Rust programming language. It is: @web_github_tokio_readme
+- Fast: Tokio's zero-cost abstractions give you bare-metal performance.
+- Reliable: Tokio leverages Rust's ownership, type system, and concurrency model
+  to reduce bugs and ensure thread safety.
+- Scalable: Tokio has a minimal footprint, and handles backpressure and
+  cancellation naturally.
+#h(0pt)
 
-axum: TODO
+We will use axum library to develop our web server. Axum is a web application
+framework that focuses on ergonomics and modularity. Some high level features
+are: @web_github_axum_readme
+- Route requests to handlers with a macro free API.
+- Declaratively parse requests using extractors.
+- Simple and predictable error handling model.
+- Generate responses with minimal boilerplate.
+- Take full advantage of the tower and tower-http ecosystem of middleware,
+  services, and utilities.
+#h(0pt)
 
-sea-orm: TODO
+We will use SeaORM library so that our backend fetches and writes data in a
+database. SeaORM is a relational ORM which helps us build web services in Rust
+with the familiarity of dynamic languages. Some SeaORM features are:
+@web_github_seaorm_readme
+- Async: Relying on SQLx, SeaORM is a new library with async support from day 1.
+- Dynamic: Built upon SeaQuery, SeaORM allows you to build complex dynamic
+  queries.
+- Testable: Use mock connections and/or SQLite to write tests for your application
+  logic.
+- Service Oriented: Quickly build services that join, filter, sort and paginate
+  data in REST, GraphQL and gRPC APIs.
+SeaORM supports connections with MySQL, Postgres or SQLite databases
+@web_seaql_connection.
 
-=== Typescript, HTML, CSS, Vue.js
+=== Typescript, HTML, CSS, Vue.js <heading_typescript_html_css_vue>
 TODO
 
-=== Containers, Docker and Kubernetes
+=== Containers, Docker and Kubernetes <heading_containers_docker_kubernetes>
 
 TODO
 
