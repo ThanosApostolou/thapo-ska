@@ -214,6 +214,10 @@
   #it
   // #v(3pt)
 ]
+#show raw: it => [
+  #set block(fill: luma(250))
+  #it
+]
 
 // ABASTRACT
 #pagebreak()
@@ -227,13 +231,12 @@
     find specific knowledge. As part of this goal we will develop a complete web
     application, where users will be able to ask questions to artificial
     intelligence models, which will answer them based on a specific context. We will
-    follow two different methodologies. For the first methodology we will create our
-    own text generation AI model @web_huggingface_text_generation which will be
-    trained to understand specific knowledge. For the second methodology, we will
-    use existing artificial intelligence models, trying to limit them so that they
-    respond only to the specific knowledge context that we have chosen. In the end
-    we will be able to come to conclusions about the usefulness of these
-    methodologies.
+    follow two different methods. For the first method we will create our own text
+    generation AI model @web_huggingface_text_generation which will be trained to
+    understand specific knowledge. For the second method we will use existing
+    artificial intelligence models, trying to limit them so that they respond only
+    to the specific knowledge context that we have chosen. In the end we will be
+    able to come to conclusions about the usefulness of these methods.
   ],
   [
     #set heading(outlined: false)
@@ -268,17 +271,16 @@ traditional tools like search engines made it easier for us to find existing
 knowledge, in the past years we have observed the increasing development of
 tools using artificial intelligence. We will study the usage of text generation
 machine learning models in specific knowledge search and analysis assistance. We
-will use two different methodologies for these tasks and we will develop a full
-web application with which users will be able to ask questions
+will use two different methods for these tasks and we will develop a full web
+application with which users will be able to ask questions
 
 In chapter 2 we will describe and analyze the fundamental theoretical concepts
 needed for better understanding of this thesis. We will also describe the
 various technologies and their advantage, which we will use for our application
 development and deployment.
 
-In chapter 3 we will dive in the details of the two methodologies that we will
-use. We will compare them and we will describe their advantages and
-disadvantages.
+In chapter 3 we will dive in the details of the two methods that we will use. We
+will compare them and we will describe their advantages and disadvantages.
 
 In chapter 4 we will describe the architecture and the implementation of our
 application. We will show the components which construct our application, the
@@ -1254,14 +1256,74 @@ features of kubernetes are:
 @web_kubernetes_overview
 
 #pagebreak()
-= Specific Knowledge Assistance Approaches
+= Specific Knowledge Assistance Approaches <heading_specific_knowledge_assistance_approaches>
+As we have already described, the goal of this thesis is to create a system that
+helps its users to find and search existing knowledge. We need to specify with
+more details our problem domain in order to describe the approaches we will use.
+There is a single common source of documents for all users. These documents can
+be of various formats like text, markdown, pdf, html or xml files and we will
+refer to them as "raw input". The users should be able to prompt the system by
+asking questions relative to these documents. The system should be able to
+provide the users the relative information, by using artificial intelligence
+technologies.
 
-== Custom Text Generation Model Method
+We will approach the problem with two different methods. For the first method we
+will create a custom text generation model from scratch. We will train this
+model with the "raw input" data and so it should be able to generate text
+according to user prompting. For the first method we will take some existing
+pre-trained text generation models. These models we will be able to answer
+multile questions according to their training. Howerver, we will use the RAG
+technique, which we have described in @heading_rag, and we will try to both
+expand its knowledge with the "raw input" data and at the same to limit its
+knowledge only to these "raw input" data.
 
-== Retrieval Augmented Generation Method
+== Custom Text Generation Model Method <heading_custom_text_generation_model_method>
+In this section we will describe the custom text generation model method in more
+depth. We will analyze the important steps for our solution and show the most
+important code snippets of our implementation.
+
+The first step is to read the "raw input" data. For this task we will use the
+python modules `"langchain_community.document_loaders"` (uses the unstructured
+library underneath for which we have talked about at @heading_python_libraries)
+in order to read varius documents of different, which exist in a given path
+`"data_path"`
+
+```python
+def read_docs(data_path: str) -> list[Document]:
+    txt_loader = DirectoryLoader(data_path, glob="**/*.txt", loader_cls=TextLoader, silent_errors=True, show_progress=True, use_multithreading=True)
+    txt_docs = txt_loader.load()
+    md_loader = DirectoryLoader(data_path, glob="**/*.md", loader_cls=TextLoader, silent_errors=True, show_progress=True, use_multithreading=True)
+    md_docs = md_loader.load()
+    pdf_loader = DirectoryLoader(data_path, glob="**/*.pdf", loader_cls=UnstructuredPDFLoader, silent_errors=True, show_progress=True, use_multithreading=True)
+    pdf_docs = pdf_loader.load()
+    html_loader = DirectoryLoader(data_path, glob="**/*.html", loader_cls=UnstructuredHTMLLoader, silent_errors=True, show_progress=True, use_multithreading=True)
+    html_docs = html_loader.load()
+    xml_loader = DirectoryLoader(data_path, glob="**/*.xml", loader_cls=UnstructuredXMLLoader, silent_errors=True, show_progress=True, use_multithreading=True)
+    xml_docs = xml_loader.load()
+    docs = txt_docs + md_docs + pdf_docs + html_docs + xml_docs
+    return docs
+```
+#h(0pt)
+
+After we have read all the documents with conantenate them to a single string
+source. We then create our vocabulary by splitting the string source into unique
+words using the `word_tokenize` function of module `nltk.tokenize` (from library
+NLTK for which we talked about at @heading_python_libraries). We add a special
+EOS (End Of Sentence) token to this vocabulary. We sort the vocabulary tokens
+(words) and we create the encoded vocabulary by simply assigning values for
+first token to 0, second token to 1, third token to 2, etc.
+
+Then we split the whole string source in stentences using the `sent_tokenize`
+function of module `nltk.tokenize`. We split each sentence into words using
+`word_tokenize` and after the end of each sentence we append the EOS token. So
+we have know transformed the source string into the tokens (words including EOS
+token). We now create the encoded tokens by using the mapping from the encoded
+vocabulary we created from the previous step.
+
+== Retrieval Augmented Generation (RAG) Method <heading_rag_method>
 
 #pagebreak()
-= System Architecture
+= System Architecture <heading_system_architecture>
 
 TODO
 
