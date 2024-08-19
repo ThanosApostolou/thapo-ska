@@ -1280,7 +1280,10 @@ knowledge only to these "raw input" data.
 == Custom Text Generation Model Method <heading_custom_text_generation_model_method>
 In this section we will describe the custom text generation model method in more
 depth. We will analyze the important steps for our solution and show the most
-important code snippets of our implementation.
+important code snippets of our implementation. Then we list the advantages and
+dissadvantages of this method.
+
+=== Method Description <heading_custom_text_generation_model_method_description>
 
 The first step is to read the "raw input" data. For this task we will use the
 python modules `"langchain_community.document_loaders"` (uses the unstructured
@@ -1318,9 +1321,202 @@ function of module `nltk.tokenize`. We split each sentence into words using
 `word_tokenize` and after the end of each sentence we append the EOS token. So
 we have know transformed the source string into the tokens (words including EOS
 token). We now create the encoded tokens by using the mapping from the encoded
-vocabulary we created from the previous step.
+vocabulary we created from the previous step. So we now have a list of
+
+We now create our Xtrain tensor, by using a window of 100 (configurable) encoded
+tokens. So each row of Xtrain tensor has 100 tokens, and every next row starts
+from the next token from the start of this row. So first Xtrain row includes
+token 1 to token 100, second row includes token 2 to token 101, third row
+includes token 3 to token 103 etc. For each row of Xtrain tensor we add a row at
+Ytrain tensor with the next token after the last of the row. So first row of
+Ytrain has token 101, second row of Ytrain has token 102, third row of Ytrain
+has token 103, etc. With these Xtrain and Ytrain tensors, we will train our
+model. We select some random sentences and follow the same procedure in order to
+create Xtest and Ytest tensors for evaluation of our model. It is important to
+mention that Xtrain and Ytrain are created with all the sentences since we don't
+want to lose any information of the users' documents, so Xtest and Ytest will
+not be a very good evaluation since the model will have already see these
+sentences during its training, maybe in different order. However, this will
+enable us to be able to determine the performance of our model.
+
+Using PyTorch library (which we talked about at @heading_python_libraries) we
+create a machine learning model. This first layer of the model is an Embedding
+layer. The Embedding layer is used to store word embeddings and retrieve them
+using indices. The input to the module is a list of indices, and the output is
+the corresponding word embeddings @web_pytorch_embedding. So the embedding layer
+will help give some meaning to our naive encoding of the tokens. The second
+layer of the model is an LSTM layer. The LSTM layer is really good at predicting
+sequential data, so it will enable us to predict the next toekn given the 100
+sized window of tokens. Then we add a Dropout layer in order to improve model's
+performance. The last layer is simply a Linear layer which will have output
+equal to the number of our unique vocabulary tokens. Here is the basic code of
+our model definition:
+
+```python
+class Skalm(nn.Module):
+    def __init__(self, skalm_props: SkalmProps, n_vocab: int):
+        super(Skalm, self).__init__()
+        self.embedding = nn.Embedding(
+            num_embeddings=n_vocab,
+            embedding_dim=skalm_props.embedding_dim,
+            padding_idx=0
+        )
+        self.lstm = nn.LSTM(input_size=skalm_props.embedding_dim,
+                            hidden_size=skalm_props.lstm_hidden_size,
+                            num_layers=skalm_props.lstm_num_layers,
+                            batch_first=True)
+        self.dropout = nn.Dropout(skalm_props.dropout)
+        self.linear = nn.Linear(skalm_props.lstm_hidden_size, n_vocab)
+
+    def forward(self, x):
+        # embedding
+        x = self.embedding(x)
+        # lstm
+        x, _ = self.lstm(x)
+        # dropout
+        x = self.dropout(x)
+        # take only the last output
+        x = x[:, -1, :]
+        # produce output
+        x = self.linear(x)
+        return x
+```
+#h(0pt)
+
+We now create a training loop in order to train our model using `dataset_train`
+created by `Xtrain` and `Ytrain` tensors. We are using the Adam optimizer. Adam
+is an algorithm for first-order gradient-based optimization of stochastic
+objective functions, based on adaptive estimates of lower-order moments
+@web_arxiv_adam. We use the CrossEntropyLoss as our loss function.
+CrossEntropyLoss criterion computes the cross entropy loss between input logits
+and target and it is useful when training a classification problem with C
+classes @web_pytorch_crossentropyloss. In our case the number of classes is the
+number of our unique vocabulary tokens. Using the argmax function we are able to
+get the token with highest probability to be the next token. In each train epoch
+with calculate the loss and the accuracy of the model. After each training
+epoch, we evaluate the model with the `dataset_test` created by `Xtest` and
+`Ytest` tensors. During the training we save each model with less loss than our
+current best model for comparison purposes and finally we keep the model with
+the least loss as our final model.
+
+```python
+def train_one_epoch(model: Skalm, loader: DataLoader, optimizer: optim.Adam, loss_fn: nn.CrossEntropyLoss) -> tuple[float, float]:
+    train_epoch_total_loss = 0
+    train_epoch_total_correct = 0
+    for X_batch, y_batch in loader:
+        # Zero your gradients for every batch!
+        optimizer.zero_grad()
+        # Make predictions for this batch
+        y_pred = model(X_batch)
+        # Compute the loss and its gradients
+        loss = loss_fn(y_pred, y_batch)
+        loss.backward()
+        # Adjust learning weights
+        optimizer.step()
+        # calculate
+        train_epoch_total_loss += loss.item()
+        winners = y_pred.argmax(dim=1)
+        train_epoch_total_correct += (y_batch == winners).sum().item() / len(y_batch)
+
+    train_epoch_loss = train_epoch_total_loss / len(loader)
+    train_epoch_accuracy = train_epoch_total_correct / len(loader)
+    return train_epoch_loss, train_epoch_accuracy
+
+def validate_one_epoch(model: Skalm, loader_test: DataLoader, loss_fn: nn.CrossEntropyLoss):
+    test_epoch_total_loss = 0
+    test_epoch_total_correct = 0
+    for X_batch, y_batch in loader_test:
+        y_pred = model(X_batch)
+        test_loss = loss_fn(y_pred, y_batch)
+        test_epoch_total_loss += test_loss.item()
+        winners = y_pred.argmax(dim=1)
+        test_epoch_total_correct += (y_batch == winners).sum().item() / len(y_batch)
+
+    test_epoch_loss = test_epoch_total_loss / len(loader_test)
+    test_epoch_accuracy = test_epoch_total_correct / len(loader_test)
+    return test_epoch_loss, test_epoch_accuracy
+
+def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: str, Xtrain: Tensor, Ytrain: Tensor, Xtest: Tensor, Ytest: Tensor) -> tuple[dict[str, Any] | None, list[float], list[float]]:
+    n_epochs = skalm_config.n_epochs
+    batch_size = skalm_config.batch_size
+    optimizer = optim.Adam(model.parameters(), lr=skalm_config.lr)
+    loss_fn = nn.CrossEntropyLoss(reduction="mean")
+    dataset_train = TensorDataset(Xtrain, Ytrain)
+    dataset_test = TensorDataset(Xtest, Ytest)
+    loader_train = DataLoader(dataset_train, shuffle=True, batch_size=batch_size)
+    loader_test = DataLoader(dataset_test, shuffle=True, batch_size=batch_size)
+    best_model_state_dict = None
+    best_loss = np.inf
+    train_losses: list[float] = []
+    train_accuracy_list: list[float] = []
+    test_losses: list[float] = []
+    test_accuracy_list: list[float] = []
+    for epoch in range(n_epochs):
+        model.train(True)
+        train_epoch_loss, train_epoch_accuracy = train_one_epoch(model, loader_train, optimizer, loss_fn)
+        train_losses.append(train_epoch_loss)
+        train_accuracy_list.append(train_epoch_accuracy)
+        # Validation
+        model.eval()
+        with torch.no_grad():
+            test_epoch_loss, test_epoch_accuracy = validate_one_epoch(model, loader_test, loss_fn)
+            test_losses.append(test_epoch_loss)
+            test_accuracy_list.append(test_epoch_accuracy)
+            if test_epoch_loss <= best_loss:
+                best_loss = test_epoch_loss
+                best_model_state_dict = model.state_dict()
+                save_model(skalm_dir_path, best_model_state_dict, train_losses, train_accuracy_list, test_losses, test_accuracy_list, epoch)
+
+    save_model(skalm_dir_path, best_model_state_dict, train_losses, train_accuracy_list, test_losses, test_accuracy_list, None)
+    return best_model_state_dict, train_losses, test_losses
+```
+
+We perform the training only on CPU due to the hardware restrictions of our
+laptop ("HP Laptop 15s-eq2xxx" with processor "AMD Ryzen 5 5500U") for 5 days
+using only one book as a user document @book_domain_driven_desing. We show the
+evaluation results:
+
+#figure(
+  image("images/skalm_test_loss.png", height: 250pt),
+  caption: [ SkaLM Test Loss ],
+  supplement: [IMAGE],
+) <img_skalm_test_loss>
+
+#figure(
+  image("images/skalm_test_accuracy.png", height: 250pt),
+  caption: [ SkaLM Test Accuracy ],
+  supplement: [IMAGE],
+) <img_skalm_test_accuracy>
+
+=== Method Advantages and Dissadvantages <heading_custom_text_generation_model_method_advantages_dissadvantages>
+We described the process of the method. This method offers very little
+advantages and is not very suitable for a complete fully functional solution.
+
+Advantages of this method are:
+- Independence: Does not rely in any pre-trained text generation models.
+- Flexibility: The model creation and training is fully customizable and can be
+  changed to better suit the knowledge field for which the assistant is needed.
+#h(0pt)
+
+Dissadvantages of this method are:
+- Needs many sources: The model needs to learn both the language and the knowledge
+  field from the documents, so it needs thousands of documents in order to be able
+  to perform somewhat well.
+- Highly consuming: Each time a document is added, removed or edited the model
+  needs to be retrained, which is a very time and resource consuming task.
+- Hard to implement: This method needs a dedicated data science team to fine tune
+  and improve the model parameters and layers, in order to be able to achieve a
+  satisfying result for a specific knowledge field.
 
 == Retrieval Augmented Generation (RAG) Method <heading_rag_method>
+In this section we will describe the Retrieval Augmented Generation (RAG) method
+in more depth. We will analyze the important steps for our solution and show the
+most important code snippets of our implementation. Then we list the advantages
+and dissadvantages of this method.
+
+=== Method Description <heading_rag_method_description>
+
+=== Method Advantages and Dissadvantages <heading_rag_method_advantages_dissadvantages>
 
 #pagebreak()
 = System Architecture <heading_system_architecture>
