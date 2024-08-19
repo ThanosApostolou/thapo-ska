@@ -1488,6 +1488,15 @@ evaluation results:
   supplement: [IMAGE],
 ) <img_skalm_test_accuracy>
 
+When the user prompts the system with this model then we split the question to
+sentences and then to encoded tokens maximum of 100 (same as the window we used
+for training) tokens. If the question is less than 100, then we add a special
+padding token to the left as many times as needed in order to reach 100 tokens.
+The system invokes the model in order to predict the next word. The system then
+shifts the question to the left, replaces the last token with the predicted one
+and then invokes the model again until it reaches a maxium of generated tokens
+(defualt 160) or a maximum of EOS tokens (default 6).
+
 === Method Advantages and Dissadvantages <heading_custom_text_generation_model_method_advantages_dissadvantages>
 We described the process of the method. This method offers very little
 advantages and is not very suitable for a complete fully functional solution.
@@ -1507,6 +1516,8 @@ Dissadvantages of this method are:
 - Hard to implement: This method needs a dedicated data science team to fine tune
   and improve the model parameters and layers, in order to be able to achieve a
   satisfying result for a specific knowledge field.
+- Hard to return sources: It's really hard, almost impossible, to return the
+  sources of the relative information with which the answer was constructed.
 
 == Retrieval Augmented Generation (RAG) Method <heading_rag_method>
 In this section we will describe the Retrieval Augmented Generation (RAG) method
@@ -1515,8 +1526,171 @@ most important code snippets of our implementation. Then we list the advantages
 and dissadvantages of this method.
 
 === Method Description <heading_rag_method_description>
+For the RAG method we will depend on existing pre-trained LLMs. We have
+described the characteristics of LLMs at @heading_text_generation_models_llm.
+
+The first step is to read the "raw input" data from the users' documents similar
+to what we did in the previous method. We will use the same `read_docs` python
+function we showed before.
+
+We will use class `RecursiveCharacterTextSplitter` from module
+`langchain.text_splitter` in order to split the "raw input" in to chunks:
+
+```python
+docs = read_docs(data_path)
+# transformation: split the documents into chunks
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=128,
+    chunk_overlap=8
+)
+texts = splitter.split_documents(docs)
+```
+#h(0pt)
+
+Then we need an embedding model. Embeddings create a vector representation of a
+piece of text. This is useful because it means we can think about text in the
+vector space, and do things like semantic search where we look for pieces of
+text that are most similar in the vector space
+@web_langchain_text_embedding_models. We will use the "all-MiniLM-L6-v2"
+pre-trained model from hugging face, which maps sentences & paragraphs to a 384
+dimensional dense vector space and can be used for tasks like clustering or
+semantic search. @web_huggingface_allminilm. Then we will use the FAISS vector
+store (which we described in @heading_python_libraries) in order to save the
+embedding documents as a vector store to a local path.
+
+```python
+embeddings = HuggingFaceEmbeddings(
+    model_name=embedding_model_path,
+    model_kwargs={'device': 'cpu'},
+    encode_kwargs = {'normalize_embeddings': True}
+)
+db = FAISS.from_documents(texts, embeddings)
+db.save_local(vector_store_path, constants.VS_INDEX_NAME)
+```
+#h(0pt)
+
+Now when the user is prompting the system we create LangChain chain as of
+official documentation @web_langchain_chains. For this we create a pipeline of
+an existing pre-trained model. In our custom python function `create_llm` we
+support two types of pre-trained models. The first one is using llama.cpp libray
+we described in @heading_python_libraries for models in gguf format (mainly
+llama2 and llama3). The second type is using `AutoModelForCausalLM` with
+`HuggingFacePipeline` which supports most text generation models which have been
+uploaded in hugging face hub together with their configuration. We load the
+vector store which we stored in the previous steps. We create a more complicated
+chain in order to be able to return the relevant source together with the answer
+as per official documentation @web_langchain_returning_sources. The result
+consists of the `question`, the `answer` and the `context` which is a list with
+the relevant Documents of the chunks in which the model found the answer. More
+advanced models like llama2 and llama3 accept system prompting which allows the
+users to instruct the LLM in which way to construct the final answer.
+
+```python
+def create_llm(llm_model_path: str, model_type: str, temperature: int, top_p: int):
+    context_length = 512
+    max_tokens = 160
+    batch_size = 512
+    last_n_tokens = 8
+    repetition_penalty = 1.1
+    if model_type == 'llamacpp':
+        # Callbacks support token-wise streaming
+        callback_manager = CallbackManager([StdOutCallbackHandler()])
+        llm = LlamaCpp(
+            model_path=llm_model_path,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            last_n_tokens_size=last_n_tokens,
+            top_p=top_p,
+            callback_manager=callback_manager,
+            verbose=True,  # Verbose is required to pass to the callback manager
+            client=None,
+            n_ctx=context_length,
+            n_parts=-1,
+            seed=-1,
+            f16_kv=True,
+            logits_all=False,
+            vocab_only=False,
+            use_mlock=False,
+            n_threads=None,
+            n_batch=batch_size,
+            n_gpu_layers=None,
+            suffix=None,
+            logprobs=None,
+            repeat_penalty=repetition_penalty
+        )
+        return llm
+    elif model_type == 'huggingface':
+        tokenizer = AutoTokenizer.from_pretrained(llm_model_path)
+        model = AutoModelForCausalLM.from_pretrained(llm_model_path, device_map='cpu')
+        pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_length=context_length)
+        llm = HuggingFacePipeline(pipeline=pipe)
+        return llm
+    else:
+        raise Exception(f"unsuported model_type {model_type}")
+
+
+def create_chain(vector_store_path: str, embedding_model_path: str, llm_model_path: str, prompt_template: str, model_type: str, temperature: int, top_p: int):
+
+    # load the language model
+    llm = create_llm(llm_model_path, model_type, temperature, top_p)
+    # load the interpreted information from the local database
+    embeddings = get_embeddings(embedding_model_path)
+    db = FAISS.load_local(vector_store_path, embeddings, constants.VS_INDEX_NAME, allow_dangerous_deserialization=True)
+    # prepare a version of the llm pre-loaded with the local content
+    retriever = db.as_retriever(search_kwargs={'k': 9})
+    prompt = PromptTemplate(
+        template=prompt_template,
+        input_variables=['context', 'question']
+    )
+
+    def format_docs(docs):
+        return "\n\n".join(doc.page_content for doc in docs)
+
+    rag_chain_from_docs = (
+        RunnablePassthrough.assign(context=(lambda x: format_docs(x["context"])))
+        | prompt
+        | llm
+        | StrOutputParser()
+    )
+    rag_chain_with_source = RunnableParallel(
+        {"context": retriever, "question": RunnablePassthrough()}
+    ).assign(answer=rag_chain_from_docs)
+    return rag_chain_with_source
+
+
+qa_chain = create_chain(vector_store_path, embedding_model_path, llm_model_path, prompt_template, model_type, temperature, top_p)
+output = qa_chain.invoke(question)
+invoke_output = InvokeOutput.from_output_dict(output)
+
+```
+#h(0pt)
 
 === Method Advantages and Dissadvantages <heading_rag_method_advantages_dissadvantages>
+We described the process of the RAG method. This method offers many advantages
+with only a few dissadvantages and therefore it is recomended for a full
+functional system.
+
+Advantages of this method are:
+- Needs only relative sources: The model already understand the needed language,
+  so it needs access only to the relevant documents for our desired knowledge
+  field.
+- Adaptable: New, deleted or altered documents demand only the vector store to be
+  recreated, so the systemd can adapt to changes relatively quickly.
+- East to implement: This method can be implemented easily with the dependency on
+  the libraries we use without any deep advanced knowledge on how LLMs work.
+- Able to return sources: It's really easy to return the relevant sources in which
+  the answer was found.
+- Prompting: It's easy to specify system prompting with advanced LLMs which
+  support it, in order to change the style or even the allowed or dissallowed
+  content of the answers.
+#h(0pt)
+
+Dissadvantages of this method are:
+- Dependency on external LLMs: It requires external pre-trained LLMs. While
+  nowadays there are plenty of those and new ones are created almost every year,
+  it is not always clear how they are trained and what biases they have.
+- Inflexibility: The model structure and training procedure cannot be altered
+  (sometimes it can be extended with additional sources though).
 
 #pagebreak()
 = System Architecture <heading_system_architecture>
