@@ -1694,8 +1694,34 @@ Dissadvantages of this method are:
 
 #pagebreak()
 = System Architecture <heading_system_architecture>
+Now that we have explained the two methods on which our solutions is based upon,
+we are ready to describe the system architecture of our complete solution.
 
-TODO
+== System Components
+We have develop 4 basic components for our application. The `ska_llm` library
+and command line application is implemented in python and it is responsible for
+all document processing and machine learing tasks. The `ska_cli` command line
+application is implemented in rust and is responsible for various administration
+tasks and uses the `ska_llm` internally to expose a more friendly command line
+interface for the machine learning tasks needed to be performed by the admin.
+The `ska_server` component, implemented in rust as well, exposes a REST API,
+which enables users to perform the various tasks of the application, like
+prompting the LLMs. Finally, we develop the `ska_frontend` materializes the
+Graphical User Interface with which the users can interact with. Apart from the
+four components we develop, we utilize two extra components for our solution.
+The first one is Keycloak, an open source Identity and Access Management
+solution which enables our users to login and to be authenticated and authorized
+to perform specific actions of our application. The second one is PostgreSQL, an
+advanced open source relational database which our application uses for storing
+and fetching data.
+
+#figure(
+  image("images/component.drawio.png", height: 250pt),
+  caption: [ SKA System Components ],
+  supplement: [IMAGE],
+) <img_ska_system_components>
+
+== Deployments
 
 #pagebreak()
 = Usage and Execution of the Application
