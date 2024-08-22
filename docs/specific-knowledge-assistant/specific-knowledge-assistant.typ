@@ -1698,30 +1698,142 @@ Now that we have explained the two methods on which our solutions is based upon,
 we are ready to describe the system architecture of our complete solution.
 
 == System Components
-We have develop 4 basic components for our application. The `ska_llm` library
-and command line application is implemented in python and it is responsible for
-all document processing and machine learing tasks. The `ska_cli` command line
-application is implemented in rust and is responsible for various administration
-tasks and uses the `ska_llm` internally to expose a more friendly command line
-interface for the machine learning tasks needed to be performed by the admin.
-The `ska_server` component, implemented in rust as well, exposes a REST API,
-which enables users to perform the various tasks of the application, like
-prompting the LLMs. Finally, we develop the `ska_frontend` materializes the
-Graphical User Interface with which the users can interact with. Apart from the
-four components we develop, we utilize two extra components for our solution.
-The first one is Keycloak, an open source Identity and Access Management
-solution which enables our users to login and to be authenticated and authorized
-to perform specific actions of our application. The second one is PostgreSQL, an
-advanced open source relational database which our application uses for storing
-and fetching data.
+We have develop 4 basic components for our application. The `ska_llm` component,
+which contains a library and a command line application, is implemented in
+python and it is responsible for all document processing and machine learing
+tasks. The `ska_cli` command line application is implemented in rust and is
+responsible for various administration tasks and uses the `ska_llm` internally
+to expose a more friendly command line interface for the machine learning tasks
+needed to be performed by the admin. The `ska_server` component, implemented in
+rust as well, exposes a REST API, which enables users to perform the various
+tasks of the application, like prompting the LLMs. Finally, we develop the
+`ska_frontend` materializes the Graphical User Interface with which the users
+can interact with.
+
+Apart from the four components we developed, we utilize three extra components
+for our complete solution. The first one is Keycloak @web_keycloak, an open
+source Identity and Access Management solution which enables our users to login
+and to be authenticated and authorized to perform specific actions of our
+application. The second one is PostgreSQL @web_postgresql, an advanced open
+source relational database which our application uses for storing and fetching
+data. The final component is an "api gateway" which will lay ahead of our
+services and redirect the web traffic to the needed service for the task.
+
+In the following diagram, we show the fundamental Specific Knowledge Assistant
+(SKA) System Components. With green color we have marked the components that we
+develop. With burgundy color we have marked the extra components that we utilize
+and configure them in order to complete our system.
 
 #figure(
-  image("images/component.drawio.png", height: 250pt),
+  image("images/component.drawio.png", height: 220pt),
   caption: [ SKA System Components ],
   supplement: [IMAGE],
 ) <img_ska_system_components>
+#h(0pt)
 
-== Deployments
+As we already said, the `ska_llm` component is implemented in python and it is
+responsible for all document processing and machine learing tasks. It supports 5
+crucial for our application operations which are using the libraries we
+described in @heading_python_libraries. The operation `download_llm` downloads
+some given models from hugging face hub @web_huggingface_hub_documentation. The
+operation `rag_prepare` performs the prepartation for the RAG method that we
+discussed in @heading_rag_method_description, including reading users' documents
+and storing their chunks in vector store. The operation `rag_invoke` invokes the
+given LLM and answers the given question based on the context of the relevant
+chunks found in the vector store. The operation `create_llm` creates and trains
+the SKA text generation model we described in
+@heading_custom_text_generation_model_method_description. The operation
+`invoke_skalm` invokes our custom generation model and answers the question with
+the procedure we described in
+@heading_custom_text_generation_model_method_description. We show a high level
+diagram of these basic operations:
+
+#figure(
+  image("images/ska_llm.drawio.png", height: 220pt),
+  caption: [ SKA LLM operations ],
+  supplement: [IMAGE],
+) <img_ska_llm_operations>
+#h(0pt)
+
+We have already said that the `ska_cli` command line application is implemented
+in rust, it is responsible for various administration tasks and it uses the
+`ska_llm` internally. This cli component expose a friendly command line
+interface so that the admin can perform various operations. For the command line
+interface and argument parsing we will depend on `clap` library. For all datbase
+access we depend on the SeaORM library which we have describe in
+@heading_rust_libraries. There are two top level commands, the `command_db` and
+`command_model`. The first command, `command_db`, is responsible for
+administration tasks that affect our PostgreSQL database. It has a single child
+command `command_migrate` which migrates the database schema if there is a new
+schema version available. The second top level command, `command_model`, is
+responsible for all the machine learning tasks. We don't use any relevant rust
+libraries for these tasks, but the core functionality is handled by our
+`ska_llm` component as we have explained before. It has 5 child commands. The
+first command `command_download` downloads the needed machine learning models
+form hugging face hug @web_huggingface_hub_documentation. The pre defined list
+with supported models currently are:
+- all-MiniLM-L6-v2 @web_huggingface_allminilm: A sentence-transformers model which
+  maps sentences & paragraphs to a 384 dimensional dense vector space. It is used
+  as our embedding model when we are storing/searching context chunks in/from our
+  vectore store.
+- Llama-2-7B-Chat-GGUF @web_huggingface_llam2gguf: A Llama-2 model quantized for
+  better invoking times performance, but with less accuracy.
+- Meta-Llama-3-8B-Instruct-GGUF @web_huggingface_llam3gguf: A Llama-3 model
+  quantized for better invoking times performance, but with less accuracy.
+The second command `command_insert` inserts the models from the temporary
+downloaded location to a persisted location that can be read by our application.
+The commands `command_create_skalm` and `command_rag_prepare` are essentially
+wrappers around the equivalent operations of our `ska_llm` module. They also
+perform some extra checks and validations to disallow unwanted consequences. The
+command `command_rag_invoke` performcs validations and uses internally either
+`rag_invoke` or `invoke_skalm` operations of `ska_llm` components dependening on
+the selected model. The following is a high level diagram showing the basic
+operations of `ska_cli` and the most important modules they are using.
+
+#figure(
+  image("images/ska_cli.drawio.png", height: 220pt),
+  caption: [ SKA CLI operations ],
+  supplement: [IMAGE],
+) <img_ska_cli_operations>
+#h(0pt)
+
+The `ska_server` component is implemented in rust, it exposes a REST API with
+some http endpoints which will be called by the `ska_frontend` component (we
+will describe in a later paragraph). It uses the same code base as the `ska_cli`
+component in order to have consistent business logic and be able to share domain
+relevant modules like `entities` and `repos`. For the http api construction we
+depend on the `axum` library which we discussed in @heading_rust_libraries. All
+the http endpoints are protected and need an authenticated user with required
+permissions for allowed access. The authentication is performed by implementing
+an `auth_middleware` which is used by all endpoints. Each endpoint demands
+different user roles for a user to have in order to be allowed to access it. The
+there are two top level routes `route_auth` and `route_assistant`. The first
+`route_auth` has only on operation `app_login` and is called when a user is
+logged in the app in order to update the user details from the user pool to our
+database. Then second top level endpoint route `route_assistant` enables three
+basic categories of operations. The first category `fetch` is about fetching
+user data like chats and historical messages. The second category `chat CRUD` is
+about CRUD (Create Read Upate Delete) operations on user's chats, which allows
+the user to manage his chats. The last `ask question` is about the user asking a
+question to a selected chat which uses a defined LLM. This operation perfromes
+various validations and uses our `ska_llm` component internally as well in order
+to invoke the required LLM. We show a simple high level diagram of `ska_server`
+component.
+
+#figure(
+  image("images/ska_server.drawio.png", height: 220pt),
+  caption: [ SKA Server operations ],
+  supplement: [IMAGE],
+) <img_ska_server_operations>
+#h(0pt)
+
+The `ska_frontend`
+
+The `api gateway` is implemented by either using a nginx @web_nginx reverse
+proxy or a kubernetes Ingress @web_kubernetes_ingress depending on the
+deployment method.
+
+== Development Lifecycle and Deployment
 
 #pagebreak()
 = Usage and Execution of the Application

@@ -195,3 +195,7 @@ ska_frontend/tailwind.css
 .*.lb
 *.fdb_latexmk
 *synctex.gz
+
+## Draw.io
+.$*.drawio.bkp
+.$*.drawio.dtmp
