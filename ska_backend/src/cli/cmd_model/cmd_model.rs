@@ -19,11 +19,15 @@ pub struct CmdModelArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum ModelSubcommands {
-    /// does testing things
+    /// downloads models and LLMs for RAG
     Download,
+    /// inserts the downloaded LLMs in the systems files location
     Insert,
+    /// prepares the documents and vector store for RAG
     RagPrepare(CmdRagPrepareArgs),
+    /// invokes an LLM with a question
     RagInvoke(CmdRagInvokeArgs),
+    /// creates and trains SKA text generation model
     CreateSkalm,
 }
 

@@ -215,7 +215,7 @@
   // #v(3pt)
 ]
 #show raw: it => [
-  #set block(fill: luma(250))
+  #set block(fill: luma(240))
   #it
 ]
 
@@ -1286,10 +1286,10 @@ dissadvantages of this method.
 === Method Description <heading_custom_text_generation_model_method_description>
 
 The first step is to read the "raw input" data. For this task we will use the
-python modules `"langchain_community.document_loaders"` (uses the unstructured
+python modules `langchain_community.document_loaders` (uses the unstructured
 library underneath for which we have talked about at @heading_python_libraries)
 in order to read varius documents of different, which exist in a given path
-`"data_path"`
+`data_path`
 
 ```python
 def read_docs(data_path: str) -> list[Document]:
@@ -1473,7 +1473,7 @@ def train_skallm_lstm(model: Skalm, skalm_config: SkalmConfig, skalm_dir_path: s
 
 We perform the training only on CPU due to the hardware restrictions of our
 laptop ("HP Laptop 15s-eq2xxx" with processor "AMD Ryzen 5 5500U") for 5 days
-using only one book as a user document @book_domain_driven_desing. We show the
+using only one book as a user document @book_domain_driven_design. We show the
 evaluation results:
 
 #figure(
@@ -1661,7 +1661,6 @@ def create_chain(vector_store_path: str, embedding_model_path: str, llm_model_pa
 qa_chain = create_chain(vector_store_path, embedding_model_path, llm_model_path, prompt_template, model_type, temperature, top_p)
 output = qa_chain.invoke(question)
 invoke_output = InvokeOutput.from_output_dict(output)
-
 ```
 #h(0pt)
 
@@ -1990,8 +1989,307 @@ We talked about the System Architecture of our application, now we will show
 real execution of our application and its results.
 
 == CLI Usage
+We will show examples of executing the `ska_cli` component. In some cases we
+will show the description of the command and in other cases we will show the
+important parts of the command output, where it makes sense.
+
+Running `app-cli --help` will describe the top level command line arguments and
+options of the application.
+
+```
+Usage: app-cli <COMMAND>
+
+Commands:
+  model
+  db
+  help   Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
+```
+#h(0pt)
+
+Starting with the `db` top level command, running `app-cli db --help` will
+describe its arguments and options
+
+```
+Usage: app-cli db <COMMAND>
+
+Commands:
+  migrate  migrates db
+  help     Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+#h(0pt)
+
+We see that it has a single `migrate` subcommand. Running `app-cli db migrate
+--help` shows that it doesn't take any arguments. We use this command in order
+to migrate our database schema when there are changes.
+
+```
+migrates db
+
+Usage: app-cli db migrate
+
+Options:
+  -h, --help  Print help
+```
+#h(0pt)
+
+To see the arguments and options of the second top level command we run the
+command `app-cli model --help`. We see that are five subcommands available:
+`download`, `insert`, `rag-prepare`, `rag-invoke` and `create-skalm`.
+
+```
+Usage: app-cli model <COMMAND>
+
+Commands:
+  download      downloads models and LLMs for RAG
+  insert        inserts the downloaded LLMs in the systems files location
+  rag-prepare   prepares the documents and vector store for RAG
+  rag-invoke    invokes an LLM with a question
+  create-skalm  creates and trains SKA text generation model
+  help          Print this message or the help of the given subcommand(s)
+
+Options:
+  -h, --help  Print help
+```
+#h(0pt)
+
+Subcommand `download` downloads the needed models and LLMs use for the RAG
+method. The models we download are those we described the `ska_cli` component at
+@heading_system_architecture
+- all-MiniLM-L6-v2 @web_huggingface_allminilm
+- Llama-2-7B-Chat-GGUF @web_huggingface_llam2gguf
+- Meta-Llama-3-8B-Instruct-GGUF @web_huggingface_llam3gguf
+
+```
+downloads models and LLMs for RAG
+
+Usage: app-cli model download
+
+Options:
+  -h, --help  Print help
+```
+
+Some partial output running the actual command gives:
+
+```
+...
+
+config.json: 100%|██████████████████| 612/612 [00:00<00:00, 5.43MB/s]
+config_sentence_transformers.json: 100%|██████████████████| 116/116 [00:00<00:00, 1.02MB/s]
+modules.json: 100%|██████████████████| 349/349 [00:00<00:00, 3.79MB/s]
+sentence_bert_config.json: 100%|██████████████████| 53.0/53.0 [00:00<00:00, 364kB/s]
+tokenizer_config.json: 100%|██████████████████| 350/350 [00:00<00:00, 2.66MB/s]
+tokenizer.json: 100%|██████████████████| 466k/466k [00:00<00:00, 1.98MB/s]
+vocab.txt: 100%|██████████████████| 232k/232k [00:00<00:00, 917kB/s]
+pytorch_model.bin: 100%|██████████████████| 90.9M/90.9M [00:26<00:00, 3.47MB/s]
+model.safetensors: 100%|██████████████████| 90.9M/90.9M [00:32<00:00, 2.84MB/s]
+Fetching 17 files: 100%|██████████████████| 17/17 [00:34<00:00,  2.00s/it]
+
+...
+
+llama-2-7b-chat.Q2_K.gguf: 100%|██████████████████| 2.83G/2.83G [04:04<00:00, 11.6MB/s]
+Fetching 5 files: 100%|██████████████████| 5/5 [04:04<00:00, 48.88s/it]
+
+...
+
+meta-llama-3-8b-instruct.Q2_K.gguf: 100%|██████████████████| 3.18G/3.18G [04:36<00:00, 11.5MB/s]
+Fetching 4 files: 100%|██████████████████| 4/4 [04:37<00:00, 69.45s/it]
+```
+#h(0pt)
+
+The subcommand `app-cli model insert --help` shows the description of the
+`insert` subcommand. It doesn't take any arguments. It copies the models, which
+got downloaded in a temporary directory with the previous command, to a location
+which can be read by the system. The need of a separate command instead of
+downloading the models directly to our system directory is done in order to
+avoid partially downloaded models as well as for security concerns.
+
+```
+inserts the downloaded LLMs in the systems files location
+
+Usage: app-cli model insert
+
+Options:
+  -h, --help  Print help
+```
+#h(0pt)
+
+The subcommand `rag-prepare` reads the users' documents and creates the vectore
+store so that it can be read by the application later. Running the command
+`app-cli model rag-prepare --help` shows that the command receives an option
+about which embedding model to use:
+
+```
+prepares the documents and vector store for RAG
+
+Usage: app-cli model rag-prepare --emb-name <EMB_NAME>
+
+Options:
+  -e, --emb-name <EMB_NAME>
+  -h, --help                 Print help
+```
+
+Running `app-cli model rag-prepare --emb-name all-MiniLM-L6-v2` shows that it
+found a pdf document (we use a single pdf book @book_domain_driven_design as
+users' source), which it split in chunks with which it created the FAISS vector
+store (we have described with more details the procedure at
+@heading_rag_method_description):
+
+```
+DirectoryLoader txt
+0it [00:00, ?it/s]
+DirectoryLoader md
+0it [00:00, ?it/s]
+DirectoryLoader pdf
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [01:03<00:00, 63.77s/it]
+DirectoryLoader html
+0it [00:00, ?it/s]
+DirectoryLoader xml
+0it [00:00, ?it/s]
+len(docs): 1
+splitter.split_documents
+get_embeddings()
+get_embeddings start
+get_embeddings end
+FAISS.from_documents
+FAISS.save_local
+```
+#h(0pt)
+
+The subcommand `create-skalm` creates and trains the SKA custom text generation
+model as we have discussed at
+@heading_custom_text_generation_model_method_description. Running the command
+`app-cli model create-skalm --help` shows that the command receives no
+arguments. We won't show the output of the full execution since it takes days to
+complete and it is very long.
+
+```
+creates and trains SKA text generation model
+
+Usage: app-cli model create-skalm
+
+Options:
+  -h, --help  Print help
+```
+#h(0pt)
+
+Finally, the subcommand `rag-invoke` invokes the system specifying a desired
+embedding model, an LLM, a question and an prompt-template. The
+`prompt-template` option is optional and if ommited the default for this LLM
+will be used. Running the command `app-cli model rag-invoke --help` the output
+below:
+
+```
+invokes an LLM with a question
+
+Usage: app-cli model rag-invoke [OPTIONS] --emb-name <EMB_NAME> --llm-name <LLM_NAME> --question <QUESTION>
+
+Options:
+  -e, --emb-name <EMB_NAME>
+  -l, --llm-name <LLM_NAME>
+  -q, --question <QUESTION>
+  -p, --prompt-template <PROMPT_TEMPLATE>
+  -h, --help                               Print help
+```
+
+Running `app-cli model rag-invoke --emb-name all-MiniLM-L6-v2 --llm-name`
+`llama2-7B --question "what is a database?"` we see that the system returns a
+JSON object with 3 top level keys. The first one is `context` which shows the
+relevant chunks of the Documents that the LLM found the relevant information.
+The second one is the `question` that the user provided. The third one is the
+`answer` of the LLM.
+
+```
+{
+    "context": [
+        {
+            "page_content": "Designing Objects for Relational Databases",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        },
+        {
+            "page_content": "systems must use some nonobject technical infrastructure, most commonly relational databases. But making a coherent model that",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        },
+        {
+            "page_content": "But for the important common case of a relational database acting as the persistent form of an object-oriented domain, simple",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        },
+        {
+            "page_content": "the database is used to assemble new objects. Indeed, the code that usually has to be written makes it hard to forget this",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        },
+        {
+            "page_content": "There are three common cases:\n\n1. The database is primarily a repository for the objects.\n\n121",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        },
+        {
+            "page_content": "designing objects for relational databases, 159–161\n\nencapsulation, 154\n\nexample, 172–173\n\nand FACTORIES, 157–159",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        },
+        {
+            "page_content": "There is a raft of techniques for dealing with the technical challenges of database access. Examples include encapsulating SQL",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        },
+        {
+            "page_content": "reality presents the usual problems of a mixture of paradigms (see Chapter 5). But the database is more intimately related to",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        },
+        {
+            "page_content": "mapping between database tables and objects. There are other technical examples. This pattern can also be applied within the",
+            "metadata": {
+                "source": ".config/ska/local/data/books/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software/[Eric Evans] (2003) Domain Driven Design Tackling Complexity in the Heart of Software.pdf"
+            }
+        }
+    ],
+    "question": "what is a database?",
+    "answer": " A database is a collection of data stored in a structured and organized manner, typically in a digital format. It can be used to store and manage large amounts of data, such as customer information, financial transactions, or inventory levels. A database can be accessed and manipulated using various techniques, such as SQL (Structured Query Language) or NoSQL databases. The data in a database is typically organized into tables or schemas, with each table containing a set of rows or records that represent individual instances of a particular entity or object. The relationships between these entities can be defined using foreign keys, which link related tables together. The database can be used to create, read, update, and delete (CRUD) operations on the data it contains."
+}
+```
+
+Asking a simpler question to our custom SKA text generation model `model
+rag-invoke --emb-name all-MiniLM-L6-v2 --llm-name skalm --question "what is
+domain driven design?"` does not return any context. We see that our model which
+was trained only wit a single book and was designed with a small depth of layers
+with small parameters does not answer very good.
+
+```
+{
+    "context": [],
+    "question": "what is domain driven design?",
+    "answer": "a pattern is that it is not a solution to the model . \n the team can readily distinguish two models . \n the developer was able to respond to the model and the design . \n the team had encountered in the model , the team had given a new concept . \n the model is a set of concepts that can be integrated by the domain experts , the bones of the model is the same concept . \n the team may not be a very deep model for the domain . \n"
+}
+```
+#h(0pt)
 
 == GUI Usage
+We showcased the usage of our command line application. After the deployment,
+the admin downloads and inserts the models, creates and trains the SKA text
+generation model and prepares the RAG vector store. Now the system is ready to
+be used by its users by accessing the Graphical User Interface that has been
+deployed. We will show the main pages of our app and the core functionality of
+the Specific Knowledge Assitant.
 
 #pagebreak()
 = Conclusions and Future Work
