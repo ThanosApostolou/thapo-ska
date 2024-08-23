@@ -2147,7 +2147,7 @@ DirectoryLoader txt
 DirectoryLoader md
 0it [00:00, ?it/s]
 DirectoryLoader pdf
-100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1/1 [01:03<00:00, 63.77s/it]
+100%|██████████████████| 1/1 [01:03<00:00, 63.77s/it]
 DirectoryLoader html
 0it [00:00, ?it/s]
 DirectoryLoader xml
@@ -2290,6 +2290,49 @@ generation model and prepares the RAG vector store. Now the system is ready to
 be used by its users by accessing the Graphical User Interface that has been
 deployed. We will show the main pages of our app and the core functionality of
 the Specific Knowledge Assitant.
+
+The Home page is the first page a user sees. It shows a brief description of the
+application. It also allows the user to login to the system by either clicking
+the link in the page content or by revealing the user account dropdown at the
+top right of the page.
+
+#figure(
+  image("images/screenshot_home.png", width: 100%),
+  caption: [ SKA Home Page ],
+  supplement: [IMAGE],
+) <img_ska_home_page>
+#h(0pt)
+
+When the user clicks the login link, he gets redirected to the kecloak login
+page. There he can login with his credentials and the Kycloak will redirect him
+back to the SKA home page.
+
+#figure(
+  image("images/screenshot_keycloak.png", width: 100%),
+  caption: [ SKA Keycloak Login ],
+  supplement: [IMAGE],
+) <img_ska_keycloak>
+#h(0pt)
+
+Now that the user is logged in the Home page content changes in order to show a
+link to the Assistant page. The top right account dropdown also changes in order
+to enable user to logout or navigate the account info page.
+
+#figure(
+  image("images/screenshot_home_loggedin.png", width: 100%),
+  caption: [ SKA Home Page and Account Dropdown with logged in user ],
+  supplement: [IMAGE],
+) <img_ska_home_loggedin>
+
+The top left header menu now shows the Assistant page as an option for
+navigation too.
+
+#figure(
+  image("images/screenshot_home_menu.png", width: 100%),
+  caption: [ SKA Home Page and Toolbar Menu with logged in user ],
+  supplement: [IMAGE],
+) <img_ska_home_menu>
+#h(0pt)
 
 #pagebreak()
 = Conclusions and Future Work
