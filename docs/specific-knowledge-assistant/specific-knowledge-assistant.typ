@@ -1706,9 +1706,9 @@ responsible for various administration tasks and uses the `ska_llm` internally
 to expose a more friendly command line interface for the machine learning tasks
 needed to be performed by the admin. The `ska_server` component, implemented in
 rust as well, exposes a REST API, which enables users to perform the various
-tasks of the application, like prompting the LLMs. Finally, we develop the
-`ska_frontend` materializes the Graphical User Interface with which the users
-can interact with.
+tasks of the application, like prompting the LLMs. Finally, the `ska_frontend`
+materializes the Graphical User Interface with which the users can interact
+with.
 
 Apart from the four components we developed, we utilize three extra components
 for our complete solution. The first one is Keycloak @web_keycloak, an open
@@ -1716,7 +1716,7 @@ source Identity and Access Management solution which enables our users to login
 and to be authenticated and authorized to perform specific actions of our
 application. The second one is PostgreSQL @web_postgresql, an advanced open
 source relational database which our application uses for storing and fetching
-data. The final component is an "api gateway" which will lay ahead of our
+data. The final component is an `api gateway` which will lay ahead of our
 services and redirect the web traffic to the needed service for the task.
 
 In the following diagram, we show the fundamental Specific Knowledge Assistant
@@ -1827,17 +1827,171 @@ component.
 ) <img_ska_server_operations>
 #h(0pt)
 
-The `ska_frontend`
+The `ska_frontend` component materializes the Graphical User Interface with
+which the users can interact with. It actually consistfs of two sub components.
+The first one is `ska_frontend client` which contains all the built and bundled
+final needed files like html, css, javascript, images, etc. The second sub
+component `ska_frontend static server` is a simple http server, implemented by
+using a simply configured nginx instance, which serves all the files needed for
+the `ska_frontend client` to run in the users' browsers. The `ska_frontend
+client` is what we call a Single Page Application (SPA)
+@web_mozilla_developer_html so the pages can contain complex logic in the client
+side and dynamically change their content without fetching new complete html
+pages from a server for any single request. The implementation is based on the
+Vue.js library @web_vuejs_introduction. The multiple pages can be achieved in
+the client side by using the `Vue router` library @web_vuejs_router. The client
+is using the "Asynchronous JavaScript and XML" (AJAX)
+@web_mozilla_developer_ajax technique in order to fetch data from our
+`ska_server` by utilizing the `axios` library @web_axios_http. For the
+authentication and authorization to work, we are using the `oidc-client-ts`
+library @web_authts_oidc_client_ts which communicates with the `Keycloak`
+instance in order to fetch the needed tokens (we will talk about it with more
+details when we will describe Keycloak). The client provides three top level
+pages from which users can perform their operations. The `page_home` is the
+first page that is shown to a user. It shows a short description about the app
+and its content changes slightly depending on whether the user is logged in or
+not. The `page_account` enables a logged in user to see his account details as
+well as to edit them. The `page_assistant` is the most important page as it
+enables a logged in user to use the Specific Knowledge Assistant. There a user
+can create, edit or delete a chat with a selected LLM. The user can then ask
+questions in this chat and fetch historical questions and answers of existing
+chats. The following diagram shows a high level overviews of `ska_frontend`:
+
+#figure(
+  image("images/ska_frontend.drawio.png", height: 220pt),
+  caption: [ SKA Frontend operations ],
+  supplement: [IMAGE],
+) <img_ska_frontend_operations>
+#h(0pt)
+
+The `PostgreSQL` database is used in order to persist users' data. Specifically
+we use the table `users` to store each user who logs in to our application. We
+update their details in each login. Each user can have multiple chats which we
+store to table `user_chat`. Each chat can have multiple messages some of them
+are "ANSWER" type and some of them are "QUESTION" type. We store the messages to
+table `chat_message`. Here is the Entity Relationship Diagram (ERD) of our
+database:
+
+#figure(
+  image("images/ska_schema.png", height: 260pt),
+  caption: [ SKA Database ERD ],
+  supplement: [IMAGE],
+) <img_ska_schema>
+#h(0pt)
+
+The keycloak component is used as a user pool and as a user authentication and
+authorization utility. For this we have created a specifc SKA Realm which
+contains the available users together with their assigned roles. The supported
+roles are:
+- SKA_ADMIN: role that practically allows access to all endpoints
+- SKA_USER: role that allows a user to edit his account info and use the assistant
+  functionality.
+- SKA_GUEST: not used in current version but reserved in case of wanted future
+  functionality additions.
+In order to authorize and authenticate users in `ska_frontend` and protect our
+endpoints in `ska_server` components we use the OpenID Connect "Authorization
+Code flow", which follows essentially the Oauth2 "Authorization Code flow with
+PKCE". The steps that are performed for this authorization flow are the
+following
+- The user clicks logins in `ska_frontend`.
+- `ska_frontend` client using `oidc-client-ts` library creates a
+  cryptographically-random code_verifier and from this generates a code_challenge
+  and redirects user to Keycloak login page along with the code_challenge.
+- Keycloak creates a cryptographically-random code_verifier and from this
+  generates a code_challenge.
+- The user authenticates using his credentials.
+- Keycloak stores the code_challenge and redirects the user back to the
+  application with an authorization code, which is good for one use.
+- `ska_frontend` client using `oidc-client-ts` sends this code and the
+  code_verifier to a keycloak endpoint
+- Keycloak verifies the code_challenge and code_verifier and responds with an ID
+  token and access token, and a refresh token.
+- `ska_frontend` client passes the access token to the Authorization header in
+  every request to `ska_server` using `axios` library.
+The following example from frameworks.readthedocs.io can clarify the procedure,
+in which we can replace the "Angular Client" with our `ska_frontend client`
+component.
+
+#figure(
+  image("images/keyclaok_oauth2_pkce.png", height: 300pt),
+  caption: [ Keycloak Oauth2 Authorization Code flow with PKCE
+    @web_readthedocs_frameworks_keycloak_oauth2pkce ],
+  supplement: [IMAGE],
+) <img_keyclaok_oauth2_pkce>
+#h(0pt)
 
 The `api gateway` is implemented by either using a nginx @web_nginx reverse
 proxy or a kubernetes Ingress @web_kubernetes_ingress depending on the
-deployment method.
+deployment method. All the incoming http requests reache this componet at first
+and then they get redirected to the desired service. This enables us to have a
+single component which can be configured with rules. Additionally, we have the
+benefit to serve the whole application under a single owned domain name and
+redirect the traffic based on http paths. Specifically we configure the
+following http paths redirections:
+- "/app" to `ska_frontend`: any http path that starts with "/app" is redirected to
+  `ska_frontend` service
+- "/backend" to `ska_server`: any http path that starts with "/backend" is
+  redirected to `ska_server` service
+- "/iam" to `Keycloak`:: any http path that starts with "/iam" is redirected to
+  `Keycloak` service
 
 == Development Lifecycle and Deployment
+We talked about our fundamental System components and modules. Now we will
+briefly talk about the development lifecycle of the systemd and its deployment
+methods.
+
+The code of our application exists in a git repostiory at
+https://github.com/ThanosApostolou/thapo-ska. There are 3 fundamental branches.
+New code are directly pushed into `main` branch or merged by some other feature
+branch into `main` branch. When chagnes of multiple commits have been tested
+enough locally, then the `main` branch is merged into `dev` branch. After
+multiple merges in `dev` branch, when we are ready for a release we merge `dev`
+branch into `prod` branch.
+
+In alignment with the git branches, the application can run with 3 differnet
+environments:
+- `local` environment
+- `dev` environment
+- `prod` environment
+Each environment specifiies different configuration for our services (e.g. about
+which url the frontend uses, which url the backend uses, which database schema
+to use, etc...).
+
+The application is continuously deployed by use CI/CD (Continuous Integration
+and Continuous Delivery) practices @web_wiki_ci_cd. To achieve this we use
+Jenkins @web_jenkins, an open source automation server. In more details:
+- `main`: `main` branch is tested only locally, so we don't deploy anything for
+  this.
+- `dev`: Whenever changes are merged to `dev` branch, a jenkins pipeline is
+  executed. The basic pipeline tasks are:
+  - build all our services as docker images
+  - push the built docker images to our private docker repository
+  - deploy and start the application with `dev` environment at our private server,
+    using docker compose (see @heading_containers_docker_kubernetes).
+  The `dev` application is targeting a private port which can be accessed only by
+  our local network or by using vpn. This environment's purpose is to have a fully
+  deployed system for testing purposes which is not affected by local changes.
+- `prod`: Whenever changes are merged to `prod` branch, a jenkins pipeline is
+  executed. The basic pipeline tasks are:
+  - build all our services as docker images
+  - push the built docker images to our private docker repository
+  - deploy and start the application with `prod` environment at a k3s @web_k3s
+    kubernetes instance (see @heading_containers_docker_kubernetes) installed in our
+    private server. For easier management of all the kubernetes resources we need to
+    create we use Helm @web_helm.
+  The `prod` application is targeting a port which can be accessed publicly fron
+  the internet by all the users. Currently the domain our application is using is
+  the https://thapo-ska.thapo.org/app, but it is possibly to change after the
+  completion of this thesis.
 
 #pagebreak()
 = Usage and Execution of the Application
-TODO
+We talked about the System Architecture of our application, now we will show
+real execution of our application and its results.
+
+== CLI Usage
+
+== GUI Usage
 
 #pagebreak()
 = Conclusions and Future Work
