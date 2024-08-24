@@ -19,7 +19,7 @@
 )
 
 #slide()[
-  = Knowledge Specific Assistant
+  = Knowledge Specific Assistance
 
   Define the problem domain.
 
@@ -82,7 +82,7 @@
   ], [
     #set align(start + top)
     === Disadvantages
-    - Dependency on external LLMs:
+    - Dependency on external LLMs
     - Inflexibility
   ])
 ]
@@ -163,7 +163,7 @@
   ],
   table.cell(rowspan: 2)[
   #set align(start + top)
-  === Keycloak Roles
+  === Keycloak
   - `SKA_ADMIN`
   - `SKA_USER`
   - `SKA_GUEST`
@@ -280,9 +280,10 @@ Options:
   ])
 ]
 #focus-slide()[
-  *That was all...*
+  #set align(center + horizon)
+  #set text(size: 60pt)
 
-  *Thank you for watching!*
+  *Thank you!*
 ]
 
 // #matrix-slide[
