@@ -2,7 +2,7 @@ use sea_orm::{
     entity::prelude::*, ColumnTrait, DeleteResult, EntityTrait, InsertResult, QueryFilter,
 };
 
-use crate::domain::entities::chat_message;
+use crate::domain::entities::{chat_message, user_chat};
 
 // pub async fn find_by_user_id(
 //     db_connection: &impl ConnectionTrait,
@@ -87,6 +87,22 @@ pub async fn delete(
         &chat_message_am.chat_message_id
     );
     let delete_result: DeleteResult = chat_message_am.delete(db_connection).await?;
+    tracing::trace!(
+        "delete end rows_affected={:?}",
+        &delete_result.rows_affected
+    );
+    Ok(delete_result)
+}
+
+pub async fn delete_all_of_chat(
+    db_connection: &impl ConnectionTrait,
+    chat_id: i64,
+) -> anyhow::Result<DeleteResult> {
+    tracing::trace!("delete start chat_id={:?}", chat_id);
+    let delete_result: DeleteResult = chat_message::Entity::delete_many()
+        .filter(chat_message::Column::ChatIdFk.eq(chat_id))
+        .exec(db_connection)
+        .await?;
     tracing::trace!(
         "delete end rows_affected={:?}",
         &delete_result.rows_affected

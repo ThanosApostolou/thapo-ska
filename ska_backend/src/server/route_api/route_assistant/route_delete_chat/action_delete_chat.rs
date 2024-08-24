@@ -3,7 +3,7 @@ use sea_orm::{ActiveValue::NotSet, DatabaseTransaction, Set};
 use crate::{
     domain::{
         entities::user_chat,
-        repos::repo_user_chat,
+        repos::{repo_chat_message, repo_user_chat},
         user::validator_user_chat::{self, ValidDataDeleteUserChat},
     },
     modules::{
@@ -83,6 +83,8 @@ async fn delete_user_chat(
         created_at: NotSet,
         updated_at: NotSet,
     };
+    let _delete_result =
+        repo_chat_message::delete_all_of_chat(txn, valid_data.existing_user_chat.chat_id).await?;
     let _delete_result = repo_user_chat::delete(txn, user_chat_am).await?;
 
     return Ok(valid_data.existing_user_chat.chat_id);

@@ -1488,7 +1488,7 @@ evaluation results:
   supplement: [IMAGE],
 ) <img_skalm_test_accuracy>
 
-When the user prompts the system with this model then we split the question to
+When users prompt the system with this model then we split the question to
 sentences and then to encoded tokens maximum of 100 (same as the window we used
 for training) tokens. If the question is less than 100, then we add a special
 padding token to the left as many times as needed in order to reach 100 tokens.
@@ -1569,9 +1569,9 @@ db.save_local(vector_store_path, constants.VS_INDEX_NAME)
 ```
 #h(0pt)
 
-Now when the user is prompting the system we create LangChain chain as of
-official documentation @web_langchain_chains. For this we create a pipeline of
-an existing pre-trained model. In our custom python function `create_llm` we
+Now when users are prompting the system we create LangChain chain as of official
+documentation @web_langchain_chains. For this we create a pipeline of an
+existing pre-trained model. In our custom python function `create_llm` we
 support two types of pre-trained models. The first one is using llama.cpp libray
 we described in @heading_python_libraries for models in gguf format (mainly
 llama2 and llama3). The second type is using `AutoModelForCausalLM` with
@@ -1807,17 +1807,17 @@ permissions for allowed access. The authentication is performed by implementing
 an `auth_middleware` which is used by all endpoints. Each endpoint demands
 different user roles for a user to have in order to be allowed to access it. The
 there are two top level routes `route_auth` and `route_assistant`. The first
-`route_auth` has only on operation `app_login` and is called when a user is
-logged in the app in order to update the user details from the user pool to our
+`route_auth` has only on operation `app_login` and is called when users are
+logged in the app in order to update users' details from the users pool to our
 database. Then second top level endpoint route `route_assistant` enables three
 basic categories of operations. The first category `fetch` is about fetching
 user data like chats and historical messages. The second category `chat CRUD` is
 about CRUD (Create Read Upate Delete) operations on user's chats, which allows
-the user to manage his chats. The last `ask question` is about the user asking a
-question to a selected chat which uses a defined LLM. This operation perfromes
-various validations and uses our `ska_llm` component internally as well in order
-to invoke the required LLM. We show a simple high level diagram of `ska_server`
-component.
+users to manage their chats. The last operation, `ask question`, is about users
+asking questions to a selected chat which uses a defined LLM. This operation
+perfromes various validations and uses our `ska_llm` component internally as
+well in order to invoke the required LLM. We show a simple high level diagram of
+`ska_server` component.
 
 #figure(
   image("images/ska_server.drawio.png", height: 220pt),
@@ -1848,13 +1848,13 @@ instance in order to fetch the needed tokens (we will talk about it with more
 details when we will describe Keycloak). The client provides three top level
 pages from which users can perform their operations. The `page_home` is the
 first page that is shown to a user. It shows a short description about the app
-and its content changes slightly depending on whether the user is logged in or
-not. The `page_account` enables a logged in user to see his account details as
+and its content changes slightly depending on whether users are logged in or
+not. The `page_account` enableslogged in users to see their account details as
 well as to edit them. The `page_assistant` is the most important page as it
-enables a logged in user to use the Specific Knowledge Assistant. There a user
-can create, edit or delete a chat with a selected LLM. The user can then ask
-questions in this chat and fetch historical questions and answers of existing
-chats. The following diagram shows a high level overviews of `ska_frontend`:
+enables logged in users to use the Specific Knowledge Assistant. There users can
+create, edit or delete a chat with a selected LLM. Users can then ask questions
+in this chat and fetch historical questions and answers of existing chats. The
+following diagram shows a high level overviews of `ska_frontend`:
 
 #figure(
   image("images/ska_frontend.drawio.png", height: 220pt),
@@ -1883,8 +1883,8 @@ authorization utility. For this we have created a specifc SKA Realm which
 contains the available users together with their assigned roles. The supported
 roles are:
 - SKA_ADMIN: role that practically allows access to all endpoints
-- SKA_USER: role that allows a user to edit his account info and use the assistant
-  functionality.
+- SKA_USER: role that allows users to edit their account info and use the
+  assistant functionality.
 - SKA_GUEST: not used in current version but reserved in case of wanted future
   functionality additions.
 In order to authorize and authenticate users in `ska_frontend` and protect our
@@ -1892,15 +1892,15 @@ endpoints in `ska_server` components we use the OpenID Connect "Authorization
 Code flow", which follows essentially the Oauth2 "Authorization Code flow with
 PKCE". The steps that are performed for this authorization flow are the
 following
-- The user clicks logins in `ska_frontend`.
+- Users clicks "login" in `ska_frontend`.
 - `ska_frontend` client using `oidc-client-ts` library creates a
   cryptographically-random code_verifier and from this generates a code_challenge
   and redirects user to Keycloak login page along with the code_challenge.
 - Keycloak creates a cryptographically-random code_verifier and from this
   generates a code_challenge.
-- The user authenticates using his credentials.
-- Keycloak stores the code_challenge and redirects the user back to the
-  application with an authorization code, which is good for one use.
+- Users authenticate using their credentials.
+- Keycloak stores the code_challenge and redirects users back to the application
+  with an authorization code, which is good for one use.
 - `ska_frontend` client using `oidc-client-ts` sends this code and the
   code_verifier to a keycloak endpoint
 - Keycloak verifies the code_challenge and code_verifier and responds with an ID
@@ -1988,7 +1988,7 @@ Jenkins @web_jenkins, an open source automation server. In more details:
 We talked about the System Architecture of our application, now we will show
 real execution of our application and its results.
 
-== CLI Usage
+== Command Line Interface (CLI) Usage
 We will show examples of executing the `ska_cli` component. In some cases we
 will show the description of the command and in other cases we will show the
 important parts of the command output, where it makes sense.
@@ -2202,7 +2202,7 @@ Running `app-cli model rag-invoke --emb-name all-MiniLM-L6-v2 --llm-name`
 `llama2-7B --question "what is a database?"` we see that the system returns a
 JSON object with 3 top level keys. The first one is `context` which shows the
 relevant chunks of the Documents that the LLM found the relevant information.
-The second one is the `question` that the user provided. The third one is the
+The second one is the `question` that users provided. The third one is the
 `answer` of the LLM.
 
 ```
@@ -2283,7 +2283,7 @@ with small parameters does not answer very good.
 ```
 #h(0pt)
 
-== GUI Usage
+== Graphical User Interface (GUI) Usage
 We showcased the usage of our command line application. After the deployment,
 the admin downloads and inserts the models, creates and trains the SKA text
 generation model and prepares the RAG vector store. Now the system is ready to
@@ -2292,9 +2292,9 @@ deployed. We will show the main pages of our app and the core functionality of
 the Specific Knowledge Assitant.
 
 The Home page is the first page a user sees. It shows a brief description of the
-application. It also allows the user to login to the system by either clicking
-the link in the page content or by revealing the user account dropdown at the
-top right of the page.
+application. It also allows users to login to the system by either clicking the
+link in the page content or by revealing the users account dropdown at the top
+right of the page.
 
 #figure(
   image("images/screenshot_home.png", width: 100%),
@@ -2303,8 +2303,8 @@ top right of the page.
 ) <img_ska_home_page>
 #h(0pt)
 
-When the user clicks the login link, he gets redirected to the kecloak login
-page. There he can login with his credentials and the Kycloak will redirect him
+When users click the login link, they get redirected to the kecloak login page.
+There they can login with their credentials and the Keycloak will redirect them
 back to the SKA home page.
 
 #figure(
@@ -2314,7 +2314,7 @@ back to the SKA home page.
 ) <img_ska_keycloak>
 #h(0pt)
 
-Now that the user is logged in the Home page content changes in order to show a
+Now that users are logged in the Home page content changes in order to show a
 link to the Assistant page. The top right account dropdown also changes in order
 to enable user to logout or navigate the account info page.
 
@@ -2333,6 +2333,123 @@ navigation too.
   supplement: [IMAGE],
 ) <img_ska_home_menu>
 #h(0pt)
+
+In the Account page users can see their basic account information together with
+their assigned roles. The "Manage Account" button will navigate users to the
+respective Keycloak page for account management.
+
+#figure(
+  image("images/screenshot_account.png", width: 100%),
+  caption: [ SKA Account Page ],
+  supplement: [IMAGE],
+) <img_ska_account_page>
+#h(0pt)
+
+In the Keycloak account management page users can edit their personal
+information like first name, last name and email. Users can also see other
+information like their signed in devices. When users have finished with their
+changes they can click the link "Back to thapo_ska_local_frontend" at the top in
+order to be navigated back to SKA application GUI.
+
+#figure(
+  image("images/screenshot_keycloak_account.png", width: 100%),
+  caption: [ Keycloak Account Page ],
+  supplement: [IMAGE],
+) <img_ska_keycloak_account_page>
+#h(0pt)
+
+The most important page of our application is the Assistant Page. Initially, for
+users this page does not include any chats, but it asks them to create some in
+order to be able to ask questions.
+
+#figure(
+  image("images/screenshot_assistant_empty.png", width: 100%),
+  caption: [ Assistant Page ],
+  supplement: [IMAGE],
+) <img_ska_assistant_empty>
+#h(0pt)
+
+When users click the "Add Chat" button, a dialog appears which asks them to
+select an LLM and enables them to edit some parameters. For a start, we will
+select our custom text generation model `skalm` which does not support any
+parameters. The system enables us to create multiple chats with the same LLM, so
+we will give the chat the name "our_skalm" so that we can recognize it. We can
+select the newly created "our_skalm" and delete it or edit it by using a similar
+dialog with the "Add Chat" dialog.
+
+#figure(
+  image("images/screenshot_assistant_add_chat.png", width: 100%),
+  caption: [ Assistant Add Chat Dialog ],
+  supplement: [IMAGE],
+) <img_ska_assistant_add_chat>
+#h(0pt)
+
+We select the chat we created "our_skalm". Any new chat starts with an answer of
+the assistant "Please ask me anything related to this field". We ask the same
+question we used when we showcased the CLI app "what is domain driven design?".
+As before, the answer is not very satisfying for the reasons we have already
+explained. The model does not support showing the relevant context references
+either.
+
+#figure(
+  image("images/screenshot_assistant_skalm.png", width: 100%),
+  caption: [ Assistant our_skalm Chat ],
+  supplement: [IMAGE],
+) <img_ska_assistant_skalm>
+#h(0pt)
+
+We will not use our custom text generation model any more, but we will focus on
+the models that are used for the RAG method. We will create now a chat called "our_llama3"
+using the latest Llama3-8B LLM (the quantized version we have already described
+when we download it using our cli app). We will use the default values for the
+parameters. We set values `0` for "Temperature" and "Top-p" parameters in order
+to minimize the randomness of the answer, as we desire to give the same answers
+for the same questions with the same context. The default prompting template we
+are using for Llama-3 is the following, which tries to guide the LLM to answer
+only based on the provided context and not based on its own knowledge from
+training.
+
+```
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.<|eot_id|><|start_header_id|>user<|end_header_id|>
+Context: {context}. Question: {question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+```
+
+#figure(
+  image("images/screenshot_assistant_add_llama3.png", width: 100%),
+  caption: [ Assistant Add Llama3 Chat ],
+  supplement: [IMAGE],
+) <img_ska_assistant_add_llama3>
+#h(0pt)
+
+We select the chat we created "our_llama3". We ask the same question that we
+asked `skalm` model "what is domain driven design?". We also ask a second
+question "what is a database?". We see that the answers are much better in
+comparison with `skalm` model.
+
+#figure(
+  image("images/screenshot_assistant_llama3.png", width: 100%),
+  caption: [ Assistant our_llama3 Chat ],
+  supplement: [IMAGE],
+) <img_ska_assistant_our_llama3>
+#h(0pt)
+
+When chats are used with supported by RAG models, the answers have a little
+button at the end of them. Clicking on this button opens a modal that shows the
+context with the relevant chunks of which the model found the answer. So, it
+enables the users to cross refrence their documents and verify the LLM answers.
+
+#figure(
+  image("images/screenshot_assistant_llama3_context.png", width: 100%),
+  caption: [ Assistant our_llama3 Context Modal ],
+  supplement: [IMAGE],
+) <img_ska_assistant_our_llama3_context>
+#h(0pt)
+
+Users can experiment with LLMs "Temperature", "Top-p" and "Prompting Template"
+parameters in order to achieve their wanted behavior for the task of knowledge
+search and assistance! We have completed the showcase of the most important
+parts of our appliation.
 
 #pagebreak()
 = Conclusions and Future Work
