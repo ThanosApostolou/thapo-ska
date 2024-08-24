@@ -6,7 +6,7 @@
 #set document(
   title: title_english,
   author: author_english,
-  date: datetime(year: 2024, month: 02, day: 1),
+  date: datetime(year: 2024, month: 09, day: 1),
 )
 #set page(
   paper: "a4",
@@ -1678,7 +1678,7 @@ Advantages of this method are:
   field.
 - Adaptable: New, deleted or altered documents demand only the vector store to be
   recreated, so the systemd can adapt to changes relatively quickly.
-- East to implement: This method can be implemented easily with the dependency on
+- Easy to implement: This method can be implemented easily with the dependency on
   the libraries we use without any deep advanced knowledge on how LLMs work.
 - Able to return sources: It's really easy to return the relevant sources in which
   the answer was found.
@@ -1934,7 +1934,7 @@ following http paths redirections:
   `ska_frontend` service
 - "/backend" to `ska_server`: any http path that starts with "/backend" is
   redirected to `ska_server` service
-- "/iam" to `Keycloak`:: any http path that starts with "/iam" is redirected to
+- "/iam" to `Keycloak`: any http path that starts with "/iam" is redirected to
   `Keycloak` service
 
 == Development Lifecycle and Deployment
