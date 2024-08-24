@@ -11,7 +11,7 @@
 
 #title-slide(
   authors: ("Thanos Apostolou"),
-  title: "AI-Based Model for Knowledge Specific Assistance",
+  title: "AI-Based Model for Knowledge\n Specific Assistance",
   // subtitle: "AI-Based Model for Knowledge Specific Assistance",
   date: "2024",
   institution-name: "University of Piraeus\n Department of Informatics",
