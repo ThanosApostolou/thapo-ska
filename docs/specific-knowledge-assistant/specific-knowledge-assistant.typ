@@ -219,7 +219,7 @@
   #it
 ]
 
-// ABASTRACT
+// ABSTRACT
 #pagebreak()
 #set heading(outlined: true)
 #grid(
@@ -338,7 +338,7 @@ following: @book_artificial_intelligence_a_modern_approach
   - automated reasoning to answer questions and to draw new conclusions
   - machine learning to adapt to new circumstances and to detect and extrapolate
     patterns
-  The full turing test is completed with 2 additional characteristics which have
+  The full Turing test is completed with 2 additional characteristics which have
   been added by later researchers:
   - computer vision and speech recognition to perceive the world
   - robotics to manipulate objects and move about
@@ -541,7 +541,7 @@ However the disadvantages are @web_symbl_ai_quantization:
   lower precision is likely to degrade its performance – and the more “aggressive”
   the quantization technique, i.e., the lower the bit widths of the converted data
   type, e.g., 4-bit, 3-bit, etc., the greater the risk of loss of accuracy.
-Some thechniques for LLM quantization are the following
+Some techniques for LLM quantization are the following
 @web_symbl_ai_quantization:
 - QLoRA: Low-Rank Adaptation (LoRA) is a Parameter-Efficient Fine-Tuning (PEFT)
   technique that reduces the memory requirements of further training a base LLM by
@@ -643,7 +643,7 @@ A typical RAG application has two main components @web_langchain_rag:
     both for indexing data and for passing it in to a model, since large chunks are
     harder to search over and won't fit in a model's finite context window.
   - Store: We need somewhere to store and index our splits, so that they can later
-    be searched over. This is often done using a VectorStore and Embeddings model.
+    be searched over. This is often done using a Vector Store and Embeddings model.
 - Retrieval and generation: the actual RAG chain, which takes the user query at
   run time and retrieves the relevant data from the index, then passes that to the
   model.
@@ -784,7 +784,7 @@ point to valid memory, without a garbage collector. To simultaneously enforce
 memory safety and prevent data races, its "borrow checker" tracks the object
 lifetime of all references in a program during compiling. Rust was influenced by
 ideas from functional programming, including immutability, higher-order
-functions, and algebraic data types. It is popular for systems programming.Rust
+functions, and algebraic data types. It is popular for systems programming. Rust
 does not enforce a programming paradigm, but supports object-oriented
 programming via structs, enums, traits, and methods, and supports functional
 programming via immutability, pure functions, higher order functions, and
@@ -792,13 +792,13 @@ pattern matching. @web_wiki_rust
 
 Rust programming languages can be used in many applications @web_rust_lang
 @web_medium_best_use_cases_rust:
-- Server-side web development: Rust can be used to write simple REST apis or even
+- Server-side web development: Rust can be used to write simple REST APIs or even
   full stack backend applications which connect to databases and serve complex
-  html pages using various template engines.
+  HTML pages using various template engines.
 - Client-side web development: Rust can be compile to WebAssembly and be used to
   create client side web applications supported in all modern web browsers.
 - Graphical User Interfaces development (GUI): Develop user friendly GUI
-  applications while also providing a good user experience. Rust gui frameworks
+  applications while also providing a good user experience. Rust GUI frameworks
   can use different architecture including Elm, immediate mode, reactive and
   others.
 - Gaming development: Rust can be used to develop games. New modern rust libraries
@@ -916,7 +916,7 @@ platform where people can easily collaborate and build ML together. The Hub
 works as a central place where anyone can explore, experiment, collaborate, and
 build technology with Machine Learning @web_huggingface_hub_documentation
 
-From the supported LangChaing LLM providers we will mostly use the Llama.cpp
+From the supported LangChain LLM providers we will mostly use the Llama.cpp
 provider. The main goal of llama.cpp is to enable LLM inference with minimal
 setup and state-of-the-art performance on a wide variety of hardware - locally
 and in the cloud. Some characteristics of this library are the following
@@ -967,7 +967,7 @@ Clap is a command line argument parser for Rust. I allows us to create our
 command-line parser, with all of the bells and whistles, declaratively or
 procedurally. @web_github_clap_readme
 
-To use aynschronous programming in Rust we need a asynchronous runtime, so we
+To use asynchronous programming in Rust we need a asynchronous runtime, so we
 will use the most popular one tokio. Tokio is an event-driven, non-blocking I/O
 platform for writing asynchronous applications with the Rust programming
 language. At a high level, it provides a few major components:
@@ -1062,7 +1062,7 @@ runtime behavior of TypeScript and JavaScript is identical. However, TypeScript
 adds compile time type checking, implementing rules about how different types
 can be used and combined. This catches a wide variety of programming errors that
 in JavaScript are only encountered at runtime. Some typing rules are inferred
-from JavaScript. ypeScript also enables the programmer to annotate their code,
+from JavaScript. TypeScript also enables the programmer to annotate their code,
 to indicate, for example, the types of parameters to a function or the
 properties of an object. After compilation, type annotations are removed, making
 the compiled output just JavaScript, meaning it can be executed in any
@@ -1073,7 +1073,7 @@ single web document, and then updates the body content of that single document
 via JavaScript APIs such as Fetch when different content is to be shown. This
 therefore allows users to use websites without loading whole new pages from the
 server, which can result in performance gains and a more dynamic experience,
-with some tradeoff disadvantages such as SEO, more effort required to maintain
+with some trade-off disadvantages such as SEO, more effort required to maintain
 state, implement navigation, and do meaningful performance monitoring.
 @web_mozilla_developer_spa
 
@@ -1099,7 +1099,7 @@ Vue can be used in different ways:
 We already talked about the programming languages and the most important
 programming libraries which we will use for developing our application. In this
 section we will talk about the most important technologies which we will use in
-order to deploy and devliver our application.
+order to deploy and deliver our application.
 
 Containers are executable units of software that package application code along
 with its libraries and dependencies. They allow code to run in any computing
@@ -1275,7 +1275,7 @@ will create a custom text generation model from scratch. We will train this
 model with the "raw input" data and so it should be able to generate text
 according to user prompting. For the first method we will take some existing
 pre-trained text generation models. These models we will be able to answer
-multile questions according to their training. Howerver, we will use the RAG
+multiple questions according to their training. However, we will use the RAG
 technique, which we have described in @heading_rag, and we will try to both
 expand its knowledge with the "raw input" data and at the same to limit its
 knowledge only to these "raw input" data.
@@ -1284,14 +1284,14 @@ knowledge only to these "raw input" data.
 In this section we will describe the custom text generation model method in more
 depth. We will analyze the important steps for our solution and show the most
 important code snippets of our implementation. Then we list the advantages and
-dissadvantages of this method.
+disadvantages of this method.
 
 === Method Description <heading_custom_text_generation_model_method_description>
 
 The first step is to read the "raw input" data. For this task we will use the
 python modules `langchain_community.document_loaders` (uses the unstructured
 library underneath for which we have talked about at @heading_python_libraries)
-in order to read varius documents of different, which exist in a given path
+in order to read various documents of different, which exist in a given path
 `data_path`
 
 ```python
@@ -1311,7 +1311,7 @@ def read_docs(data_path: str) -> list[Document]:
 ```
 #h(0pt)
 
-After we have read all the documents with conantenate them to a single string
+After we have read all the documents with concatenate them to a single string
 source. We then create our vocabulary by splitting the string source into unique
 words using the `word_tokenize` function of module `nltk.tokenize` (from library
 NLTK for which we talked about at @heading_python_libraries). We add a special
@@ -1319,7 +1319,7 @@ EOS (End Of Sentence) token to this vocabulary. We sort the vocabulary tokens
 (words) and we create the encoded vocabulary by simply assigning values for
 first token to 0, second token to 1, third token to 2, etc.
 
-Then we split the whole string source in stentences using the `sent_tokenize`
+Then we split the whole string source in sentences using the `sent_tokenize`
 function of module `nltk.tokenize`. We split each sentence into words using
 `word_tokenize` and after the end of each sentence we append the EOS token. So
 we have know transformed the source string into the tokens (words including EOS
@@ -1349,7 +1349,7 @@ using indices. The input to the module is a list of indices, and the output is
 the corresponding word embeddings @web_pytorch_embedding. So the embedding layer
 will help give some meaning to our naive encoding of the tokens. The second
 layer of the model is an LSTM layer. The LSTM layer is really good at predicting
-sequential data, so it will enable us to predict the next toekn given the 100
+sequential data, so it will enable us to predict the next token given the 100
 sized window of tokens. Then we add a Dropout layer in order to improve model's
 performance. The last layer is simply a Linear layer which will have output
 equal to the number of our unique vocabulary tokens. Here is the basic code of
@@ -1497,10 +1497,10 @@ for training) tokens. If the question is less than 100, then we add a special
 padding token to the left as many times as needed in order to reach 100 tokens.
 The system invokes the model in order to predict the next word. The system then
 shifts the question to the left, replaces the last token with the predicted one
-and then invokes the model again until it reaches a maxium of generated tokens
-(defualt 160) or a maximum of EOS tokens (default 6).
+and then invokes the model again until it reaches a maximum of generated tokens
+(default 160) or a maximum of EOS tokens (default 6).
 
-=== Method Advantages and Dissadvantages <heading_custom_text_generation_model_method_advantages_dissadvantages>
+=== Method Advantages and Disadvantages <heading_custom_text_generation_model_method_advantages_dissadvantages>
 We described the process of the method. This method offers very little
 advantages and is not very suitable for a complete fully functional solution.
 
@@ -1510,7 +1510,7 @@ Advantages of this method are:
   changed to better suit the knowledge field for which the assistant is needed.
 #h(0pt)
 
-Dissadvantages of this method are:
+Disadvantages of this method are:
 - Needs many sources: The model needs to learn both the language and the knowledge
   field from the documents, so it needs thousands of documents in order to be able
   to perform somewhat well.
@@ -1526,7 +1526,7 @@ Dissadvantages of this method are:
 In this section we will describe the Retrieval Augmented Generation (RAG) method
 in more depth. We will analyze the important steps for our solution and show the
 most important code snippets of our implementation. Then we list the advantages
-and dissadvantages of this method.
+and disadvantages of this method.
 
 === Method Description <heading_rag_method_description>
 For the RAG method we will depend on existing pre-trained LLMs. We have
@@ -1575,9 +1575,9 @@ db.save_local(vector_store_path, constants.VS_INDEX_NAME)
 Now when users are prompting the system we create LangChain chain as of official
 documentation @web_langchain_chains. For this we create a pipeline of an
 existing pre-trained model. In our custom python function `create_llm` we
-support two types of pre-trained models. The first one is using llama.cpp libray
-we described in @heading_python_libraries for models in gguf format (mainly
-llama2 and llama3). The second type is using `AutoModelForCausalLM` with
+support two types of pre-trained models. The first one is using llama.cpp
+library we described in @heading_python_libraries for models in gguf format
+(mainly llama2 and llama3). The second type is using `AutoModelForCausalLM` with
 `HuggingFacePipeline` which supports most text generation models which have been
 uploaded in hugging face hub together with their configuration. We load the
 vector store which we stored in the previous steps. We create a more complicated
@@ -1667,9 +1667,9 @@ invoke_output = InvokeOutput.from_output_dict(output)
 ```
 #h(0pt)
 
-=== Method Advantages and Dissadvantages <heading_rag_method_advantages_dissadvantages>
+=== Method Advantages and Disadvantages <heading_rag_method_advantages_dissadvantages>
 We described the process of the RAG method. This method offers many advantages
-with only a few dissadvantages and therefore it is recomended for a full
+with only a few disadvantages and therefore it is recommended for a full
 functional system.
 
 Advantages of this method are:
@@ -1683,7 +1683,7 @@ Advantages of this method are:
 - Able to return sources: It's really easy to return the relevant sources in which
   the answer was found.
 - Prompting: It's easy to specify system prompting with advanced LLMs which
-  support it, in order to change the style or even the allowed or dissallowed
+  support it, in order to change the style or even the allowed or disallowed
   content of the answers.
 #h(0pt)
 
@@ -1702,7 +1702,7 @@ we are ready to describe the system architecture of our complete solution.
 == System Components
 We have develop 4 basic components for our application. The `ska_llm` component,
 which contains a library and a command line application, is implemented in
-python and it is responsible for all document processing and machine learing
+python and it is responsible for all document processing and machine learning
 tasks. The `ska_cli` command line application is implemented in rust and is
 responsible for various administration tasks and uses the `ska_llm` internally
 to expose a more friendly command line interface for the machine learning tasks
@@ -1734,8 +1734,8 @@ and configure them in order to complete our system.
 #h(0pt)
 
 As we already said, the `ska_llm` component is implemented in python and it is
-responsible for all document processing and machine learing tasks. It supports 5
-crucial for our application operations which are using the libraries we
+responsible for all document processing and machine learning tasks. It supports
+five crucial for our application operations which are using the libraries we
 described in @heading_python_libraries. The operation `download_llm` downloads
 some given models from hugging face hub @web_huggingface_hub_documentation. The
 operation `rag_prepare` performs the prepartation for the RAG method that we
@@ -1761,8 +1761,8 @@ We have already said that the `ska_cli` command line application is implemented
 in rust, it is responsible for various administration tasks and it uses the
 `ska_llm` internally. This cli component expose a friendly command line
 interface so that the admin can perform various operations. For the command line
-interface and argument parsing we will depend on `clap` library. For all datbase
-access we depend on the SeaORM library which we have describe in
+interface and argument parsing we will depend on `clap` library. For all
+database access we depend on the SeaORM library which we have describe in
 @heading_rust_libraries. There are two top level commands, the `command_db` and
 `command_model`. The first command, `command_db`, is responsible for
 administration tasks that affect our PostgreSQL database. It has a single child
@@ -1772,12 +1772,12 @@ responsible for all the machine learning tasks. We don't use any relevant rust
 libraries for these tasks, but the core functionality is handled by our
 `ska_llm` component as we have explained before. It has 5 child commands. The
 first command `command_download` downloads the needed machine learning models
-form hugging face hug @web_huggingface_hub_documentation. The pre defined list
+form hugging face hug @web_huggingface_hub_documentation. The predefined list
 with supported models currently are:
 - all-MiniLM-L6-v2 @web_huggingface_allminilm: A sentence-transformers model which
   maps sentences & paragraphs to a 384 dimensional dense vector space. It is used
   as our embedding model when we are storing/searching context chunks in/from our
-  vectore store.
+  vector store.
 - Llama-2-7B-Chat-GGUF @web_huggingface_llam2gguf: A Llama-2 model quantized for
   better invoking times performance, but with less accuracy.
 - Meta-Llama-3-8B-Instruct-GGUF @web_huggingface_llam3gguf: A Llama-3 model
@@ -1787,8 +1787,8 @@ downloaded location to a persisted location that can be read by our application.
 The commands `command_create_skalm` and `command_rag_prepare` are essentially
 wrappers around the equivalent operations of our `ska_llm` module. They also
 perform some extra checks and validations to disallow unwanted consequences. The
-command `command_rag_invoke` performcs validations and uses internally either
-`rag_invoke` or `invoke_skalm` operations of `ska_llm` components dependening on
+command `command_rag_invoke` performs validations and uses internally either
+`rag_invoke` or `invoke_skalm` operations of `ska_llm` components depending on
 the selected model. The following is a high level diagram showing the basic
 operations of `ska_cli` and the most important modules they are using.
 
@@ -1815,11 +1815,11 @@ logged in the app in order to update users' details from the users pool to our
 database. Then second top level endpoint route `route_assistant` enables three
 basic categories of operations. The first category `fetch` is about fetching
 user data like chats and historical messages. The second category `chat CRUD` is
-about CRUD (Create Read Upate Delete) operations on user's chats, which allows
+about CRUD (Create Read Update Delete) operations on user's chats, which allows
 users to manage their chats. The last operation, `ask question`, is about users
 asking questions to a selected chat which uses a defined LLM. This operation
-perfromes various validations and uses our `ska_llm` component internally as
-well in order to invoke the required LLM. We show a simple high level diagram of
+performs various validations and uses our `ska_llm` component internally as well
+in order to invoke the required LLM. We show a simple high level diagram of
 `ska_server` component.
 
 #figure(
@@ -1830,7 +1830,7 @@ well in order to invoke the required LLM. We show a simple high level diagram of
 #h(0pt)
 
 The `ska_frontend` component materializes the Graphical User Interface with
-which the users can interact with. It actually consistfs of two sub components.
+which the users can interact with. It actually consists of two sub components.
 The first one is `ska_frontend client` which contains all the built and bundled
 final needed files like html, css, javascript, images, etc. The second sub
 component `ska_frontend static server` is a simple http server, implemented by
@@ -1852,7 +1852,7 @@ details when we will describe Keycloak). The client provides three top level
 pages from which users can perform their operations. The `page_home` is the
 first page that is shown to a user. It shows a short description about the app
 and its content changes slightly depending on whether users are logged in or
-not. The `page_account` enableslogged in users to see their account details as
+not. The `page_account` enables logged in users to see their account details as
 well as to edit them. The `page_assistant` is the most important page as it
 enables logged in users to use the Specific Knowledge Assistant. There users can
 create, edit or delete a chat with a selected LLM. Users can then ask questions
@@ -1882,7 +1882,7 @@ database:
 #h(0pt)
 
 The keycloak component is used as a user pool and as a user authentication and
-authorization utility. For this we have created a specifc SKA Realm which
+authorization utility. For this we have created a specific SKA Realm which
 contains the available users together with their assigned roles. The supported
 roles are:
 - SKA_ADMIN: role that practically allows access to all endpoints
@@ -1924,7 +1924,7 @@ component.
 
 The `api gateway` is implemented by either using a nginx @web_nginx reverse
 proxy or a kubernetes Ingress @web_kubernetes_ingress depending on the
-deployment method. All the incoming http requests reache this componet at first
+deployment method. All the incoming http requests reach this component at first
 and then they get redirected to the desired service. This enables us to have a
 single component which can be configured with rules. Additionally, we have the
 benefit to serve the whole application under a single owned domain name and
@@ -1942,20 +1942,20 @@ We talked about our fundamental System components and modules. Now we will
 briefly talk about the development lifecycle of the systemd and its deployment
 methods.
 
-The code of our application exists in a git repostiory at
+The code of our application exists in a git repository at
 https://github.com/ThanosApostolou/thapo-ska. There are 3 fundamental branches.
 New code are directly pushed into `main` branch or merged by some other feature
-branch into `main` branch. When chagnes of multiple commits have been tested
+branch into `main` branch. When changes of multiple commits have been tested
 enough locally, then the `main` branch is merged into `dev` branch. After
 multiple merges in `dev` branch, when we are ready for a release we merge `dev`
 branch into `prod` branch.
 
-In alignment with the git branches, the application can run with 3 differnet
+In alignment with the git branches, the application can run with 3 different
 environments:
 - `local` environment
 - `dev` environment
 - `prod` environment
-Each environment specifiies different configuration for our services (e.g. about
+Each environment specifies different configuration for our services (e.g. about
 which url the frontend uses, which url the backend uses, which database schema
 to use, etc...).
 
@@ -1981,7 +1981,7 @@ Jenkins @web_jenkins, an open source automation server. In more details:
     kubernetes instance (see @heading_containers_docker_kubernetes) installed in our
     private server. For easier management of all the kubernetes resources we need to
     create we use Helm @web_helm.
-  The `prod` application is targeting a port which can be accessed publicly fron
+  The `prod` application is targeting a port which can be accessed publicly from
   the internet by all the users. Currently the domain our application is using is
   the https://thapo-ska.thapo.org/app, but it is possibly to change after the
   completion of this thesis.
@@ -2123,7 +2123,7 @@ Options:
 ```
 #h(0pt)
 
-The subcommand `rag-prepare` reads the users' documents and creates the vectore
+The subcommand `rag-prepare` reads the users' documents and creates the vector
 store so that it can be read by the application later. Running the command
 `app-cli model rag-prepare --help` shows that the command receives an option
 about which embedding model to use:
@@ -2184,7 +2184,7 @@ Options:
 
 Finally, the subcommand `rag-invoke` invokes the system specifying a desired
 embedding model, an LLM, a question and an prompt-template. The
-`prompt-template` option is optional and if ommited the default for this LLM
+`prompt-template` option is optional and if omitted the default for this LLM
 will be used. Running the command `app-cli model rag-invoke --help` the output
 below:
 
@@ -2292,7 +2292,7 @@ the admin downloads and inserts the models, creates and trains the SKA text
 generation model and prepares the RAG vector store. Now the system is ready to
 be used by its users by accessing the Graphical User Interface that has been
 deployed. We will show the main pages of our app and the core functionality of
-the Specific Knowledge Assitant.
+the Specific Knowledge Assistant.
 
 The Home page is the first page a user sees. It shows a brief description of the
 application. It also allows users to login to the system by either clicking the
@@ -2306,7 +2306,7 @@ right of the page.
 ) <img_ska_home_page>
 #h(0pt)
 
-When users click the login link, they get redirected to the kecloak login page.
+When users click the login link, they get redirected to the kecloakk login page.
 There they can login with their credentials and the Keycloak will redirect them
 back to the SKA home page.
 
@@ -2440,7 +2440,7 @@ comparison with `skalm` model.
 When chats are used with supported by RAG models, the answers have a little
 button at the end of them. Clicking on this button opens a modal that shows the
 context with the relevant chunks of which the model found the answer. So, it
-enables the users to cross refrence their documents and verify the LLM answers.
+enables the users to cross reference their documents and verify the LLM answers.
 
 #figure(
   image("images/screenshot_assistant_llama3_context.png", width: 100%),
@@ -2479,13 +2479,13 @@ asking questions relevant to the knowledge field.
 After using the system and researching ways to improve its capabilities and tune
 its performance we reached in the following conclusions.
 - Our custom text generation model was not able to perform well in answering
-  questions. This was exptected since the model needed to learn from scratch all
-  the vocabulary and grammar of the language in addition the specifc field of
+  questions. This was expected since the model needed to learn from scratch all
+  the vocabulary and grammar of the language in addition the specific field of
   knowledge. The depth of the model architecture, the training time and the users'
-  documents we had available for training were not enought in order to achieve
-  this goal.
+  documents we had available for training were not enough in order to achieve this
+  goal.
 - The method using a custom text generation model is not suitable for this task.
-  Even if we managed to make our modle to perform well, each time the users'
+  Even if we managed to make our model to perform well, each time the users'
   documents were updated we will need to retrain the model in these documents, a
   procedure very costly in terms of time, resources and energy wasted.
 - The method using the RAG technique achieved the desired outcome. Users were able
@@ -2499,8 +2499,8 @@ its performance we reached in the following conclusions.
   service if we ever need higher resources and availability in the future, with
   very little changes.
 - We need very high resources for a good user experience. We managed our system to
-  work somehow well by using lighter quanitzed machine learning models versions
-  instead of the original with the tradeoff of losing accuracy. However, with
+  work somehow well by using lighter quantized machine learning models versions
+  instead of the original with the trade-off of losing accuracy. However, with
   multiple users' documents and larger chunks splits in our vector store (which
   gives us in better results) the system needs several minutes sometimes to answer
   some questions. We understand that we need to utilize a GPU (which our hardware
@@ -2508,10 +2508,10 @@ its performance we reached in the following conclusions.
   increase as well with the minimum being around 3GB of RAM.
 
 The Specific Knowledge Assistance (SKA) was able to achieve its goals. However,
-this only the beginning since machine learinng and specifically RAG technique
+this only the beginning since machine learning and specifically RAG technique
 will increase in popularity more and more as the years goes by, with many
-reasearchers trying to advance its capabilities and to mitigate its
-disadvantages. With this in mind, there are seveveral improvments and changes we
+researchers trying to advance its capabilities and to mitigate its
+disadvantages. With this in mind, there are several improvements and changes we
 can apply in the future after the completion of this thesis:
 - Deprecate support of the custom text generation model. As we concluded before,
   the custom text generation model method had many drawbacks and wasn't able to
@@ -2519,7 +2519,7 @@ can apply in the future after the completion of this thesis:
   the system and didn't allow us to fully take advantage of RAG technique.
 - Utilize a supported GPU. We will need to acquire high performance hardware with
   GPU capabilities and deploy the system with some changes in order to support GPU
-  during both the vector store creatino and the invokation of the LLMs during.
+  during both the vector store creation and the invocation of the LLMs during.
   This will vastly improve the user experience.
 - Support more generation formats like images, sounds and videos. We only focused
   on text generation task on this thesis. However, newer machine learning models
@@ -2532,7 +2532,7 @@ can apply in the future after the completion of this thesis:
   concept of `Tools` @web_langchain_tools which allows more advanced information
   to be passed in the LLMs programmatically. We didn't use these Tools since they
   are not very mature yet in development and their usage is very advanced for this
-  tesis goalds. However, in the future we would be able to expand the system and
+  thesis goals. However, in the future we would be able to expand the system and
   find information by other systems and not just documents.
 #h(0pt)
 
