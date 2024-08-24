@@ -274,26 +274,29 @@ machine learning models in specific knowledge search and analysis assistance. We
 will use two different methods for these tasks and we will develop a full web
 application with which users will be able to ask questions
 
-In chapter 2 we will describe and analyze the fundamental theoretical concepts
-needed for better understanding of this thesis. We will also describe the
-various technologies and their advantage, which we will use for our application
-development and deployment.
+In @heading_theory_literature_review we will describe and analyze the
+fundamental theoretical concepts needed for better understanding of this thesis.
+We will also describe the various technologies and their advantage, which we
+will use for our application development and deployment.
 
-In chapter 3 we will dive in the details of the two methods that we will use. We
-will compare them and we will describe their advantages and disadvantages.
+In @heading_specific_knowledge_assistance_approaches we will dive in the details
+of the two methods that we will use. We will compare them and we will describe
+their advantages and disadvantages.
 
-In chapter 4 we will describe the architecture and the implementation of our
-application. We will show the components which construct our application, the
-tasks each component can perform and how they are connected together.
+In @heading_system_architecture we will describe the architecture and the
+implementation of our application. We will show the components which construct
+our application, the tasks each component can perform and how they are connected
+together.
 
-In chapter 5 we will show the design and execution results of our deployed
-application. We will investigate the various ways in which our application can
-be used by the users in order to find specific knowledge based on raw data like
-documents or web pages.
+In @heading_usage_execution_of_application we will show the design and execution
+results of our deployed application. We will investigate the various ways in
+which our application can be used by the users in order to find specific
+knowledge based on raw data like documents or web pages.
 
-In chapter 6 we will write our conclusions we reached. We will describe the
-problems and limitations we faced. Finally, we will specify future improvements
-that can be made as well as future goals about scaling and expand the core idea.
+In @conclusions_future_work we will write our conclusions we reached. We will
+describe the problems and limitations we faced. Finally, we will specify future
+improvements that can be made as well as future goals about scaling and expand
+the core idea.
 
 #pagebreak()
 = Theory and Literature Review <heading_theory_literature_review>
@@ -1984,11 +1987,11 @@ Jenkins @web_jenkins, an open source automation server. In more details:
   completion of this thesis.
 
 #pagebreak()
-= Usage and Execution of the Application
+= Usage and Execution of the Application <heading_usage_execution_of_application>
 We talked about the System Architecture of our application, now we will show
 real execution of our application and its results.
 
-== Command Line Interface (CLI) Usage
+== Command Line Interface (CLI) Usage <heading_usage_cli>
 We will show examples of executing the `ska_cli` component. In some cases we
 will show the description of the command and in other cases we will show the
 important parts of the command output, where it makes sense.
@@ -2283,7 +2286,7 @@ with small parameters does not answer very good.
 ```
 #h(0pt)
 
-== Graphical User Interface (GUI) Usage
+== Graphical User Interface (GUI) Usage <heading_usage_gui>
 We showcased the usage of our command line application. After the deployment,
 the admin downloads and inserts the models, creates and trains the SKA text
 generation model and prepares the RAG vector store. Now the system is ready to
@@ -2452,8 +2455,91 @@ search and assistance! We have completed the showcase of the most important
 parts of our appliation.
 
 #pagebreak()
-= Conclusions and Future Work
-TODO
+= Conclusions and Future Work <conclusions_future_work>
+We studied the usage of text generation machine learning models in specific
+knowledge search and analysis assistance. We used two different methods to
+accomplish these tasks. The first method involved the creation of a custom text
+generation machine learning model. We trained this model with users' documents
+for the specific knowledge field and we tried to make it possible to answer
+users' questions about this knowledge field. The second approach was based on
+the Retrieval Augmented Generation (RAG) technique. We used pre-trained Large
+Language Models (LLMs), we provided the users' documents as context to these
+LLMs and we tried to make them answer based only on this context and not based
+on their knowledge acquired by their training.
+
+Then, we developed a full web application and a complete system with its own
+infrastructure in order to support users to utilize this knowledge search and
+assistance, in a specific knowledge field constructed by various documents of
+different formats. The admin was able to use the Command Line Interface (CLI)
+application in order to administrate the system, manage the needed LLMs and
+add/delete/update the users' documents. The users were able to use the Graphical
+User Interface (GUI) and utilize the Specific Knowledge Assistant (SKA) by
+asking questions relevant to the knowledge field.
+
+After using the system and researching ways to improve its capabilities and tune
+its performance we reached in the following conclusions.
+- Our custom text generation model was not able to perform well in answering
+  questions. This was exptected since the model needed to learn from scratch all
+  the vocabulary and grammar of the language in addition the specifc field of
+  knowledge. The depth of the model architecture, the training time and the users'
+  documents we had available for training were not enought in order to achieve
+  this goal.
+- The method using a custom text generation model is not suitable for this task.
+  Even if we managed to make our modle to perform well, each time the users'
+  documents were updated we will need to retrain the model in these documents, a
+  procedure very costly in terms of time, resources and energy wasted.
+- The method using the RAG technique achieved the desired outcome. Users were able
+  to get answers for their questions and be provided with the relative context of
+  the information so that can deep dive into or even cross check the answer.
+- The whole system and infrastructure can be self hosted without any dependency on
+  any other external or paid service. We were able to download free high
+  performant LLMs locally to our self hosted server and deploy our whole
+  application and the needed infrastructure using Docker and Kubernetes. Utilizing
+  Kubernetes allows us to move the system to a managed external paid Kubernetes
+  service if we ever need higher resources and availability in the future, with
+  very little changes.
+- We need very high resources for a good user experience. We managed our system to
+  work somehow well by using lighter quanitzed machine learning models versions
+  instead of the original with the tradeoff of losing accuracy. However, with
+  multiple users' documents and larger chunks splits in our vector store (which
+  gives us in better results) the system needs several minutes sometimes to answer
+  some questions. We understand that we need to utilize a GPU (which our hardware
+  didn't support) instead of just using the CPU. Also the memory requirements
+  increase as well with the minimum being around 3GB of RAM.
+
+The Specific Knowledge Assistance (SKA) was able to achieve its goals. However,
+this only the beginning since machine learinng and specifically RAG technique
+will increase in popularity more and more as the years goes by, with many
+reasearchers trying to advance its capabilities and to mitigate its
+disadvantages. With this in mind, there are seveveral improvments and changes we
+can apply in the future after the completion of this thesis:
+- Deprecate support of the custom text generation model. As we concluded before,
+  the custom text generation model method had many drawbacks and wasn't able to
+  perform well. Supporting both RAG and our custom text generation model limited
+  the system and didn't allow us to fully take advantage of RAG technique.
+- Utilize a supported GPU. We will need to acquire high performance hardware with
+  GPU capabilities and deploy the system with some changes in order to support GPU
+  during both the vector store creatino and the invokation of the LLMs during.
+  This will vastly improve the user experience.
+- Support more generation formats like images, sounds and videos. We only focused
+  on text generation task on this thesis. However, newer machine learning models
+  are being developed that support generation of images, sound and videos. In the
+  future we will be able to update the system in order to support generation of
+  these types and not just text. This will be very useful in some knowledge
+  fields.
+- Add integrations with other applications and utilize interfaces which enables us
+  to interact with the external world. The langchain library we used has the
+  concept of `Tools` @web_langchain_tools which allows more advanced information
+  to be passed in the LLMs programmatically. We didn't use these Tools since they
+  are not very mature yet in development and their usage is very advanced for this
+  tesis goalds. However, in the future we would be able to expand the system and
+  find information by other systems and not just documents.
+#h(0pt)
+
+We achieved the goal of knowledge assistance in a specific knowledge field using
+artificial intelligence technologies. We believe that the system we created can
+from a future basis and be expanded in order to be able to perform more complex
+tasks!
 
 #pagebreak()
 #bibliography("bibliography.bib")
