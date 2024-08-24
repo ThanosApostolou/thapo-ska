@@ -313,12 +313,13 @@ the art practices of utilizing their capabilities to the maximum by using
 Retrieval Augmented Generation (RAG) technique.
 
 === Artificial intelligence <heading_artificial_intelligence>
-In the general sense, Artificial intelligence (AI) is intelligence exhibited by
-machines, particularly computer systems. It is a field of research in computer
-science that develops and studies methods and software that enable machines to
-perceive their environment and use learning and intelligence to take actions
-that maximize their chances of achieving defined goals. Such machines may be
-called AIs. @web_wiki_artificial_intelligence
+In the general sense, Artificial intelligence (AI) is about machines, like
+computer systems, showing intelligence in a degree similar to humans. It is a
+field of research in computer science that develops and studies methods and
+software that enable machines to perceive their environment and use learning and
+intelligence to take actions that maximize their chances of achieving defined
+goals @web_wiki_artificial_intelligence. The machines which fit this description
+can be called AIs.
 
 Intelligence can be considered to be a property of internal thought processes
 and reasoning, or a property of intelligent behavior, an external
@@ -386,18 +387,20 @@ from and make decisions based on data. The process involves the following steps:
 There are 4 basic types of Machine Learning: @web_wiki_machine_learning
 @web_geeksforgeeks_types_machine_learning
 @web_lakefs_machine_learning_components
-- Supervised Learning: The model is trained on labeled data, meaning the input
-  comes with the correct output. The goal is to learn a mapping from inputs to
-  outputs. Examples: Regression, classification.
-- Unsupervised Learning: The model is trained on unlabeled data, and it must find
-  hidden patterns or intrinsic structures in the input data. Examples: Clustering,
+- Supervised Learning: We have labeled data for which we know the correct output
+  from the corresponding input. The machine learning model tries to find a mapping
+  from inputs to outputs. Some examples of problems categories are Regression and
+  Classification.
+- Unsupervised Learning: We only have unlabeled data, meaning that we don't know
+  the correct outputs for given inputs. The model must find hidden patterns or
+  intrinsic structures in the input data. Some problems categories are Clustering,
   association.
 - Semi-Supervised Learning: Combines a small amount of labeled data with a large
-  amount of unlabeled data during training. It falls between supervised and
-  unsupervised learning.
+  amount of unlabeled data during training. It lays somewhere between supervised
+  and unsupervised learning.
 - Reinforcement Learning: The model learns by interacting with an environment,
   receiving rewards or penalties based on its actions, and aims to maximize the
-  cumulative reward. Examples: Game playing, robotic control.
+  cumulative reward. Some examples are Game playing, robotic control.
 #h(0pt)
 
 Deep learning is a subset of machine learning that uses multilayered neural
@@ -418,11 +421,11 @@ Machine Learning and Artificial Intelligence with the diagram below:
 ) <img_venn>
 
 Artificial Intelligence, Machine Learning and Deep Learning are involved in many
-applications like Image Recognition, Speech Recognition, Traffic prediction,
-Recommender Systems, Self-driving cars, Email Spam and Malware Filtering,
-Virtual Personal Assistant, Fraud Detection, Stock Market trading, Medical
-Diagnosis, Automatic Language Translation, Chatbots, Generation of text images
-and videos. @web_javatpoint_applications_machine_learning
+applications like Recommender Systems, Medical Diagnosis, Image Recognition,
+Speech Recognition, Email Spam and Malware Filtering, Traffic prediction,
+Self-driving cars, Virtual Personal Assistant, Fraud Detection, Stock Market
+trading, Automatic Language Translation, Chatbots, Generation of text images and
+videos. @web_javatpoint_applications_machine_learning
 @web_geeksforgeeks_applications_machine_learning
 @web_coursera_applications_machine_learning. All these applications required
 different artificial intelligence disciplines that can be combined in order to
@@ -537,7 +540,7 @@ Some advantages of LLM quantization are: @web_symbl_ai_quantization
   memory bandwidth requirements allow for more efficient computations.
 However the disadvantages are @web_symbl_ai_quantization:
 - Loss of Accuracy: undoubtedly, the most significant drawback of quantization is
-  a potential loss of accuracy in output. Converting the model’s weights to a
+  a potential loss of accuracy in output. Converting the model's weights to a
   lower precision is likely to degrade its performance – and the more “aggressive”
   the quantization technique, i.e., the lower the bit widths of the converted data
   type, e.g., 4-bit, 3-bit, etc., the greater the risk of loss of accuracy.
@@ -676,21 +679,22 @@ object-oriented and functional programming. It is often described as a "batterie
 included" language due to its comprehensive standard library. @web_wiki_python
 
 Choosing python as a programming language has several benefits @web_aws_python
-- Developers can easily read and understand a Python program because it has basic,
-  English-like syntax.
-- Python makes developers more productive because they can write a Python program
-  using fewer lines of code compared to many other languages.
-- Python has a large standard library that contains reusable codes for almost any
-  task. As a result, developers do not have to write code from scratch.
-- Developers can easily use Python with other popular programming languages such
-  as Java, C, and C++.
-- The active Python community includes millions of supportive developers around
-  the globe. If you face an issue, you can get quick support from the community.
-- Plenty of helpful resources are available on the internet if you want to learn
-  Python. For example, you can easily find videos, tutorials, documentation, and
-  developer guides.
-- Python is portable across different computer operating systems such as Windows,
-  macOS, Linux, and Unix.
+- Python has easy English-like syntax that, so it is easier for developers to read
+  a code base understand it.
+- Python software usually can be written with fewer lines of code comparing to
+  other programming languages, so it can increase development productivity.
+- Python has a large standard library which covers multiple tasks like cli
+  parsing, http clients, advanced mathematics, etc. Developers can utilize the
+  standard library without the need to use third party libraries or write code
+  from scratch.
+- Python can easily be used by developers with other popular programming languages
+  such as Java, C, and C++ and Rust.
+- Python has one of the most active communities of developers. So, it makes it
+  easier for developers to find quick support for almost every task needed. There
+  are also many helpful resources like videos, tutorials, documentation, and
+  developer guides available on the internet.
+- Python can be use in many operating systems such as Windows, macOS, Linux, and
+  Unix since it is portable.
 #h(0pt)
 
 The python programming language is very popular in various applications:
@@ -1102,14 +1106,14 @@ section we will talk about the most important technologies which we will use in
 order to deploy and deliver our application.
 
 Containers are executable units of software that package application code along
-with its libraries and dependencies. They allow code to run in any computing
-environment, whether it be desktop, traditional IT or cloud infrastructure.
-Containers take advantage of a form of operating system (OS) virtualization in
-which features of the OS kernel (for example, Linux namespaces and cgroups,
-Windows silos and job objects) can be used to isolate processes and control the
-amount of CPU, memory and disk that those processes can access. More portable
-and resource-efficient than virtual machines (VMs), containers have become the
-de facto compute units of modern cloud-native applications. Additionally,
+with its libraries and dependencies. They allow the same code to run in many
+different computing environments, like desktops, servers, IT or cloud
+infrastructure. Containers take advantage of a form of operating system (OS)
+virtualization in which features of the OS kernel (like for example, Linux
+namespaces and cgroups) can be used to isolate processes and control the amount
+of CPU, memory and disk that those processes can access. More portable and
+resource-efficient than virtual machines (VMs), containers have become the de
+facto compute units of modern cloud-native applications. Additionally,
 containers are critical to the underlying IT infrastructure that powers hybrid
 multicloud settings—the combination of on-premises, private cloud, public cloud
 and more than one cloud service from more than one cloud vendor. One way to
@@ -1119,7 +1123,7 @@ physical computer. A VM is often referred to as a guest, while the physical
 machine it runs on is called the host. Virtualization technology makes VMs
 possible. A hypervisor—a small software layer—allocates physical computing
 resources (for example, processors, memory, storage) to each VM. It keeps each
-VM separate from others so they don’t interfere with each other. Each VM then
+VM separate from others so they don't interfere with each other. Each VM then
 contains a guest OS and a virtual copy of the hardware that the OS requires to
 run, along with an application and its associated libraries and dependencies.
 VMware was one of the first to develop and commercialize virtualization
@@ -1135,7 +1139,7 @@ automation, backup and monitoring @web_ibm_containers. Here are the top
 advantages of using containers:
 - Lightweight: Containers share the machine OS kernel, eliminating the need for a
   full OS instance per application and making container files small and easy on
-  resources. A container’s smaller size, especially compared to a VM, means it can
+  resources. A container's smaller size, especially compared to a VM, means it can
   spin up quickly and better support cloud-native applications that scale
   horizontally.
 - Portable and platform-independent: Containers carry all their dependencies with
@@ -1160,7 +1164,7 @@ advantages of using containers:
 
 The most popular containerization technology nowadays is Docker. Docker enables
 developers to build, deploy, run, update and manage containers. Docker uses the
-Linux kernel (the operating system’s base component) and kernel features (like
+Linux kernel (the operating system's base component) and kernel features (like
 Cgroups and namespaces) to separate processes so they can run independently.
 Docker essentially takes an application and its dependencies and turns them into
 a virtual container that can run on any Windows, macOS or Linux-running computer
