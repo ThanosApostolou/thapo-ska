@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2024-08-22T04:54:31.272Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="E_22dZ-Tyh98xlkmKgzd" version="24.6.4" type="device">
+<mxfile host="Electron" modified="2024-08-28T14:52:00.316Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.6.4 Chrome/124.0.6367.207 Electron/30.0.6 Safari/537.36" etag="_t8lauLtE7cWMocQ2CB2" version="24.6.4" type="device">
   <diagram name="Page-1" id="5f0bae14-7c28-e335-631c-24af17079c00">
     <mxGraphModel dx="1434" dy="835" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
       <root>
@@ -16,7 +16,7 @@
         <mxCell id="WYI8Hgwxbw-3lVaL65Fc-4" value="ska_server" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;strokeColor=#00CC00;" parent="1" vertex="1">
           <mxGeometry x="370" y="320" width="100" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="WYI8Hgwxbw-3lVaL65Fc-5" value="ska_frontend static server" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;strokeColor=#CC0000;" parent="1" vertex="1">
+        <mxCell id="WYI8Hgwxbw-3lVaL65Fc-5" value="ska_frontend static server" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;strokeColor=#990000;" parent="1" vertex="1">
           <mxGeometry x="370" y="250" width="100" height="50" as="geometry" />
         </mxCell>
         <mxCell id="WYI8Hgwxbw-3lVaL65Fc-6" value="Keycloak" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;strokeColor=#990000;" parent="1" vertex="1">

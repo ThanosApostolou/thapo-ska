@@ -13,7 +13,7 @@
   margin: (x: 3cm, y: 3cm),
   header: locate(loc => if loc.page() > 2 {
     [
-      #set text(font: "Arial", size: 8pt)
+      #set text(font: "Arial", size: 8pt, hyphenate: false)
       #grid(columns: (1fr, 1fr), rows: 1, align(left)[
         MSc Thesis
       ], align(right)[
@@ -23,7 +23,7 @@
   }),
   footer: locate(loc => if loc.page() > 2 {
     [
-      #set text(font: "Arial", size: 8pt)
+      #set text(font: "Arial", size: 8pt, hyphenate: false)
       #grid(columns: (1fr, 1fr), rows: 1, align(left)[
         #document.title
       ], align(right)[
@@ -32,27 +32,27 @@
     ]
   }),
 )
-#set text(font: "Arial", size: 10pt)
+#set text(font: "Arial", size: 10pt, hyphenate: false)
 #show heading.where(level: 1): it => [
-  #set text(font: "Arial", size: 12pt, weight: "black")
+  #set text(font: "Arial", size: 12pt, weight: "black", hyphenate: false)
   // #v(18pt)
   #it
   #v(6pt)
 ]
 #show heading.where(level: 2): it => [
-  #set text(font: "Arial", size: 11pt, weight: "black")
+  #set text(font: "Arial", size: 11pt, weight: "black", hyphenate: false)
   #v(18pt)
   #it
   #v(6pt)
 ]
 #show heading.where(level: 3): it => [
-  #set text(font: "Arial", size: 10pt, weight: "black")
+  #set text(font: "Arial", size: 10pt, weight: "black", hyphenate: false)
   #v(18pt)
   #it
   #v(6pt)
 ]
 #show figure: it => [
-  #set text(font: "Arial", size: 9pt, weight: "bold")
+  #set text(font: "Arial", size: 9pt, weight: "bold", hyphenate: false)
   #it
 ]
 
@@ -246,14 +246,13 @@
     του στόχου θα αναπτύξουμε μια πλήρη διαδικτυακή εφαρμογή, στην οποία οι χρήστες
     θα μπορούν να κάνουν ερωτήσεις σε μοντέλα τεχνητής νοημοσύνης, τα οποία θα τους
     απαντάνε με βάση συγκεκριμένο πλαίσιο. Θα ακολουθήσουμε δύο διαφορετικές
-    μεθοδολογίες. Για την πρώτη μεθοδολογία θα δημιουργήσουμε ένα δικό μας μοντέλο
-    τεχνητής νοημοσύνης παραγωγής κειμένου @web_huggingface_text_generation το οποίο
-    θα εκπαιδευτεί για να κατανοεί συγκεκριμένη γνώση. Για την δεύτερη μεθοδολογία
-    θα χρησιμοποιήσουμε υπάρχοντα μοντέλα τεχνητής νοημοσύνης προσπαθώντας να τα
+    μεθόδους. Για την πρώτη μέθοδο θα δημιουργήσουμε ένα δικό μας μοντέλο τεχνητής
+    νοημοσύνης παραγωγής κειμένου @web_huggingface_text_generation το οποίο θα
+    εκπαιδευτεί για να κατανοεί συγκεκριμένη γνώση. Για την δεύτερη μέθοδο θα
+    χρησιμοποιήσουμε υπάρχοντα μοντέλα τεχνητής νοημοσύνης προσπαθώντας να τα
     περιορίσουμε ώστε να απαντάνε μόνο στο συγκεκριμένο πλαίσιο γνώσης που έχουμε
-    επιλέξει. Στο τέλος θα μπορέσουμε να καταλήξουμε σε συμπεράσματα. Στο τέλος θα
-    μπορέσουμε να καταλήξουμε σε συμπεράσματα για την χρησιμότητα αυτών των
-    μεθοδολογιών. @book_artificial_intelligence_a_modern_approach
+    επιλέξει. Στο τέλος θα μπορέσουμε να καταλήξουμε σε συμπεράσματα για την
+    χρησιμότητα αυτών των μεθόδων.
   ],
 )
 
@@ -342,7 +341,7 @@ following: @book_artificial_intelligence_a_modern_approach
   The full Turing test is completed with 2 additional characteristics which have
   been added by later researchers:
   - computer vision and speech recognition to perceive the world
-  - robotics to manipulate objects and move about
+  - robotics to manipulate objects and move themselves
 - Thinking humanly: The cognitive modeling approach We can determine if a computer
   or a program thinks like a human by analyzing the human thought in 3 main
   concepts:
@@ -442,7 +441,7 @@ output.
 
 === Text Generation Models, LLM <heading_text_generation_models_llm>
 We described the fundamental concepts of artificial intelligence and machine
-learning. Now we will take a closer look into a specific category o machine
+learning. Now we will take a closer look into a specific category of machine
 learning models which are used in text generation tasks.
 
 Generative AI refers to deep-learning models that can generate high-quality
@@ -851,22 +850,22 @@ However rust programming language has also some drawbacks
 We will talk about the most important Python libraries that we use for our
 application and their important parts that we utilize.
 
-One of the most significant libraries we use is NLTK. NLTK is a leading platform
-for building Python programs to work with human language data. It provides
-easy-to-use interfaces to over 50 corpora and lexical resources such as WordNet,
-along with a suite of text processing libraries for classification,
+One of the most significant libraries we use is *NLTK*. NLTK is a leading
+platform for building Python programs to work with human language data. It
+provides easy-to-use interfaces to over 50 corpora and lexical resources such as
+WordNet, along with a suite of text processing libraries for classification,
 tokenization, stemming, tagging, parsing, and semantic reasoning, wrappers for
 industrial-strength NLP libraries, and an active discussion forum. Thanks to a
 hands-on guide introducing programming fundamentals alongside topics in
 computational linguistics, plus comprehensive API documentation, NLTK is
 suitable for linguists, engineers, students, educators, researchers, and
-industry users alike. NLTK is available for Windows, Mac OS X, and Linux. Best
-of all, NLTK is a free, open source, community-driven project @web_nltk. NLTK
+industry users alike. NLTK is available for Windows, Mac OS X, and Linux.
+Moreover, NLTK is a free, open source, community-driven project @web_nltk. NLTK
 comes with many corpora, toy grammars, trained models, etc which are called NTLK
 Data @web_nltk_data. One of the most important modules of NLTK is the "tokenize"
 module which can help us split a long text into sentences or into words.
 
-In order to create our own machine learning model we will use PyTorch library.
+In order to create our own machine learning model we will use *PyTorch* library.
 PyTorch is a machine learning library based on the Torch library, used for
 applications such as computer vision and natural language processing
 @web_wiki_pytorch. Written in Python, it's relatively easy for most machine
@@ -885,7 +884,7 @@ graph (DAG) consisting of Function objects. In this DAG, leaves are the input
 tensors, roots are the output tensors. @web_nvidia_pytorch
 
 In order to use existing pre-trained Large Language Models (LLM), which we
-described in @heading_text_generation_models_llm, we will use LangChain.
+described in @heading_text_generation_models_llm, we will use *LangChain*.
 LangChain is a framework for developing applications powered by large language
 models (LLMs). LangChain simplifies every stage of the LLM application lifecycle
 @web_langchain_python_introduction:
@@ -913,14 +912,15 @@ search for you. Supported vector stores are @web_langchain_vector_stores:
 - Lance
 #h(0pt)
 
-We will use Hugging Face Hub in order to be able to download pre-trained LLMs.
-The Hugging Face Hub is a platform with over 350k models, 75k datasets, and 150k
-demo apps (Spaces), all open source and publicly available, in an online
-platform where people can easily collaborate and build ML together. The Hub
-works as a central place where anyone can explore, experiment, collaborate, and
-build technology with Machine Learning @web_huggingface_hub_documentation
+We will use *Hugging Face Hub* in order to be able to download pre-trained LLMs.
+The Hugging Face Hub is a platform with thousands of machine learning models,
+datasets, and demo apps, all open source and publicly available, in an online
+platform where people can easily collaborate and build Machine Learning
+solutions. The Hub works as a central place where anyone can explore,
+experiment, collaborate, and build technology with Machine Learning
+@web_huggingface_hub_documentation
 
-From the supported LangChain LLM providers we will mostly use the Llama.cpp
+From the supported LangChain LLM providers we will mostly use the *Llama.cpp*
 provider. The main goal of llama.cpp is to enable LLM inference with minimal
 setup and state-of-the-art performance on a wide variety of hardware - locally
 and in the cloud. Some characteristics of this library are the following
@@ -938,24 +938,24 @@ llama cpp can be used with any LLMs which have been converted to ggml or gguf
 quantized formats, which we discussed in @heading_text_generation_models_llm.
 
 In order to create a graph of our own machine learning model performance we will
-use matplotlib. Matplotlib is a comprehensive library for creating static,
+use *matplotlib*. Matplotlib is a comprehensive library for creating static,
 animated, and interactive visualizations in Python. Matplotlib produces
 publication-quality figures in a variety of hardcopy formats and interactive
 environments across platforms. Matplotlib can be used in Python scripts,
 Python/IPython shells, web application servers, and various graphical user
 interface toolkits. @web_pypi_matplotlib
 
-We will use unstructured library in order to be able to read various documents.
-The unstructured library provides open-source components for ingesting and
-pre-processing images and text documents, such as PDFs, HTML, Word docs, and
-many more. The use cases of unstructured revolve around streamlining and
-optimizing the data processing workflow for LLMs. unstructured modular functions
-and connectors form a cohesive system that simplifies data ingestion and
-pre-processing, making it adaptable to different platforms and efficient in
+We will use *unstructured* library in order to be able to read various
+documents. The unstructured library provides open-source components for
+ingesting and pre-processing images and text documents, such as PDFs, HTML, Word
+docs, and many more. The use cases of unstructured revolve around streamlining
+and optimizing the data processing workflow for LLMs. unstructured modular
+functions and connectors form a cohesive system that simplifies data ingestion
+and pre-processing, making it adaptable to different platforms and efficient in
 transforming unstructured data into structured outputs. @web_pypi_unstructured
 
-We will depend on faiss library to provide us a vector store implementation and
-search algorithm to use with LangChain. Faiss is a library for efficient
+We will depend on *FAISS* library to provide us a vector store implementation
+and search algorithm to use with LangChain. Faiss is a library for efficient
 similarity search and clustering of dense vectors. It contains algorithms that
 search in sets of vectors of any size, up to ones that possibly do not fit in
 RAM. It also contains supporting code for evaluation and parameter tuning. Faiss
@@ -966,14 +966,14 @@ useful algorithms are implemented on the GPU. @web_github_faiss
 We will talk about the most important Rust libraries that we use for our
 application and their important parts that we utilize.
 
-In order to create a command line application (cli) we will use clap library.
+In order to create a command line application (cli) we will use *clap* library.
 Clap is a command line argument parser for Rust. I allows us to create our
 command-line parser, with all of the bells and whistles, declaratively or
 procedurally. @web_github_clap_readme
 
 To use asynchronous programming in Rust we need a asynchronous runtime, so we
-will use the most popular one tokio. Tokio is an event-driven, non-blocking I/O
-platform for writing asynchronous applications with the Rust programming
+will use the most popular one *tokio*. Tokio is an event-driven, non-blocking
+I/O platform for writing asynchronous applications with the Rust programming
 language. At a high level, it provides a few major components:
 @web_github_tokio_readme
 - A multithreaded, work-stealing based task scheduler.
@@ -989,7 +989,7 @@ applications with the Rust programming language. It is: @web_github_tokio_readme
   cancellation naturally.
 #h(0pt)
 
-We will use axum library to develop our web server. Axum is a web application
+We will use *axum* library to develop our web server. Axum is a web application
 framework that focuses on ergonomics and modularity. Some high level features
 are: @web_github_axum_readme
 - Route requests to handlers with a macro free API.
@@ -1000,7 +1000,7 @@ are: @web_github_axum_readme
   services, and utilities.
 #h(0pt)
 
-We will use SeaORM library so that our backend fetches and writes data in a
+We will use *SeaORM* library so that our backend fetches and writes data in a
 database. SeaORM is a relational ORM which helps us build web services in Rust
 with the familiarity of dynamic languages. Some SeaORM features are:
 @web_github_seaorm_readme
@@ -1018,8 +1018,8 @@ SeaORM supports connections with MySQL, Postgres or SQLite databases
 We will use Web Technologies in order to create a Frontend for our application.
 In this section we will describe the main technologies for our frontend.
 
-HTML (HyperText Markup Language) is the most basic building block of the Web. It
-defines the meaning and structure of web content. Other technologies besides
+*HyperText Markup Language* (HTML) is the most basic building block of the Web.
+It defines the meaning and structure of web content. Other technologies besides
 HTML are generally used to describe a web page's appearance/presentation (CSS)
 or functionality/behavior (JavaScript).
 "Hypertext" refers to links that connect web pages to one another, either within
@@ -1033,7 +1033,7 @@ which consist of the element name surrounded by "<" and ">". The name of an
 element inside a tag is case-insensitive. That is, it can be written in
 uppercase, lowercase, or a mixture. @web_mozilla_developer_html
 
-Cascading Style Sheets (CSS) is a stylesheet language used to describe the
+*Cascading Style Sheets* (CSS) is a stylesheet language used to describe the
 presentation of a document written in HTML or XML (including XML dialects such
 as SVG, MathML or XHTML). CSS describes how elements should be rendered on
 screen, on paper, in speech, or on other media. CSS is among the core languages
@@ -1044,7 +1044,7 @@ recommendations. You might have heard about CSS1, CSS2.1, or even CSS3. There
 will never be a CSS3 or a CSS4; rather, everything is now just "CSS" with
 individual CSS modules having version numbers. @web_mozilla_developer_css
 
-JavaScript (JS) is a lightweight interpreted (or just-in-time compiled)
+*JavaScript* (JS) is a lightweight interpreted (or just-in-time compiled)
 programming language with first-class functions. While it is most well-known as
 the scripting language for Web pages, many non-browser environments also use it,
 such as Node.js, Apache CouchDB and Adobe Acrobat. JavaScript is a
@@ -1058,7 +1058,7 @@ through toString()). The standards for JavaScript are the ECMAScript Language
 Specification (ECMA-262) and the ECMAScript Internationalization API
 specification (ECMA-402). @web_mozilla_developer_javascript
 
-TypeScript is a programming language that adds static type checking to
+*TypeScript* (TS) is a programming language that adds static type checking to
 JavaScript. TypeScript is a superset of JavaScript, meaning that everything
 available in JavaScript is also available in TypeScript, and that every
 JavaScript program is a syntactically legal TypeScript program. Also, the
@@ -1072,7 +1072,7 @@ properties of an object. After compilation, type annotations are removed, making
 the compiled output just JavaScript, meaning it can be executed in any
 JavaScript runtime. @web_mozilla_developer_typescript
 
-An SPA (Single-page application) is a web app implementation that loads only a
+An *SPA* (Single-page application) is a web app implementation that loads only a
 single web document, and then updates the body content of that single document
 via JavaScript APIs such as Fetch when different content is to be shown. This
 therefore allows users to use websites without loading whole new pages from the
@@ -1082,7 +1082,7 @@ state, implement navigation, and do meaningful performance monitoring.
 @web_mozilla_developer_spa
 
 Our frontend will utilize all the technologies described above and it will use
-the Vue.js framework. Vue is a JavaScript framework for building user
+the *Vue.js* framework. Vue is a JavaScript framework for building user
 interfaces. It builds on top of standard HTML, CSS, and JavaScript and provides
 a declarative, component-based programming model that helps you efficiently
 develop user interfaces of any complexity. The two core features of Vue are:
@@ -1105,9 +1105,9 @@ programming libraries which we will use for developing our application. In this
 section we will talk about the most important technologies which we will use in
 order to deploy and deliver our application.
 
-Containers are executable units of software that package application code along
-with its libraries and dependencies. They allow the same code to run in many
-different computing environments, like desktops, servers, IT or cloud
+*Containers* are executable units of software that package application code
+along with its libraries and dependencies. They allow the same code to run in
+many different computing environments, like desktops, servers, IT or cloud
 infrastructure. Containers take advantage of a form of operating system (OS)
 virtualization in which features of the OS kernel (like for example, Linux
 namespaces and cgroups) can be used to isolate processes and control the amount
@@ -1162,48 +1162,48 @@ advantages of using containers:
   application deployment and optimizes time to market.
 @web_ibm_containers
 
-The most popular containerization technology nowadays is Docker. Docker enables
-developers to build, deploy, run, update and manage containers. Docker uses the
-Linux kernel (the operating system's base component) and kernel features (like
-Cgroups and namespaces) to separate processes so they can run independently.
-Docker essentially takes an application and its dependencies and turns them into
-a virtual container that can run on any Windows, macOS or Linux-running computer
-system. Docker is based on a client-server architecture, with Docker Engine
-serving as the underlying technology. Docker provides an image-based deployment
-model, making sharing apps simple across computing environments
-@web_ibm_containers. Docker is an open platform for developing, shipping, and
-running applications. Docker allows you to separate your applications from your
-infrastructure so you can deliver software quickly. With Docker, you can manage
-your infrastructure in the same ways you manage your applications. By taking
-advantage of Docker's methodologies for shipping, testing, and deploying code
-quickly, you can significantly reduce the delay between writing code and running
-it in production @web_docker_get_docker. Docker provides many tools and
-components, the most important of which is *Docker Engine*. Docker Engine is an
-open source containerization technology for building and containerizing your
-applications. Docker Engine acts as a client-server application with: A server
-with a long-running daemon process dockerd. APIs which specify interfaces that
-programs can use to talk to and instruct the Docker daemon. A command line
-interface (CLI) client docker. The CLI uses Docker APIs to control or interact
-with the Docker daemon through scripting or direct CLI commands. Many other
-Docker applications use the underlying API and CLI. The daemon creates and
-manages Docker objects, such as images, containers, networks, and volumes.
-@web_docker_engine *Docker Build* is one of Docker Engine's most used features.
-Whenever you are creating an image you are using Docker Build. Build is a key
-part of your software development life cycle allowing you to package and bundle
-your code and ship it anywhere. Docker Build is more than a command for building
-images, and it's not only about packaging your code. It's a whole ecosystem of
-tools and features that support not only common workflow tasks but a lso
-provides support for more complex and advanced scenarios @web_docker_build.
-Finally, when we talk about docker is essential to talk about *Docker Compose*
-too. Docker Compose is a tool for defining and running multi-container
-applications. It is the key to unlocking a streamlined and efficient development
-and deployment experience. Compose simplifies the control of your entire
-application stack, making it easy to manage services, networks, and volumes in a
-single, comprehensible YAML configuration file. Then, with a single command, you
-create and start all the services from your configuration file. Compose works in
-all environments; production, staging, development, testing, as well as CI
-workflows. It also has commands for managing the whole lifecycle of your
-application:
+The most popular containerization technology nowadays is *Docker*. Docker
+enables developers to build, deploy, run, update and manage containers. Docker
+uses the Linux kernel (the operating system's base component) and kernel
+features (like Cgroups and namespaces) to separate processes so they can run
+independently. Docker essentially takes an application and its dependencies and
+turns them into a virtual container that can run on any Windows, macOS or
+Linux-running computer system. Docker is based on a client-server architecture,
+with Docker Engine serving as the underlying technology. Docker provides an
+image-based deployment model, making sharing apps simple across computing
+environments @web_ibm_containers. Docker is an open platform for developing,
+shipping, and running applications. Docker allows you to separate your
+applications from your infrastructure so you can deliver software quickly. With
+Docker, you can manage your infrastructure in the same ways you manage your
+applications. By taking advantage of Docker's methodologies for shipping,
+testing, and deploying code quickly, you can significantly reduce the delay
+between writing code and running it in production @web_docker_get_docker. Docker
+provides many tools and components, the most important of which is *Docker
+Engine*. Docker Engine is an open source containerization technology for
+building and containerizing your applications. Docker Engine acts as a
+client-server application with: A server with a long-running daemon process
+dockerd. APIs which specify interfaces that programs can use to talk to and
+instruct the Docker daemon. A command line interface (CLI) client docker. The
+CLI uses Docker APIs to control or interact with the Docker daemon through
+scripting or direct CLI commands. Many other Docker applications use the
+underlying API and CLI. The daemon creates and manages Docker objects, such as
+images, containers, networks, and volumes. @web_docker_engine *Docker Build* is
+one of Docker Engine's most used features. Whenever you are creating an image
+you are using Docker Build. Build is a key part of your software development
+life cycle allowing you to package and bundle your code and ship it anywhere.
+Docker Build is more than a command for building images, and it's not only about
+packaging your code. It's a whole ecosystem of tools and features that support
+not only common workflow tasks but a lso provides support for more complex and
+advanced scenarios @web_docker_build. Finally, when we talk about docker is
+essential to talk about *Docker Compose* too. Docker Compose is a tool for
+defining and running multi-container applications. It is the key to unlocking a
+streamlined and efficient development and deployment experience. Compose
+simplifies the control of your entire application stack, making it easy to
+manage services, networks, and volumes in a single, comprehensible YAML
+configuration file. Then, with a single command, you create and start all the
+services from your configuration file. Compose works in all environments;
+production, staging, development, testing, as well as CI workflows. It also has
+commands for managing the whole lifecycle of your application:
 - Start, stop, and rebuild services
 - View the status of running services
 - Stream the log output of running services
@@ -1315,7 +1315,7 @@ def read_docs(data_path: str) -> list[Document]:
 ```
 #h(0pt)
 
-After we have read all the documents with concatenate them to a single string
+After we have read all the documents, we concatenate them to a single string
 source. We then create our vocabulary by splitting the string source into unique
 words using the `word_tokenize` function of module `nltk.tokenize` (from library
 NLTK for which we talked about at @heading_python_libraries). We add a special
@@ -1328,7 +1328,8 @@ function of module `nltk.tokenize`. We split each sentence into words using
 `word_tokenize` and after the end of each sentence we append the EOS token. So
 we have know transformed the source string into the tokens (words including EOS
 token). We now create the encoded tokens by using the mapping from the encoded
-vocabulary we created from the previous step. So we now have a list of
+vocabulary we created from the previous step. So we now have a list with the
+encoded tokens of the whole source string.
 
 We now create our Xtrain tensor, by using a window of 100 (configurable) encoded
 tokens. So each row of Xtrain tensor has 100 tokens, and every next row starts
@@ -1558,7 +1559,7 @@ Then we need an embedding model. Embeddings create a vector representation of a
 piece of text. This is useful because it means we can think about text in the
 vector space, and do things like semantic search where we look for pieces of
 text that are most similar in the vector space
-@web_langchain_text_embedding_models. We will use the "all-MiniLM-L6-v2"
+@web_langchain_text_embedding_models. We will use the `all-MiniLM-L6-v2`
 pre-trained model from hugging face, which maps sentences & paragraphs to a 384
 dimensional dense vector space and can be used for tasks like clustering or
 semantic search. @web_huggingface_allminilm. Then we will use the FAISS vector
@@ -1673,22 +1674,22 @@ invoke_output = InvokeOutput.from_output_dict(output)
 
 === Method Advantages and Disadvantages <heading_rag_method_advantages_dissadvantages>
 We described the process of the RAG method. This method offers many advantages
-with only a few disadvantages and therefore it is recommended for a full
+with only a few disadvantages and therefore it is recommended for a complete
 functional system.
 
 Advantages of this method are:
-- Needs only relative sources: The model already understand the needed language,
-  so it needs access only to the relevant documents for our desired knowledge
-  field.
+- Needs only sources relative to knowledge field: The model already understands
+  the needed language, so it needs access only to the relevant documents for our
+  desired knowledge field.
 - Adaptable: New, deleted or altered documents demand only the vector store to be
   recreated, so the systemd can adapt to changes relatively quickly.
 - Easy to implement: This method can be implemented easily with the dependency on
   the libraries we use without any deep advanced knowledge on how LLMs work.
 - Able to return sources: It's really easy to return the relevant sources in which
   the answer was found.
-- Prompting: It's easy to specify system prompting with advanced LLMs which
-  support it, in order to change the style or even the allowed or disallowed
-  content of the answers.
+- Prompting: It's easy to specify system prompting with advanced LLMs that support
+  it, in order to change the style or even the allowed or disallowed content of
+  the answers.
 #h(0pt)
 
 Dissadvantages of this method are:
@@ -1763,7 +1764,7 @@ diagram of these basic operations:
 
 We have already said that the `ska_cli` command line application is implemented
 in rust, it is responsible for various administration tasks and it uses the
-`ska_llm` internally. This cli component expose a friendly command line
+`ska_llm` internally. This cli component exposes a friendly command line
 interface so that the admin can perform various operations. For the command line
 interface and argument parsing we will depend on `clap` library. For all
 database access we depend on the SeaORM library which we have describe in
@@ -1778,13 +1779,13 @@ libraries for these tasks, but the core functionality is handled by our
 first command `command_download` downloads the needed machine learning models
 form hugging face hug @web_huggingface_hub_documentation. The predefined list
 with supported models currently are:
-- all-MiniLM-L6-v2 @web_huggingface_allminilm: A sentence-transformers model which
-  maps sentences & paragraphs to a 384 dimensional dense vector space. It is used
-  as our embedding model when we are storing/searching context chunks in/from our
-  vector store.
-- Llama-2-7B-Chat-GGUF @web_huggingface_llam2gguf: A Llama-2 model quantized for
+- `all-MiniLM-L6-v2` @web_huggingface_allminilm: A sentence-transformers model
+  which maps sentences & paragraphs to a 384 dimensional dense vector space. It is
+  used as our embedding model when we are storing/searching context chunks in/from
+  our vector store.
+- `Llama-2-7B-Chat-GGUF` @web_huggingface_llam2gguf: A Llama-2 model quantized for
   better invoking times performance, but with less accuracy.
-- Meta-Llama-3-8B-Instruct-GGUF @web_huggingface_llam3gguf: A Llama-3 model
+- `Meta-Llama-3-8B-Instruct-GGUF` @web_huggingface_llam3gguf: A Llama-3 model
   quantized for better invoking times performance, but with less accuracy.
 The second command `command_insert` inserts the models from the temporary
 downloaded location to a persisted location that can be read by our application.
@@ -1816,7 +1817,7 @@ different user roles for a user to have in order to be allowed to access it. The
 there are two top level routes `route_auth` and `route_assistant`. The first
 `route_auth` has only on operation `app_login` and is called when users are
 logged in the app in order to update users' details from the users pool to our
-database. Then second top level endpoint route `route_assistant` enables three
+database. The second top level endpoint route `route_assistant` enables three
 basic categories of operations. The first category `fetch` is about fetching
 user data like chats and historical messages. The second category `chat CRUD` is
 about CRUD (Create Read Update Delete) operations on user's chats, which allows
@@ -1870,21 +1871,6 @@ following diagram shows a high level overviews of `ska_frontend`:
 ) <img_ska_frontend_operations>
 #h(0pt)
 
-The `PostgreSQL` database is used in order to persist users' data. Specifically
-we use the table `users` to store each user who logs in to our application. We
-update their details in each login. Each user can have multiple chats which we
-store to table `user_chat`. Each chat can have multiple messages some of them
-are "ANSWER" type and some of them are "QUESTION" type. We store the messages to
-table `chat_message`. Here is the Entity Relationship Diagram (ERD) of our
-database:
-
-#figure(
-  image("images/ska_schema.png", height: 260pt),
-  caption: [ SKA Database ERD ],
-  supplement: [IMAGE],
-) <img_ska_schema>
-#h(0pt)
-
 The keycloak component is used as a user pool and as a user authentication and
 authorization utility. For this we have created a specific SKA Realm which
 contains the available users together with their assigned roles. The supported
@@ -1926,6 +1912,21 @@ component.
 ) <img_keyclaok_oauth2_pkce>
 #h(0pt)
 
+The `PostgreSQL` database is used in order to persist users' data. Specifically
+we use the table `users` to store each user who logs in to our application. We
+update their details in each login. Each user can have multiple chats which we
+store to table `user_chat`. Each chat can have multiple messages some of them
+are "ANSWER" type and some of them are "QUESTION" type. We store the messages to
+table `chat_message`. Here is the Entity Relationship Diagram (ERD) of our
+database:
+
+#figure(
+  image("images/ska_schema.png", height: 260pt),
+  caption: [ SKA Database ERD ],
+  supplement: [IMAGE],
+) <img_ska_schema>
+#h(0pt)
+
 The `api gateway` is implemented by either using a nginx @web_nginx reverse
 proxy or a kubernetes Ingress @web_kubernetes_ingress depending on the
 deployment method. All the incoming http requests reach this component at first
@@ -1943,12 +1944,12 @@ following http paths redirections:
 
 == Development Lifecycle and Deployment
 We talked about our fundamental System components and modules. Now we will
-briefly talk about the development lifecycle of the systemd and its deployment
+briefly talk about the development lifecycle of the system and its deployment
 methods.
 
 The code of our application exists in a git repository at
 https://github.com/ThanosApostolou/thapo-ska. There are 3 fundamental branches.
-New code are directly pushed into `main` branch or merged by some other feature
+New code is directly pushed into `main` branch or merged by some other feature
 branch into `main` branch. When changes of multiple commits have been tested
 enough locally, then the `main` branch is merged into `dev` branch. After
 multiple merges in `dev` branch, when we are ready for a release we merge `dev`
@@ -1984,7 +1985,7 @@ Jenkins @web_jenkins, an open source automation server. In more details:
   - deploy and start the application with `prod` environment at a k3s @web_k3s
     kubernetes instance (see @heading_containers_docker_kubernetes) installed in our
     private server. For easier management of all the kubernetes resources we need to
-    create we use Helm @web_helm.
+    create, we use Helm @web_helm.
   The `prod` application is targeting a port which can be accessed publicly from
   the internet by all the users. Currently the domain our application is using is
   the https://thapo-ska.thapo.org/app, but it is possibly to change after the
@@ -2032,9 +2033,9 @@ Options:
 ```
 #h(0pt)
 
-We see that it has a single `migrate` subcommand. Running `app-cli db migrate
---help` shows that it doesn't take any arguments. We use this command in order
-to migrate our database schema when there are changes.
+We see that it has a single `migrate` subcommand. When we run this command
+`app-cli db migrate --help`, it shows that it doesn't take any arguments. We use
+this command in order to migrate our database schema when there are changes.
 
 ```
 migrates db
@@ -2069,9 +2070,9 @@ Options:
 Subcommand `download` downloads the needed models and LLMs use for the RAG
 method. The models we download are those we described the `ska_cli` component at
 @heading_system_architecture
-- all-MiniLM-L6-v2 @web_huggingface_allminilm
-- Llama-2-7B-Chat-GGUF @web_huggingface_llam2gguf
-- Meta-Llama-3-8B-Instruct-GGUF @web_huggingface_llam3gguf
+- `all-MiniLM-L6-v2` @web_huggingface_allminilm
+- `Llama-2-7B-Chat-GGUF` @web_huggingface_llam2gguf
+- `Meta-Llama-3-8B-Instruct-GGUF` @web_huggingface_llam3gguf
 
 ```
 downloads models and LLMs for RAG
@@ -2542,7 +2543,7 @@ can apply in the future after the completion of this thesis:
 
 We achieved the goal of knowledge assistance in a specific knowledge field using
 artificial intelligence technologies. We believe that the system we created can
-from a future basis and be expanded in order to be able to perform more complex
+form a future basis and be expanded in order to be able to perform more complex
 tasks!
 
 #pagebreak()
