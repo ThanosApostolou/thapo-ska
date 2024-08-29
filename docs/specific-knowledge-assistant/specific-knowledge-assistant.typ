@@ -282,37 +282,8 @@ machine learning models in specific knowledge search and analysis assistance. We
 will use two different methods for these tasks and we will develop a full web
 application with which users will be able to ask questions
 
-In @heading_theory_literature_review we will describe and analyze the
-fundamental theoretical concepts needed for better understanding of this thesis.
-We will also describe the various technologies and their advantage, which we
-will use for our application development and deployment.
+== Theory and Literature Review <heading_theory_literature_review>
 
-In @heading_specific_knowledge_assistance_approaches we will dive in the details
-of the two methods that we will use. We will compare them and we will describe
-their advantages and disadvantages.
-
-In @heading_system_architecture we will describe the architecture and the
-implementation of our application. We will show the components which construct
-our application, the tasks each component can perform and how they are connected
-together.
-
-In @heading_usage_execution_of_application we will show the design and execution
-results of our deployed application. We will investigate the various ways in
-which our application can be used by the users in order to find specific
-knowledge based on raw data like documents or web pages.
-
-In @conclusions_future_work we will write our conclusions we reached. We will
-describe the problems and limitations we faced. Finally, we will specify future
-improvements that can be made as well as future goals about scaling and expand
-the core idea.
-
-#pagebreak()
-= Theory and Literature Review <heading_theory_literature_review>
-
-In this chapter we will talk about the theoretic terms that this thesis is based
-upon. We will also describe the main technologies which we will use.
-
-== Theoretic Terms <heading_theoretic_terms>
 The fundamental theoretic concepts of this thesis stem from the study field of
 artificial intelligence. We will describe the connection between artificial
 intelligence, machine learning and deep learning. We will focus on a specific
@@ -670,7 +641,36 @@ A typical RAG application has two main components @web_langchain_rag:
   supplement: [IMAGE],
 ) <img_rag>
 
-== Technologies <heading_technologies>
+== Sections <heading_sections>
+Lets describe briefly the next sections of this thesis.
+
+In @heading_technologies we will describe the various technologies and their
+advantages, which we will use for our application development and deployment.
+
+In @heading_specific_knowledge_assistance_approaches we will dive in the details
+of the two methods that we will use. We will compare them and we will describe
+their advantages and disadvantages.
+
+In @heading_system_architecture we will describe the architecture and the
+implementation of our application. We will show the components which construct
+our application, the tasks each component can perform and how they are connected
+together.
+
+In @heading_usage_execution_of_application we will show the design and execution
+results of our deployed application. We will investigate the various ways in
+which our application can be used by the users in order to find specific
+knowledge based on raw data like documents or web pages.
+
+In @conclusions_future_work we will write our conclusions we reached. We will
+describe the problems and limitations we faced. Finally, we will specify future
+improvements that can be made as well as future goals about scaling and expand
+the core idea.
+
+#pagebreak()
+= Technologies <heading_technologies>
+In this chapter we will describe the main technologies which we will use for the
+development and deployment of our system.
+
 In the context of this thesis we will use many technologies in order to produce
 a complete application. We will describe the main programming languages we used
 for this application, Rust and Python. We will see more details about the core
@@ -678,7 +678,7 @@ programming libraries our application is using and their basic features we
 utilize. Finally we will talk about the state of the art deployment procedure of
 deployments based on containers utilization.
 
-=== Python Programming Language <heading_python>
+== Python Programming Language <heading_python>
 Python is a high-level, general-purpose programming language. Its design
 philosophy emphasizes code readability with the use of significant indentation.
 Python is dynamically typed and garbage-collected. It supports multiple
@@ -789,7 +789,7 @@ However python programming language has also some drawbacks
   code that is difficult to read and maintain.
 #h(0pt)
 
-=== Rust Programming Language <heading_rust>
+== Rust Programming Language <heading_rust>
 Rust is a general-purpose programming language emphasizing performance, type
 safety, and concurrency. It enforces memory safety, meaning that all references
 point to valid memory, without a garbage collector. To simultaneously enforce
@@ -855,7 +855,7 @@ However rust programming language has also some drawbacks
   those of older languages like C++, Java or Python.
 #h(0pt)
 
-=== Python Libraries <heading_python_libraries>
+== Python Libraries <heading_python_libraries>
 We will talk about the most important Python libraries that we use for our
 application and their important parts that we utilize.
 
@@ -971,7 +971,7 @@ RAM. It also contains supporting code for evaluation and parameter tuning. Faiss
 is written in C++ with complete wrappers for Python/numpy. Some of the most
 useful algorithms are implemented on the GPU. @web_github_faiss
 
-=== Rust Libraries <heading_rust_libraries>
+== Rust Libraries <heading_rust_libraries>
 We will talk about the most important Rust libraries that we use for our
 application and their important parts that we utilize.
 
@@ -1022,7 +1022,7 @@ with the familiarity of dynamic languages. Some SeaORM features are:
 SeaORM supports connections with MySQL, Postgres or SQLite databases
 @web_seaql_connection.
 
-=== HTML, CSS, SPA, Typescript, Vue.js <heading_html_css_spa_typescript_vue>
+== HTML, CSS, SPA, Typescript, Vue.js <heading_html_css_spa_typescript_vue>
 We will use Web Technologies in order to create a Frontend for our application.
 In this section we will describe the main technologies for our frontend.
 
@@ -1107,7 +1107,7 @@ Vue can be used in different ways:
 - Targeting desktop, mobile, WebGL, and even the terminal
 @web_vuejs_introduction
 
-=== Containers, Docker and Kubernetes <heading_containers_docker_kubernetes>
+== Containers, Docker and Kubernetes <heading_containers_docker_kubernetes>
 We already talked about the programming languages and the most important
 programming libraries which we will use for developing our application. In this
 section we will talk about the most important technologies which we will use in
