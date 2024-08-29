@@ -1,5 +1,6 @@
-#let title_english = "AI-Based Model for Knowledge Specific Assistance"
-#let title_greek = "Μοντέλο Τεχνητής Νοημοσύνης για Βοήθεια σε Συγκεκριμένη Γνώση"
+#let title_english = "Development of an AI-Based System for Knowledge Specific Assistance"
+
+#let title_greek = "Ανάπτυξη ενός Συστήματος Τεχνητής Νοημοσύνης για Υποβοήθηση σε Συγκεκριμένη Γνώση"
 #let author_english = "Thanos Apostolou"
 #let author_greek = "Θάνος Αποστόλου"
 
@@ -190,15 +191,23 @@
     ],
     [
       #v(10pt)
+      #text(weight: "black", [Tsichrintzis Georgios])
+      #text(weight: "black", [Professor])
 
       #v(10pt)
+      #text(weight: "regular", [Τσιχριντζής Γεώργιος])
+      #text(weight: "regular", [Καθηγητής])
 
       #v(10pt)
     ],
     [
       #v(10pt)
+      #text(weight: "black", [Sakkopoulos Evangelos])
+      #text(weight: "black", [Associate Professor])
 
       #v(10pt)
+      #text(weight: "regular", [Σακκόπουλος Ευάγγελος])
+      #text(weight: "regular", [Αναπληρωτής Καθηγητής])
 
       #v(10pt)
     ],

@@ -3,17 +3,17 @@
 
 #show: university-theme.with(
   short-author: "Thanos Apostolou",
-  short-title: "AIBased Model for Knowledge Specific Assistance",
-  short-date: "2024",
+  short-title: "Development of an AI-Based System for Knowledge Specific Assistance",
+  short-date: "2024-09",
   aspect-ratio: "16-9",
 )
 #set text(font: "Arial", weight: "regular", size: 20pt)
 
 #title-slide(
   authors: ("Thanos Apostolou"),
-  title: "AI-Based Model for Knowledge\n Specific Assistance",
+  title: "Development of an AI-Based System for Knowledge Specific Assistance",
   // subtitle: "AI-Based Model for Knowledge Specific Assistance",
-  date: "2024",
+  date: "September 2024",
   institution-name: "University of Piraeus\n Department of Informatics",
   logo: image("images/unipi.png", width: 120pt),
 )
