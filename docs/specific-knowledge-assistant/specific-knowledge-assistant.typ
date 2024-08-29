@@ -538,11 +538,11 @@ Some advantages of LLM quantization are: @web_symbl_ai_quantization
 - Faster Inference: the lower bit widths used for weights and the resulting lower
   memory bandwidth requirements allow for more efficient computations.
 However the disadvantages are @web_symbl_ai_quantization:
-- Loss of Accuracy: undoubtedly, the most significant drawback of quantization is
-  a potential loss of accuracy in output. Converting the model's weights to a
-  lower precision is likely to degrade its performance – and the more “aggressive”
-  the quantization technique, i.e., the lower the bit widths of the converted data
-  type, e.g., 4-bit, 3-bit, etc., the greater the risk of loss of accuracy.
+- Loss of Accuracy: The most significant disadvantage of quantization is loss of
+  accuracy in output. Converting the model's weights to a lower precision is
+  likely to degrade its performance. The more “aggressive” the quantization
+  technique, i.e. the lower the bit widths of the converted data type, e.g.,
+  4-bit, 3-bit, etc., the greater the risk of loss of accuracy.
 Some techniques for LLM quantization are the following
 @web_symbl_ai_quantization:
 - QLoRA: Low-Rank Adaptation (LoRA) is a Parameter-Efficient Fine-Tuning (PEFT)
@@ -565,7 +565,7 @@ Some techniques for LLM quantization are the following
 - GGML/GGUF: GGML (which is said to stand for Georgi Gerganov Machine Learning,
   after its creator, or GPT-Generated Model Language) is a C-based machine
   learning library designed for the quantization of Llama models so they can run
-  on a CPU. More specifically, the library allows you to save quantized models in
+  on a CPU. More specifically, the library allows us to save quantized models in
   the GGML binary format, which can be executed on a broader range of hardware.
   GGML quantizes models through a process called the k-quant system, which uses
   value representations of different bit widths depending on the chosen quant
@@ -576,7 +576,7 @@ Some techniques for LLM quantization are the following
   are assigned to a lower-precision type. For example, the q2_k quant method
   converts the largest weights to 4-bit integers and the remaining weights to
   2-bit. Alternatively, however, the q5_0 and q8_0 quant methods convert all
-  weights to 5-bit and 8-bit integer representations respectively. You can view
+  weights to 5-bit and 8-bit integer representations respectively. We can view
   GGML's full range of quant methods by looking at the model cards in this code
   repo. GGUF (GPT-Generated Unified Format), meanwhile, is a successor to GGML and
   is designed to address its limitations, most notably, enabling the quantization
@@ -587,15 +587,15 @@ Some techniques for LLM quantization are the following
   (AWQ) accounts for the activations of the model, i.e., the most significant
   features of the input data, and how it is distributed during inference. By
   tailoring the precision of the model's weights to the particular characteristic
-  of the input, you can minimize the loss of accuracy caused by quantization.
+  of the input, we can minimize the loss of accuracy caused by quantization.
 #h(0pt)
 
 === Retrieval Augmented Generation (RAG) <heading_rag>
 Retrieval Augmented Generation (RAG) is a technique for augmenting LLM knowledge
 with additional data. LLMs can reason about wide-ranging topics, but their
 knowledge is limited to the public data up to a specific point in time that they
-were trained on. If you want to build AI applications that can reason about
-private data or data introduced after a model's cutoff date, you need to augment
+were trained on. If we want to build AI applications that can reason about
+private data or data introduced after a model's cutoff date, we need to augment
 the knowledge of the model with the specific information it needs. The process
 of bringing the appropriate information and inserting it into the model prompt
 is known as Retrieval Augmented Generation (RAG) @web_langchain_rag. RAG extends
@@ -625,7 +625,7 @@ RAG is important because of these reasons @web_aws_rag:
   - Enhanced user trust: RAG allows the LLM to present accurate information with
     source attribution. The output can include citations or references to sources.
     Users can also look up source documents themselves if they require further
-    clarification or more detail. This can increase trust and confidence in your
+    clarification or more detail. This can increase trust and confidence in our
     generative AI solution.
   - More developer control: With RAG, developers can test and improve their chat
     applications more efficiently. They can control and change the LLM's information
@@ -742,7 +742,7 @@ Using python programming language has various advantages
   structures, simplifying data manipulation and management.
 - High-level language: Python is a high-level language that abstracts low-level
   details, making it more user-friendly.
-- Dynamically typed language: Python is dynamically typed, meaning you don't need
+- Dynamically typed language: Python is dynamically typed, meaning we don't need
   to declare data types explicitly, making it flexible but still reliable.
 - Object-Oriented and Procedural programming language: Python supports both
   object-oriented and procedural programming, providing versatility in coding
@@ -888,12 +888,12 @@ described in @heading_text_generation_models_llm, we will use *LangChain*.
 LangChain is a framework for developing applications powered by large language
 models (LLMs). LangChain simplifies every stage of the LLM application lifecycle
 @web_langchain_python_introduction:
-- Development: Build your applications using LangChain's open-source building
+- Development: Build our applications using LangChain's open-source building
   blocks, components, and third-party integrations. Use LangGraph to build
   stateful agents with first-class streaming and human-in-the-loop support.
-- Productionization: Use LangSmith to inspect, monitor and evaluate your chains,
-  so that you can continuously optimize and deploy with confidence.
-- Deployment: Turn your LangGraph applications into production-ready APIs and
+- Productionization: Use LangSmith to inspect, monitor and evaluate our chains, so
+  that we can continuously optimize and deploy with confidence.
+- Deployment: Turn our LangGraph applications into production-ready APIs and
   Assistants with LangGraph Cloud.
 LangChain does not serve its own LLMs, but rather provides a standard interface
 for interacting with many different LLMs. To be specific, this interface is one
@@ -905,7 +905,7 @@ ways to store and search over unstructured data is to embed it and store the
 resulting embedding vectors, and then at query time to embed the unstructured
 query and retrieve the embedding vectors that are 'most similar' to the embedded
 query. A vector store takes care of storing embedded data and performing vector
-search for you. Supported vector stores are @web_langchain_vector_stores:
+search for us. Supported vector stores are @web_langchain_vector_stores:
 - Chroma
 - Pinecone
 - FAISS
@@ -982,7 +982,7 @@ language. At a high level, it provides a few major components:
 - Asynchronous TCP and UDP sockets.
 Tokio provides a runtime for writing reliable, asynchronous, and slim
 applications with the Rust programming language. It is: @web_github_tokio_readme
-- Fast: Tokio's zero-cost abstractions give you bare-metal performance.
+- Fast: Tokio's zero-cost abstractions give us bare-metal performance.
 - Reliable: Tokio leverages Rust's ownership, type system, and concurrency model
   to reduce bugs and ensure thread safety.
 - Scalable: Tokio has a minimal footprint, and handles backpressure and
@@ -1005,9 +1005,8 @@ database. SeaORM is a relational ORM which helps us build web services in Rust
 with the familiarity of dynamic languages. Some SeaORM features are:
 @web_github_seaorm_readme
 - Async: Relying on SQLx, SeaORM is a new library with async support from day 1.
-- Dynamic: Built upon SeaQuery, SeaORM allows you to build complex dynamic
-  queries.
-- Testable: Use mock connections and/or SQLite to write tests for your application
+- Dynamic: Built upon SeaQuery, SeaORM allows us to build complex dynamic queries.
+- Testable: Use mock connections and/or SQLite to write tests for our application
   logic.
 - Service Oriented: Quickly build services that join, filter, sort and paginate
   data in REST, GraphQL and gRPC APIs.
@@ -1025,7 +1024,7 @@ or functionality/behavior (JavaScript).
 "Hypertext" refers to links that connect web pages to one another, either within
 a single website or between websites. Links are a fundamental aspect of the Web.
 By uploading content to the Internet and linking it to pages created by other
-people, you become an active participant in the World Wide Web. HTML uses "markup"
+people, we become an active participant in the World Wide Web. HTML uses "markup"
 to annotate text, images, and other content for display in a Web browser. HTML
 markup includes special "elements" such as `<head>, <title>, <body>` and many
 others. An HTML element is set off from other text in a document by "tags",
@@ -1040,9 +1039,9 @@ screen, on paper, in speech, or on other media. CSS is among the core languages
 of the open web and is standardized across Web browsers according to W3C
 specifications. Previously, the development of various parts of CSS
 specification was done synchronously, which allowed the versioning of the latest
-recommendations. You might have heard about CSS1, CSS2.1, or even CSS3. There
-will never be a CSS3 or a CSS4; rather, everything is now just "CSS" with
-individual CSS modules having version numbers. @web_mozilla_developer_css
+recommendations, like CSS1, CSS2.1, etc. There will never be a CSS3 or a CSS4;
+rather, everything is now just "CSS" with individual CSS modules having version
+numbers. @web_mozilla_developer_css
 
 *JavaScript* (JS) is a lightweight interpreted (or just-in-time compiled)
 programming language with first-class functions. While it is most well-known as
@@ -1084,7 +1083,7 @@ state, implement navigation, and do meaningful performance monitoring.
 Our frontend will utilize all the technologies described above and it will use
 the *Vue.js* framework. Vue is a JavaScript framework for building user
 interfaces. It builds on top of standard HTML, CSS, and JavaScript and provides
-a declarative, component-based programming model that helps you efficiently
+a declarative, component-based programming model that helps us efficiently
 develop user interfaces of any complexity. The two core features of Vue are:
 - Declarative Rendering: Vue extends standard HTML with a template syntax that
   allows us to declaratively describe HTML output based on JavaScript state.
@@ -1121,27 +1120,27 @@ better understand a container is to examine how it differs from a traditional
 virtual machine (VM), which is a virtual representation or emulation of a
 physical computer. A VM is often referred to as a guest, while the physical
 machine it runs on is called the host. Virtualization technology makes VMs
-possible. A hypervisor—a small software layer—allocates physical computing
-resources (for example, processors, memory, storage) to each VM. It keeps each
-VM separate from others so they don't interfere with each other. Each VM then
-contains a guest OS and a virtual copy of the hardware that the OS requires to
-run, along with an application and its associated libraries and dependencies.
-VMware was one of the first to develop and commercialize virtualization
-technology based on hypervisors. Instead of virtualizing the underlying
-hardware, container technology virtualizes the operating system (typically
-Linux) so each container contains only the application and its libraries,
-configuration files and dependencies. The absence of the guest OS is why
-containers are so lightweight and, thus, faster and more portable than VMs.
-Containers and virtual machines are not mutually exclusive. For instance, an
+possible. A small software layer which is called a hypervisor, allocates
+physical computing resources (for example, processors, memory, storage) to each
+VM. It keeps each VM separate from others so they don't interfere with each
+other. Each VM then contains a guest OS and a virtual copy of the hardware that
+the OS requires to run, along with an application and its associated libraries
+and dependencies. VMware was one of the first to develop and commercialize
+virtualization technology based on hypervisors. Instead of virtualizing the
+underlying hardware, container technology virtualizes the operating system
+(typically Linux) so each container contains only the application and its
+libraries, configuration files and dependencies. Containers are much more
+lightweight, faster and more portable than VMs, due to the absence of the guest
+OS. Containers and virtual machines are not mutually exclusive. For instance, an
 organization might leverage both technologies by running containers in VMs to
 increase isolation and security and leverage already installed tools for
 automation, backup and monitoring @web_ibm_containers. Here are the top
 advantages of using containers:
-- Lightweight: Containers share the machine OS kernel, eliminating the need for a
-  full OS instance per application and making container files small and easy on
-  resources. A container's smaller size, especially compared to a VM, means it can
-  spin up quickly and better support cloud-native applications that scale
-  horizontally.
+- Lightweight: Containers eliminate the need for a full OS instance per
+  application and make container files small and easy on resources, by sharing the
+  machine OS kernel. A container's smaller size, especially compared to a VM,
+  means it can spin up quickly and better support cloud-native applications that
+  scale horizontally.
 - Portable and platform-independent: Containers carry all their dependencies with
   them, meaning that software can be written once and then run without needing to
   be re-configured across computing environments (for example, laptops, cloud and
@@ -1172,15 +1171,15 @@ Linux-running computer system. Docker is based on a client-server architecture,
 with Docker Engine serving as the underlying technology. Docker provides an
 image-based deployment model, making sharing apps simple across computing
 environments @web_ibm_containers. Docker is an open platform for developing,
-shipping, and running applications. Docker allows you to separate your
-applications from your infrastructure so you can deliver software quickly. With
-Docker, you can manage your infrastructure in the same ways you manage your
+shipping, and running applications. Docker allows us to separate our
+applications from our infrastructure so we can deliver software quickly. With
+Docker, we can manage our infrastructure in the same ways we manage our
 applications. By taking advantage of Docker's methodologies for shipping,
-testing, and deploying code quickly, you can significantly reduce the delay
+testing, and deploying code quickly, we can significantly reduce the delay
 between writing code and running it in production @web_docker_get_docker. Docker
 provides many tools and components, the most important of which is *Docker
 Engine*. Docker Engine is an open source containerization technology for
-building and containerizing your applications. Docker Engine acts as a
+building and containerizing our applications. Docker Engine acts as a
 client-server application with: A server with a long-running daemon process
 dockerd. APIs which specify interfaces that programs can use to talk to and
 instruct the Docker daemon. A command line interface (CLI) client docker. The
@@ -1188,22 +1187,22 @@ CLI uses Docker APIs to control or interact with the Docker daemon through
 scripting or direct CLI commands. Many other Docker applications use the
 underlying API and CLI. The daemon creates and manages Docker objects, such as
 images, containers, networks, and volumes. @web_docker_engine *Docker Build* is
-one of Docker Engine's most used features. Whenever you are creating an image
-you are using Docker Build. Build is a key part of your software development
-life cycle allowing you to package and bundle your code and ship it anywhere.
-Docker Build is more than a command for building images, and it's not only about
-packaging your code. It's a whole ecosystem of tools and features that support
+one of Docker Engine's most used features. Whenever we are creating an image we
+are using Docker Build. Build is a key part of our software development life
+cycle allowing us to package and bundle our code and ship it anywhere. Docker
+Build is more than a command for building images, and it's not only about
+packaging our code. It's a whole ecosystem of tools and features that support
 not only common workflow tasks but a lso provides support for more complex and
 advanced scenarios @web_docker_build. Finally, when we talk about docker is
 essential to talk about *Docker Compose* too. Docker Compose is a tool for
 defining and running multi-container applications. It is the key to unlocking a
 streamlined and efficient development and deployment experience. Compose
-simplifies the control of your entire application stack, making it easy to
-manage services, networks, and volumes in a single, comprehensible YAML
-configuration file. Then, with a single command, you create and start all the
-services from your configuration file. Compose works in all environments;
-production, staging, development, testing, as well as CI workflows. It also has
-commands for managing the whole lifecycle of your application:
+simplifies the control of our entire application stack, making it easy to manage
+services, networks, and volumes in a single, comprehensible YAML configuration
+file. Then, with a single command, we create and start all the services from our
+configuration file. Compose works in all environments; production, staging,
+development, testing, as well as CI workflows. It also has commands for managing
+the whole lifecycle of our application:
 - Start, stop, and rebuild services
 - View the status of running services
 - Stream the log output of running services
@@ -1223,42 +1222,42 @@ combined with best-of-breed ideas and practices from the community
 managing containerized workloads and services, that facilitates both declarative
 configuration and automation. It has a large, rapidly growing ecosystem.
 Kubernetes services, support, and tools are widely available. Containers are a
-good way to bundle and run your applications. In a production environment, you
+good way to bundle and run our applications. In a production environment, our
 need to manage the containers that run the applications and ensure that there is
 no downtime. For example, if a container goes down, another container needs to
-start. Kubernetes provides you with a framework to run distributed systems
-resiliently. It takes care of scaling and failover for your application,
-provides deployment patterns, and more. For example: Kubernetes can easily
-manage a canary deployment for your system @web_kubernetes_overview. Some
-features of kubernetes are:
-- Service discovery and load balancing Kubernetes can expose a container using the
-  DNS name or using their own IP address. If traffic to a container is high,
+start. Kubernetes provides us with a framework to run distributed systems
+resiliently. It takes care of scaling and failover for our application, provides
+deployment patterns, and more. For example: Kubernetes can easily manage a
+canary deployment for our system @web_kubernetes_overview. Some features of
+kubernetes are:
+- Service discovery and load balancing: Kubernetes can expose a container using
+  the DNS name or using their own IP address. If traffic to a container is high,
   Kubernetes is able to load balance and distribute the network traffic so that
   the deployment is stable.
-- Storage orchestration Kubernetes allows you to automatically mount a storage
-  system of your choice, such as local storages, public cloud providers, and more.
-- Automated rollouts and rollbacks You can describe the desired state for your
+- Storage orchestration: Kubernetes allows us to automatically mount a storage
+  system of our choice, such as local storages, public cloud providers, and more.
+- Automated rollouts and rollbacks: We can describe the desired state for our
   deployed containers using Kubernetes, and it can change the actual state to the
-  desired state at a controlled rate. For example, you can automate Kubernetes to
-  create new containers for your deployment, remove existing containers and adopt
+  desired state at a controlled rate. For example, we can automate Kubernetes to
+  create new containers for our deployment, remove existing containers and adopt
   all their resources to the new container.
-- Automatic bin packing You provide Kubernetes with a cluster of nodes that it can
-  use to run containerized tasks. You tell Kubernetes how much CPU and memory
-  (RAM) each container needs. Kubernetes can fit containers onto your nodes to
-  make the best use of your resources.
-- Self-healing Kubernetes restarts containers that fail, replaces containers,
-  kills containers that don't respond to your user-defined health check, and
+- Automatic bin packing: We provide Kubernetes with a cluster of nodes that it can
+  use to run containerized tasks. We tell Kubernetes how much CPU and memory (RAM)
+  each container needs. Kubernetes can fit containers onto our nodes to make the
+  best use of our resources.
+- Self-healing: Kubernetes restarts containers that fail, replaces containers,
+  kills containers that don't respond to our user-defined health check, and
   doesn't advertise them to clients until they are ready to serve.
-- Secret and configuration management Kubernetes lets you store and manage
-  sensitive information, such as passwords, OAuth tokens, and SSH keys. You can
-  deploy and update secrets and application configuration without rebuilding your
-  container images, and without exposing secrets in your stack configuration.
-- Batch execution In addition to services, Kubernetes can manage your batch and CI
+- Secret and configuration management: Kubernetes lets us store and manage
+  sensitive information, such as passwords, OAuth tokens, and SSH keys. We can
+  deploy and update secrets and application configuration without rebuilding our
+  container images, and without exposing secrets in our stack configuration.
+- Batch execution: In addition to services, Kubernetes can manage our batch and CI
   workloads, replacing containers that fail, if desired.
-- Horizontal scaling Scale your application up and down with a simple command,
+- Horizontal scaling: Scale our application up and down with a simple command,
   with a UI, or automatically based on CPU usage.
-- IPv4/IPv6 dual-stack Allocation of IPv4 and IPv6 addresses to Pods and Services
-  Designed for extensibility Add features to your Kubernetes cluster without
+- IPv4/IPv6 dual-stack: Allocation of IPv4 and IPv6 addresses to Pods and Services
+  Designed for extensibility Add features to our Kubernetes cluster without
   changing upstream source code.
 @web_kubernetes_overview
 
