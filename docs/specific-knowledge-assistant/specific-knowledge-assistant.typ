@@ -1,13 +1,13 @@
 #let title_english = "Development of an AI-Based System for Knowledge Specific Assistance"
 
 #let title_greek = "Ανάπτυξη ενός Συστήματος Τεχνητής Νοημοσύνης για Υποβοήθηση σε Συγκεκριμένη Γνώση"
-#let author_english = "Thanos Apostolou"
-#let author_greek = "Θάνος Αποστόλου"
+#let author_english = "Apostolou Athanasios"
+#let author_greek = "Αποστόλου Αθανάσιος"
 
 #set document(
   title: title_english,
   author: author_english,
-  date: datetime(year: 2024, month: 09, day: 1),
+  date: datetime(year: 2024, month: 10, day: 1),
 )
 #set page(
   paper: "a4",
@@ -145,8 +145,6 @@
     #text(weight: "regular", [Αριθμός Μητρώου:])
   ],
   [
-    #text(weight: "black", [MPSP2203])
-
     #text(weight: "regular", [ΜΠΣΠ2203])
   ],
   [
@@ -161,7 +159,7 @@
   ],
 )
 
-#align(center + bottom, [September 2024/ Σεπτέμβριος 2024])
+#align(center + bottom, [October 2024/ Οκτώβριος 2024])
 #v(20pt)
 #line(length: 100%)
 
